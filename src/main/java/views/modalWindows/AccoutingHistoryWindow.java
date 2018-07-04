@@ -63,7 +63,7 @@ public class AccoutingHistoryWindow extends Application{
         hBoxButtons.getChildren().addAll(save,close);
     }
 
-    // tear out your eye and cut off your hands, bitch :((
+    // tear out your eye and cut off my hands, fuck :((
     private static void initLablesAndFields(){
         Label l1	= new Label("1");		TextField txf1i		= new TextField("1i");		TextField txf1o		= new TextField("1o");
         Label l2	= new Label("2");		TextField txf2i		= new TextField("2i");		TextField txf2o		= new TextField("2o");

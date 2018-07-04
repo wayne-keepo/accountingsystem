@@ -9,9 +9,15 @@ public class AccoutingHistory {
     private Detail detail;
     private List<Day> days;
 
+    public AccoutingHistory() {}
+
     public AccoutingHistory(Detail detail, List<Day> days) {
         this.detail = detail;
         this.days = days;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getId() {
