@@ -1,0 +1,53 @@
+package projectConstants;
+
+import java.time.format.DateTimeFormatter;
+
+public class DBConstants {
+    public static final String DB_URL = "jdbc:sqlite:C:\\Users\\dmpi0716\\Desktop\\x\\database\\accountingSystemCur.db";
+
+    //table detail(id,title,count,cost,descriptors)
+    public static final String SINGLE_INSERT_DETAIL = "INSERT INTO DETAIL(TITLE,COUNT,COST,DESCRIPTORS) VALUES(?,?,?,?)";
+    public static final String SINGLE_UPDATE_DETAIL = "UPDATE DETAIL SET TITLE = ? , COUNT = ?,COST = ?,DESCRIPTORS = ? WHERE ID = ?";
+    public static final String SINGLE_SELECT_DETAIL_BY_ID = "SELECT * FROM DETAIL WHERE ID = ?";
+    public static final String SINGLE_DELETE_DETAIL = "DELETE FROM DETAIL WHERE ID = ?";
+    public static final String SINGLE_SELECT_DETAIL_BY_TITLE = "SELECT * FROM DETAIL WHERE TITLE = ?";
+
+    public static final String SELECT_ALL_DETAIL = "SELECT * FROM DETAIL";
+
+    //table balance(id,IDdetail,year,month,incoming,outcoming,bAtBeginingYear,bAtEndOfYear)
+
+    public static final String SINGLE_INSERT_BALANCE =
+            "INSERT INTO BALANCE(IDdetail,year,month,incoming,outcoming,bAtBeginingYear,bAtEndOfYear) VALUES(?,?,?,?,?,?,?)";
+    public static final String SINGLE_UPDATE_BALANCE = "UPDATE BALANCE SET " +
+                                                        "incoming = ?, outcoming = ?, bAtBeginingYear = ?, bAtEndOfYear=?" +
+                                                        "WHERE IDdetail = ? AND month = ?";
+    public static final String SINGLE_DELETE_BALANCE = "DELETE FROM BALANCE WHERE IDdetail = ?";
+    public static final String SELECT_ALL_BALANCE_BY_DETAIL = "SELECT * FROM BALANCE WHERE IDdetail = ?";
+    public static final String SELECT_ALL_BALANCE = "SELECT * FROM BALANCE";
+
+    // ElectrodeDetail(idProduct, idDetail,count)
+    public static final String INSERT_ELECTRODE_DETAIL = "INSERT INTO ElectrodeDetail(idProduct, idDetail,count) VALUES(?,?,?)";
+    public static final String UPDATE_ELECTRODE_DETAIL = "UPDATE ElectrodeDetail SET count = ? WHERE idProduct = ? AND idDetail = ?";
+    public static final String SELECT_ALL_ELECTRODE_DETAIL = "SELECT * FROM ElectrodeDetail";
+    public static final String DELETE_ELECTRODE_DETAIL = "DELETE FROM ElectrodeDetail WHERE idProduct = ? AND idDetail = ?";
+    public static final String SELECT_ELECTRODE_DETAIL_BY_IDS = "SELECT * FROM ElectrodeDetail WHERE idProduct = ? AND idDetail = ?";
+
+
+    // Summary id idElectrode produceDate Customer consumeDate Note
+    public static final String SELECT_SUMMARY_BY_ELECTRODE_ID = "SELECT * FROM Summary WHERE idElectrode = ?";
+    public static final String INSERT_SUMMARY = "INSERT INTO Summary(idElectrode,produceDate,Customer,consumeDate,Note) VALUES(?,date(?),?,date(?),?)";
+    public static final String UPDATE_SUMMARY = "UPDATE Summary SET produceDate = ?, Customer = ?, consumeDate= ?, Note = ? WHERE id = ?";
+    public static final String DELETE_SUMMARY_BY_ID = "DELETE FROM Summary WHERE id = ? ";
+    public static final String DELETE_SUMMARY_BY_ID_ELECTRODE = "DELETE Summary WHERE idElectrode = ? ";
+    public static final String SELECT_ALL_SUMMARY = "SELECT * FROM Summary";
+
+    // Electrode id number type
+    public static final String INSERT_ELECTRODE = "INSERT INTO Electrode(number,type) VALUES(?,?)";
+    public static final String DELETE_ELECTRODE_BY_ID = "DELETE FROM Electrode WHERE id = ?";
+    public static final String DELETE_ELECTRODE_BY_NUMBER = "DELETE FROM Electrode WHERE number = ?";
+    public static final String SELECT_ELECTRODE_BY_NUMBER = "SELECT * FROM Electrode WHERE number = ?";
+    public static final String SELECT_ELECTRODS_BY_TYPE = "SELECT * FROM Electrode WHERE type = ?";
+    public static final String SELECT_ALL_ELECTRODS = "SELECT * FROM Electrode";
+
+
+}
