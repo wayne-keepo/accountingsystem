@@ -12,9 +12,11 @@ public class CreateElectrodeTable {
     private TableView<Electrod> table;
     private ObservableList<Electrod> electrods;
 
-    public CreateElectrodeTable(){create();}
+    public CreateElectrodeTable() {
+        create();
+    }
 
-    private void create(){
+    private void create() {
         electrods = ElectrodeService.getAll();
         table = new TableView<>();
         table.setEditable(true);
@@ -23,17 +25,17 @@ public class CreateElectrodeTable {
         table.getItems().addAll(electrods);
     }
 
-    private ObservableList<TableColumn<Electrod,?>> createColumn(){
-        TableColumn<Electrod,Integer>  id = new TableColumn<>("№ п/п");
+    private ObservableList<TableColumn<Electrod, ?>> createColumn() {
+        TableColumn<Electrod, Integer> id = new TableColumn<>("№ п/п");
         id.setCellValueFactory(new PropertyValueFactory<>("id"));
 
-        TableColumn<Electrod,String>   number  = new TableColumn<>("Номер");
+        TableColumn<Electrod, String> number = new TableColumn<>("Номер");
         number.setCellValueFactory(new PropertyValueFactory<>("electrodNumber"));
 
-        TableColumn<Electrod,String>   type  = new TableColumn<>("Тип");
+        TableColumn<Electrod, String> type = new TableColumn<>("Тип");
         type.setCellValueFactory(new PropertyValueFactory<>("type"));
 
-        return FXCollections.observableArrayList(id,number,type);
+        return FXCollections.observableArrayList(id, number, type);
     }
 
     public TableView<Electrod> getTable() {

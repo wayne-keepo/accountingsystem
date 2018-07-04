@@ -30,7 +30,7 @@ public class AccoutingHistoryWindow extends Application{
         initButtons();
 
         Stage window = new Stage();
-        Scene scene = new Scene(mainPane,750,560);
+        Scene scene = new Scene(mainPane, 750, 560);
         window.setTitle("Приход/Расход по дням");
         window.initModality(Modality.APPLICATION_MODAL);
         window.setScene(scene);
@@ -105,10 +105,10 @@ public class AccoutingHistoryWindow extends Application{
                 = Arrays.asList(txf1o,txf2o,txf3o,txf4o,txf5o,txf6o,txf7o,txf8o,txf9o,txf11o,txf12o,txf13o,txf14o,txf15o,txf16o,txf17o,txf18o,txf19o,txf20o,txf21o,txf22o,txf23o,txf24o,txf25o,txf26o,txf27o,txf28o,txf29o,txf30o,txf31o,txf32o);
 
         matrix = new LinkedHashMap<>();
-        for (Integer i=0;i<lables.size();i++){
-            Map<Integer,Label> some = new LinkedHashMap<>();
-            some.put(i+1,lables.get(i));
-            matrix.put(some,Arrays.asList(fieldsI.get(i),fieldsO.get(i)));
+        for (Integer i = 0; i < lables.size(); i++) {
+            Map<Integer, Label> some = new LinkedHashMap<>();
+            some.put(i + 1, lables.get(i));
+            matrix.put(some, Arrays.asList(fieldsI.get(i), fieldsO.get(i)));
         }
 
         fillGrid();
@@ -161,13 +161,12 @@ public class AccoutingHistoryWindow extends Application{
         AtomicInteger row = new AtomicInteger(1);
         AtomicInteger row2 = new AtomicInteger(1);
 
-        matrix.forEach((k,v)->{
-            if (index.get() <=16) {
+        matrix.forEach((k, v) -> {
+            if (index.get() <= 16) {
                 gridPane.add(k.get(index.getAndIncrement()), 0, row.get());
                 gridPane.add(v.get(0), 1, row.get());
                 gridPane.add(v.get(1), 2, row.getAndIncrement());
-            }
-            else  {
+            } else {
                 gridPane.add(k.get(index.getAndIncrement()), 3, row2.get());
                 gridPane.add(v.get(0), 4, row2.get());
                 gridPane.add(v.get(1), 5, row2.getAndIncrement());

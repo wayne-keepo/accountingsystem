@@ -260,7 +260,7 @@ public class MainStage {
         consumeDate.setValue(LocalDate.now());
         consumeDate.setShowWeekNumbers(true);
 
-        setDateFormat(Arrays.asList(produceDate,consumeDate));
+        setDateFormat(Arrays.asList(produceDate, consumeDate));
 
         TextField customer = new TextField();
         TextField note = new TextField();
@@ -280,7 +280,8 @@ public class MainStage {
             summary.setCustomer(customer.getText());
             summary.setConsumeDate(consumeDate.getValue());
             summary.setNote(note.getText());
-            customer.clear(); note.clear();
+            customer.clear();
+            note.clear();
             SummaryService.save(summary);
             electrodsTable.refresh();
         });
@@ -330,13 +331,13 @@ public class MainStage {
 
     }
 
-    private void setDateFormat(List<DatePicker> datePickers){
+    private void setDateFormat(List<DatePicker> datePickers) {
         datePickers.forEach(datePicker -> {
             datePicker.setConverter(new StringConverter<LocalDate>() {
                 @Override
                 public String toString(LocalDate object) {
-                    if (object!=null)
-                    return CustomConstants.DATE_TIME_FORMATTER.format(object);
+                    if (object != null)
+                        return CustomConstants.DATE_TIME_FORMATTER.format(object);
                     else return null;
                 }
 

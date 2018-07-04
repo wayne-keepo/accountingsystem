@@ -49,5 +49,18 @@ public class DBConstants {
     public static final String SELECT_ELECTRODS_BY_TYPE = "SELECT * FROM Electrode WHERE type = ?";
     public static final String SELECT_ALL_ELECTRODS = "SELECT * FROM Electrode";
 
+    //Accounting History
+    public static final String INSERT_ACCOUNTING_HISTORY =
+            "INSERT INTO AccountingHistory(idDetail,d1,d2,d3,d4,d5,d6,d7,d8,d9,d10,d11,d12,d13,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29,d30,d31)" +
+                    " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    public static final String INSERT_ACCOUNTING_HISTORY_WITH_ID = "INSERT INTO AccountingHistory(id,idDetail,d1,d2,d3,d4,d5,d6,d7,d8,d9,d10,d11,d12,d13,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29,d30,d31)" +
+            " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+//    public static final String UPDATE_ACCOUNTING_HISTORY =;
+    public static final String SELECT_ACCOUNTING_HISTORY ="SELECT * FROM AccountingHistory";
+    public static final String SELECT_ACCOUNTING_HISTORY_BY_DETAIL_ID ="SELECT * FROM AccountingHistory WHERE idDetail = ?";
+    public static final String DELETE_ACCOUNTING_HISTORY = "DELETE TABLE AccountingHistory WHERE id = ?";
+//    public static final String
+//    public static final String
+
 
 }
