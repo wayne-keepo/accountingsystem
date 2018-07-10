@@ -5,6 +5,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -12,20 +13,25 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import sun.java2d.windows.GDIRenderer;
+import views.dropBoxes.MonthBox;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class AccoutingHistoryWindow extends Application{
-    private static BorderPane mainPane;
-    private static HBox hBoxCalendar;
-    private static HBox hBoxButtons;
-    private static GridPane gridPane;
-    private static Map<Map<Integer,Label>,List<TextField>> matrix;
+    private static BorderPane mainPane = null;
+    private static HBox hBoxCalendar = null;
+    private static HBox hBoxButtons = null;
+    private static GridPane gridPane = null;
+
+    private static MonthBox monthBox = null;
+    private static Map<Map<Integer,Label>,List<TextField>> matrix = null;
 
     public static void show() {
         settingLayouts();
+        initCalendar();
         initLablesAndFields();
         initButtons();
 
@@ -45,6 +51,7 @@ public class AccoutingHistoryWindow extends Application{
 
 
         hBoxCalendar.setAlignment(Pos.TOP_CENTER);
+        hBoxCalendar.setPadding(new Insets(5));
         hBoxButtons.setAlignment(Pos.BOTTOM_RIGHT);
         hBoxButtons.setPadding(new Insets(5));
         hBoxButtons.setSpacing(20.0);
@@ -174,6 +181,21 @@ public class AccoutingHistoryWindow extends Application{
         });
     }
 
+    private static void initCalendar(){
+        monthBox = new MonthBox();
+        monthBox.visibleRowCountProperty().set(6);
+        hBoxCalendar.getChildren().add(monthBox);
+    }
+
+    private static void logic(){
+        monthBox.getSelectionModel().getSelectedItem();
+        //выбрать текущий месяц
+        //очистить сетку
+        //загрузить данные для текущего месяца
+        //нарисовать сетку с данными для текущего месяца
+        gridPane.getChildren().clear(); // ?
+        gridPane.setGridLinesVisible(true);
+    }
 
 
 
