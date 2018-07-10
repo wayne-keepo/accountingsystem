@@ -11,19 +11,19 @@ public class AccoutingHistory {
     private Detail detail;
     private Year year;
     private Month month;
-    private String acc;
+    private int acc;
     private List<Day> days;
 
     public AccoutingHistory() {}
 
-    public AccoutingHistory(Year year, Month month, String acc, List<Day> days) {
+    public AccoutingHistory(Year year, Month month, int acc, List<Day> days) {
         this.year = year;
         this.month = month;
         this.acc = acc;
         this.days = days;
     }
 
-    public AccoutingHistory(Detail detail, Year year, Month month, String acc, List<Day> days) {
+    public AccoutingHistory(Detail detail, Year year, Month month, int acc, List<Day> days) {
         this.detail = detail;
         this.year = year;
         this.month = month;
@@ -63,11 +63,11 @@ public class AccoutingHistory {
         this.month = month;
     }
 
-    public String getAcc() {
+    public int getAcc() {
         return acc;
     }
 
-    public void setAcc(String acc) {
+    public void setAcc(int acc) {
         this.acc = acc;
     }
 
@@ -77,5 +77,17 @@ public class AccoutingHistory {
 
     public void setDays(List<Day> days) {
         this.days = days;
+    }
+
+    @Override
+    public String toString() {
+        return "AccoutingHistory{" +
+                "id=" + id +
+                ", detail=" + detail +
+                ", year=" + year +
+                ", month=" + month +
+                ", acc=" + acc +
+                ", days=" + days +
+                '}';
     }
 }

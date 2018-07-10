@@ -2,21 +2,11 @@ package domain;
 
 public class Day {
     private int dayNumber;
-    private String acc;
     private int count;
 
-    public Day(int dayNumber, String acc, int count) {
+    public Day(int dayNumber, int count) {
         this.dayNumber = dayNumber;
-        this.acc = acc;
         this.count = count;
-    }
-
-    public String getAcc() {
-        return acc;
-    }
-
-    public void setAcc(String acc) {
-        this.acc = acc;
     }
 
     public int getDayNumber() {

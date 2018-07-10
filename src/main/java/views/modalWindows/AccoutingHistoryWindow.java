@@ -1,11 +1,11 @@
 package views.modalWindows;
 
+import entities.AccoutingHistory;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -13,8 +13,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import sun.java2d.windows.GDIRenderer;
 import views.dropBoxes.MonthBox;
+import views.tables.utils.RussianMonths;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,16 +25,18 @@ public class AccoutingHistoryWindow extends Application{
     private static HBox hBoxCalendar = null;
     private static HBox hBoxButtons = null;
     private static GridPane gridPane = null;
+    private static Map<RussianMonths,AccoutingHistory> historyList = null;
 
     private static MonthBox monthBox = null;
     private static Map<Map<Integer,Label>,List<TextField>> matrix = null;
 
-    public static void show() {
+    public static void show(Map<RussianMonths,AccoutingHistory> ah) {
+        historyList = ah;
         settingLayouts();
         initCalendar();
         initLablesAndFields();
         initButtons();
-
+//        logic();
         Stage window = new Stage();
         Scene scene = new Scene(mainPane, 750, 560);
         window.setTitle("Приход/Расход по дням");
@@ -184,20 +186,16 @@ public class AccoutingHistoryWindow extends Application{
     private static void initCalendar(){
         monthBox = new MonthBox();
         monthBox.visibleRowCountProperty().set(6);
+        monthBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+
+            System.out.println(newValue);
+            gridPane.getChildren().clear();
+            initLablesAndFields();
+        });
+
         hBoxCalendar.getChildren().add(monthBox);
+
     }
-
-    private static void logic(){
-        monthBox.getSelectionModel().getSelectedItem();
-        //выбрать текущий месяц
-        //очистить сетку
-        //загрузить данные для текущего месяца
-        //нарисовать сетку с данными для текущего месяца
-        gridPane.getChildren().clear(); // ?
-        gridPane.setGridLinesVisible(true);
-    }
-
-
 
     @Override
     public void start(Stage primaryStage) throws Exception {

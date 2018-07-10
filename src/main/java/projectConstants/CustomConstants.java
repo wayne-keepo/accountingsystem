@@ -14,4 +14,7 @@ public class CustomConstants {
     public static final String INCOMING = "Приход";
     public static final String OUTCOMING = "Расход";
 
+    public static final int INCOMING_IFlag = 1;
+    public static final int OUTCOMING_IFlag = 0;
+
 }
