@@ -23,20 +23,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class AccoutingHistoryWindow extends Application{
-    private  BorderPane mainPane = null;
-    private  HBox hBoxCalendar = null;
-    private  HBox hBoxButtons = null;
-    private  GridPane gridPane = null;
-    private  Map<RussianMonths,List<AccoutingHistory>> historyMap = null;
+    private  BorderPane mainPane ;
+    private  HBox hBoxCalendar ;
+    private  HBox hBoxButtons ;
+    private  GridPane gridPane ;
+    private  MonthBox monthBox ;
 
-    private  MonthBox monthBox = null;
-    private  Map<Map<Integer,Label>,List<TextField>> matrix = null;
+    private  Map<RussianMonths,List<AccoutingHistory>> historyMap;
+    private  Map<Map<Integer,Label>,List<TextField>> matrix ;
+    private  Map<TextField, Day> associated;
 
-    public void show(Map<RussianMonths,List<AccoutingHistory>> ah) {
-        historyMap = ah;
+    public AccoutingHistoryWindow(Map<RussianMonths,List<AccoutingHistory>> ah){historyMap = ah;}
+
+    public void show() {
         settingLayouts();
         initCalendar();
-//        initLablesAndFields();
         initButtons();
 
         Stage window = new Stage();
@@ -123,6 +124,8 @@ public class AccoutingHistoryWindow extends Application{
         List<TextField> fieldsO
                 = Arrays.asList(txf1o,txf2o,txf3o,txf4o,txf5o,txf6o,txf7o,txf8o,txf9o,txf11o,txf12o,txf13o,txf14o,txf15o,txf16o,txf17o,txf18o,txf19o,txf20o,txf21o,txf22o,txf23o,txf24o,txf25o,txf26o,txf27o,txf28o,txf29o,txf30o,txf31o,txf32o);
 
+        associated = associatedDayWithField(fieldsI,fieldsO,histories);
+
         matrix = new LinkedHashMap<>();
         for (Integer i = 0; i < lables.size(); i++) {
             Map<Integer, Label> some = new LinkedHashMap<>();
@@ -194,7 +197,7 @@ public class AccoutingHistoryWindow extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        show(null);
+        show();
     }
     public static void main(String[] args) {
         launch(args);

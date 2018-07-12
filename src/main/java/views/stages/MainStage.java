@@ -1,6 +1,5 @@
 package views.stages;
 
-import CandidatsOnDelete.ElectrodTreeView;
 import databaselogic.controllers.DBAccountingHistoryController;
 import databaselogic.controllers.DBBalanceController;
 import databaselogic.controllers.DBDetailController;
@@ -10,21 +9,16 @@ import domain.Balance;
 import domain.Electrod;
 import entities.AccoutingHistory;
 import entities.Detail;
-import domain.InitializerForTest;
 
 import entities.PrimitivityBalance;
 import entities.Summary;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import projectConstants.CustomConstants;
@@ -35,7 +29,6 @@ import services.SummaryService;
 import views.buttons.AddButton;
 import views.buttons.CommitButton;
 import views.buttons.DeleteButton;
-import views.buttons.RefreshButton;
 import views.dropBoxes.DetailDropBox;
 import views.modalWindows.AccoutingHistoryWindow;
 import views.tables.*;
@@ -46,7 +39,6 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class MainStage {
     private static final Stage stage = new Stage();
@@ -196,7 +188,7 @@ public class MainStage {
             //convert history for map for AccoutingWindow
             Map<RussianMonths,List<AccoutingHistory>> tmp = AccoutingHistoryService.historyToMapForAccoutingWindow(ahList);
             //send history map in accounting window
-            new AccoutingHistoryWindow().show(tmp);
+            new AccoutingHistoryWindow(tmp).show();
 
         });
 
