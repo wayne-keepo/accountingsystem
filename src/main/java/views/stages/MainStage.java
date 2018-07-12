@@ -374,52 +374,6 @@ public class MainStage {
         });
     }
 
-//    private void initTable() {
-//        table = new TableView();
-//
-//        TableColumn<Detail, Integer> id = new TableColumn<>("Номер");
-//        id.setCellValueFactory(new PropertyValueFactory<Detail, Integer>("id"));
-//
-//        TableColumn<Detail, String> title = new TableColumn<>("Название");
-//        title.setCellValueFactory(new PropertyValueFactory<Detail, String>("title"));
-//        title.setCellFactory(TextFieldTableCell.<Detail>forTableColumn());
-//        title.setMinWidth(10);
-//        title.setOnEditCommit(
-//                this::editCell
-//        );
-//
-//        TableColumn<Detail, Integer> count = new TableColumn<>("Количество");
-//        count.setCellValueFactory(new PropertyValueFactory<Detail, Integer>("count"));
-//
-//        TableColumn<Detail, String> description = new TableColumn<>("Описание");
-//        description.setCellValueFactory(new PropertyValueFactory<Detail, String>("descriptions"));
-//
-//        table.setEditable(true);
-//        table.getColumns().addAll(id, title, count, description);
-//        table.getItems().addAll(InitializerForTest.getDetails());
-//    }
-//
-//    private void editCell(TableColumn.CellEditEvent event) {
-//        TablePosition position = event.getTablePosition();
-//        int row = position.getRow();
-//
-//        Object newValue = event.getNewValue();
-//        String className = event.getNewValue().getClass().getSimpleName();
-//
-//        switch (className) {
-//            case "String":
-//                System.out.println((String) newValue);
-//                break;
-//            case "Integer":
-//                System.out.println((Integer) newValue);
-//                break;
-//        }
-//
-////        Person person = event.getTableView().getItems().get(row);
-////
-////        person.setFullName(newFullName);
-//    }
-
     public Stage getStage() {
         return stage;
     }

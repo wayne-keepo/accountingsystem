@@ -27,7 +27,6 @@ public class TEST {
         DBAccountingHistoryController dbachc = new DBAccountingHistoryController();
 //        AccoutingHistory achis = dbachc.getByDetail(1).get(0);
         List<AccoutingHistory> ahList = dbachc.getByDetail(1);
-//        System.out.println(ahList.toString());
         Map<RussianMonths,List<AccoutingHistory>> testMap = AccoutingHistoryService.historyToMapForAccoutingWindow(ahList);
         testMap.forEach((k,v)->{
             System.out.println(k + "\n"+v+"\n");

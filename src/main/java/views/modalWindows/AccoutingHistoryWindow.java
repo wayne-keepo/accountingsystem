@@ -1,5 +1,6 @@
 package views.modalWindows;
 
+import domain.Day;
 import entities.AccoutingHistory;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -37,7 +38,7 @@ public class AccoutingHistoryWindow extends Application{
         initCalendar();
 //        initLablesAndFields();
         initButtons();
-//        logic();
+
         Stage window = new Stage();
         Scene scene = new Scene(mainPane, 350, 590);
         window.setTitle("Приход/Расход по дням");
@@ -82,7 +83,7 @@ public class AccoutingHistoryWindow extends Application{
     }
 
     // tear out your eye and cut off my hands, fuck :((
-    private void initLablesAndFields(List<AccoutingHistory> history){
+    private void initLablesAndFields(List<AccoutingHistory> histories){
         Label l1	= new Label("1");		TextField txf1i		= new TextField("1i");		TextField txf1o		= new TextField("1o");
         Label l2	= new Label("2");		TextField txf2i		= new TextField("2i");		TextField txf2o		= new TextField("2o");
         Label l3	= new Label("3");		TextField txf3i		= new TextField("3i");		TextField txf3o		= new TextField("3o");
@@ -130,43 +131,25 @@ public class AccoutingHistoryWindow extends Application{
         }
 
         fillGrid();
-//        gridPane.add(l1,0,1);	gridPane.add(txf1i,1,1);	gridPane.add(txf1o,2,1);
-//        gridPane.add(l2,0,2);	gridPane.add(txf2i,1,2);	gridPane.add(txf2o,2,2);
-//        gridPane.add(l3,0,3);	gridPane.add(txf3i,1,3);	gridPane.add(txf3o,2,3);
-//        gridPane.add(l4,0,4);	gridPane.add(txf4i,1,4);	gridPane.add(txf4o,2,4);
-//        gridPane.add(l5,0,5);	gridPane.add(txf5i,1,5);	gridPane.add(txf5o,2,5);
-//        gridPane.add(l6,0,6);	gridPane.add(txf6i,1,6);	gridPane.add(txf6o,2,6);
-//        gridPane.add(l7,0,7);	gridPane.add(txf7i,1,7);	gridPane.add(txf7o,2,7);
-//        gridPane.add(l8,0,8);	gridPane.add(txf8i,1,8);	gridPane.add(txf8o,2,8);
-//        gridPane.add(l9,0,9);	gridPane.add(txf9i,1,9);	gridPane.add(txf9o,2,9);
-//
-//        gridPane.add(l11,0,10); gridPane.add(txf11i,1,10);	gridPane.add(txf11o,2,10);
-//        gridPane.add(l12,0,11); gridPane.add(txf12i,1,11);	gridPane.add(txf12o,2,11);
-//        gridPane.add(l13,0,12); gridPane.add(txf13i,1,12);	gridPane.add(txf13o,2,12);
-//        gridPane.add(l14,0,13); gridPane.add(txf14i,1,13);	gridPane.add(txf14o,2,13);
-//        gridPane.add(l15,0,14); gridPane.add(txf15i,1,14);	gridPane.add(txf15o,2,14);
-//        gridPane.add(l16,0,15); gridPane.add(txf16i,1,15);	gridPane.add(txf16o,2,15);
-//        gridPane.add(l17,0,16); gridPane.add(txf17i,1,16);	gridPane.add(txf17o,2,16);
-//
-//        gridPane.add(l18,3,1);	gridPane.add(txf18i,4,1);	gridPane.add(txf18o,5,1);
-//        gridPane.add(l19,3,2);	gridPane.add(txf19i,4,2);	gridPane.add(txf19o,5,2);
-//        gridPane.add(l20,3,3);	gridPane.add(txf20i,4,3);	gridPane.add(txf20o,5,3);
-//        gridPane.add(l21,3,4);	gridPane.add(txf21i,4,4);	gridPane.add(txf21o,5,4);
-//        gridPane.add(l22,3,5);	gridPane.add(txf22i,4,5);	gridPane.add(txf22o,5,5);
-//        gridPane.add(l23,3,6);	gridPane.add(txf23i,4,6);	gridPane.add(txf23o,5,6);
-//        gridPane.add(l24,3,7);	gridPane.add(txf24i,4,7);	gridPane.add(txf24o,5,7);
-//        gridPane.add(l25,3,8);	gridPane.add(txf25i,4,8);	gridPane.add(txf25o,5,8);
-//        gridPane.add(l26,3,9);	gridPane.add(txf26i,4,9);	gridPane.add(txf26o,5,9);
-//
-//        gridPane.add(l27,3,10); gridPane.add(txf27i,4,10);	gridPane.add(txf27o,5,10);
-//        gridPane.add(l28,3,11); gridPane.add(txf28i,4,11);	gridPane.add(txf28o,5,11);
-//        gridPane.add(l29,3,12); gridPane.add(txf29i,4,12);	gridPane.add(txf29o,5,12);
-//        gridPane.add(l30,3,13); gridPane.add(txf30i,4,13);	gridPane.add(txf30o,5,13);
-//        gridPane.add(l31,3,14); gridPane.add(txf31i,4,14);	gridPane.add(txf31o,5,14);
-//        gridPane.add(l32,3,15); gridPane.add(txf32i,4,15);	gridPane.add(txf32o,5,15);
     }
-    private void associatedDayWithField(){
-
+    private Map<TextField, Day> associatedDayWithField(List<TextField> fieldsI, List<TextField> fieldsO, List<AccoutingHistory> histories){
+        Map<TextField, Day> tmp = new HashMap<>();
+        AtomicInteger index = new AtomicInteger(0);
+        histories.forEach(history -> {
+            if (history.getAcc()==1){
+                history.getDays().forEach(day -> {
+                    fieldsI.get(index.get()).setText(String.valueOf(day.getCount()));
+                    tmp.put(fieldsI.get(index.getAndIncrement()),day);
+                });
+            } else {
+                index.set(0);
+                history.getDays().forEach(day -> {
+                    fieldsO.get(index.get()).setText(String.valueOf(day.getCount()));
+                    tmp.put(fieldsO.get(index.getAndIncrement()),day);
+                });
+            }
+        });
+        return !tmp.isEmpty()? tmp: null;
     }
     private void fillGrid(){
         Label incoming	= new Label("Приход");      Label inc	= new Label("Приход");

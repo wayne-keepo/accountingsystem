@@ -13,7 +13,6 @@ public class AccoutingHistoryService {
 
     public static Map<RussianMonths, List<AccoutingHistory>> historyToMapForAccoutingWindow(List<AccoutingHistory> histories) {
         Map<RussianMonths, List<AccoutingHistory>> map = new HashMap<>();
-//        AtomicInteger index = new AtomicInteger(0);
         Month[] months = Month.values();
         for (int i = 0; i < months.length; i++) {
             Month curMonth = months[i];
