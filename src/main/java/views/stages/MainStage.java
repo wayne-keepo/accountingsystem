@@ -1,12 +1,14 @@
 package views.stages;
 
 import CandidatsOnDelete.ElectrodTreeView;
+import databaselogic.controllers.DBAccountingHistoryController;
 import databaselogic.controllers.DBBalanceController;
 import databaselogic.controllers.DBDetailController;
 import databaselogic.controllers.DBElectrodeController;
 import databaselogic.utils.ChainUtil;
 import domain.Balance;
 import domain.Electrod;
+import entities.AccoutingHistory;
 import entities.Detail;
 import domain.InitializerForTest;
 
@@ -26,6 +28,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import projectConstants.CustomConstants;
+import services.AccoutingHistoryService;
 import services.BalanceService;
 import services.ElectrodeService;
 import services.SummaryService;
@@ -34,12 +37,15 @@ import views.buttons.CommitButton;
 import views.buttons.DeleteButton;
 import views.buttons.RefreshButton;
 import views.dropBoxes.DetailDropBox;
+import views.modalWindows.AccoutingHistoryWindow;
 import views.tables.*;
+import views.tables.utils.RussianMonths;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MainStage {
@@ -65,6 +71,7 @@ public class MainStage {
 
     private final DetailDropBox detailDropBox = new DetailDropBox();
 
+    private DBAccountingHistoryController ahController = new DBAccountingHistoryController();
     private DBElectrodeController electrodeController = new DBElectrodeController();
     private DBDetailController detailController = new DBDetailController();
     private DBBalanceController balanceController = new DBBalanceController();
@@ -159,6 +166,7 @@ public class MainStage {
         horizontal.setPadding(new Insets(10, 0, 10, 0));
         horizontal.setAlignment(Pos.BOTTOM_CENTER);
 
+        Button history = new Button("История");
         Button add = new AddButton().getAdd();
         Button commit = new CommitButton().getCommit();
 
@@ -178,8 +186,21 @@ public class MainStage {
             balancesTable.getTable().getItems().addAll(balances);
         });
 
+        history.setOnAction(event -> {
+            //get detail by selected balance
+            Detail detail = balancesTable.getTable().getSelectionModel().getSelectedItem().getDetail();
+            //get gistory for current detail
+            List<AccoutingHistory> ahList = ahController.getByDetail(detail.getId());
+            //associated detail with her history
+            ChainUtil.associateDetailWithHistory(detail,ahList);
+            //convert history for map for AccoutingWindow
+            Map<RussianMonths,List<AccoutingHistory>> tmp = AccoutingHistoryService.historyToMapForAccoutingWindow(ahList);
+            //send history map in accounting window
+            new AccoutingHistoryWindow().show(tmp);
 
-        horizontal.getChildren().addAll(detailDropBox.getDetailsBox(), add, commit);
+        });
+
+        horizontal.getChildren().addAll(history,detailDropBox.getDetailsBox(), add, commit);
         paneForBalanceTab.setBottom(horizontal);
 
     }

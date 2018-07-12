@@ -88,6 +88,6 @@ public class AccoutingHistory {
                 ", month=" + month +
                 ", acc=" + acc +
                 ", days=" + days +
-                '}';
+                "}\n";
     }
 }

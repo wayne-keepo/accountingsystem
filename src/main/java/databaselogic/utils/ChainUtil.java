@@ -4,10 +4,7 @@ import domain.Balance;
 import domain.DetailElectrod;
 import domain.Electrod;
 import domain.ElectrodeSummary;
-import entities.Detail;
-import entities.PrimitiveElectrodeDetail;
-import entities.PrimitivityBalance;
-import entities.Summary;
+import entities.*;
 
 import java.time.Month;
 import java.time.Year;
@@ -90,5 +87,9 @@ public class ChainUtil {
         if (!es.isEmpty())
             return es;
         return null;
+    }
+
+    public static void associateDetailWithHistory(Detail detail, List<AccoutingHistory> histories){
+        histories.forEach(history->history.setDetail(detail));
     }
 }

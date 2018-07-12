@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
@@ -21,42 +22,50 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class AccoutingHistoryWindow extends Application{
-    private static BorderPane mainPane = null;
-    private static HBox hBoxCalendar = null;
-    private static HBox hBoxButtons = null;
-    private static GridPane gridPane = null;
-    private static Map<RussianMonths,AccoutingHistory> historyList = null;
+    private  BorderPane mainPane = null;
+    private  HBox hBoxCalendar = null;
+    private  HBox hBoxButtons = null;
+    private  GridPane gridPane = null;
+    private  Map<RussianMonths,List<AccoutingHistory>> historyMap = null;
 
-    private static MonthBox monthBox = null;
-    private static Map<Map<Integer,Label>,List<TextField>> matrix = null;
+    private  MonthBox monthBox = null;
+    private  Map<Map<Integer,Label>,List<TextField>> matrix = null;
 
-    public static void show(Map<RussianMonths,AccoutingHistory> ah) {
-        historyList = ah;
+    public void show(Map<RussianMonths,List<AccoutingHistory>> ah) {
+        historyMap = ah;
         settingLayouts();
         initCalendar();
-        initLablesAndFields();
+//        initLablesAndFields();
         initButtons();
 //        logic();
         Stage window = new Stage();
-        Scene scene = new Scene(mainPane, 750, 560);
+        Scene scene = new Scene(mainPane, 350, 590);
         window.setTitle("Приход/Расход по дням");
         window.initModality(Modality.APPLICATION_MODAL);
         window.setScene(scene);
         window.showAndWait();
     }
 
-    private static void settingLayouts(){
+    private void settingLayouts(){
         mainPane = new BorderPane();
         hBoxCalendar = new HBox();
         hBoxButtons = new HBox();
         gridPane = new GridPane();
-
 
         hBoxCalendar.setAlignment(Pos.TOP_CENTER);
         hBoxCalendar.setPadding(new Insets(5));
         hBoxButtons.setAlignment(Pos.BOTTOM_RIGHT);
         hBoxButtons.setPadding(new Insets(5));
         hBoxButtons.setSpacing(20.0);
+
+        ColumnConstraints column0 = new ColumnConstraints(30);
+        ColumnConstraints column3 = new ColumnConstraints(30);
+        ColumnConstraints column1 = new ColumnConstraints(50);
+        ColumnConstraints column2 = new ColumnConstraints(50);
+        ColumnConstraints column4 = new ColumnConstraints(50);
+        ColumnConstraints column5 = new ColumnConstraints(50);
+
+        gridPane.getColumnConstraints().addAll(column0,column1,column2,column3,column4,column5);
         gridPane.setVgap(5);
         gridPane.setHgap(10);
         gridPane.setPadding(new Insets(10));
@@ -66,14 +75,14 @@ public class AccoutingHistoryWindow extends Application{
         mainPane.setBottom(hBoxButtons);
     }
 
-    private static void initButtons(){
+    private void initButtons(){
         Button save = new Button("Сохранить");
         Button close = new Button("Закрыть");
         hBoxButtons.getChildren().addAll(save,close);
     }
 
     // tear out your eye and cut off my hands, fuck :((
-    private static void initLablesAndFields(){
+    private void initLablesAndFields(List<AccoutingHistory> history){
         Label l1	= new Label("1");		TextField txf1i		= new TextField("1i");		TextField txf1o		= new TextField("1o");
         Label l2	= new Label("2");		TextField txf2i		= new TextField("2i");		TextField txf2o		= new TextField("2o");
         Label l3	= new Label("3");		TextField txf3i		= new TextField("3i");		TextField txf3o		= new TextField("3o");
@@ -156,8 +165,10 @@ public class AccoutingHistoryWindow extends Application{
 //        gridPane.add(l31,3,14); gridPane.add(txf31i,4,14);	gridPane.add(txf31o,5,14);
 //        gridPane.add(l32,3,15); gridPane.add(txf32i,4,15);	gridPane.add(txf32o,5,15);
     }
+    private void associatedDayWithField(){
 
-    private static void fillGrid(){
+    }
+    private void fillGrid(){
         Label incoming	= new Label("Приход");      Label inc	= new Label("Приход");
         Label outcoming	= new Label("Расход");      Label out	= new Label("Расход");
         Label day   	= new Label("День");        Label day2   	= new Label("День");
@@ -183,14 +194,15 @@ public class AccoutingHistoryWindow extends Application{
         });
     }
 
-    private static void initCalendar(){
+    private void initCalendar(){
         monthBox = new MonthBox();
         monthBox.visibleRowCountProperty().set(6);
         monthBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-
-            System.out.println(newValue);
+            // clear layout
             gridPane.getChildren().clear();
-            initLablesAndFields();
+            // launch history for selected month
+            initLablesAndFields(historyMap.get(newValue));
+            System.out.println(newValue);
         });
 
         hBoxCalendar.getChildren().add(monthBox);
@@ -199,7 +211,7 @@ public class AccoutingHistoryWindow extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        show();
+        show(null);
     }
     public static void main(String[] args) {
         launch(args);

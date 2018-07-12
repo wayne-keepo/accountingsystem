@@ -8,7 +8,7 @@ import java.time.Month;
 public class Updater {
 
     public static void updateValueOfMonthColumn(Balance balance, String month, String parentName, Integer newValue) {
-        Month key = Searcher.searchMonthByRus(month);
+        Month key = Searcher.searchEngMonthByRus(month);
         if (parentName == CustomConstants.INCOMING) {
             balance.getReceipt().put(key, newValue);
             System.out.println(balance.getReceipt().get(key));

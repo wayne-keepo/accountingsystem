@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Searcher {
-    private static final Map<RussianMonths, Month> months = createMap();
+    private static final Map<RussianMonths, Month> enMonths = createMap();
+    private static final Map<Month,RussianMonths> ruMonths = createRuMonths();
 
     private static LinkedHashMap<RussianMonths, Month> createMap() {
         LinkedHashMap<RussianMonths, Month> inimonths = new LinkedHashMap<RussianMonths, Month>();
@@ -30,57 +31,36 @@ public class Searcher {
         return inimonths;
     }
 
-    //for balance
-    //TODO: переделать в вид Map<RuMonth,Month> и такой же для обратной конвертации (+)
-    public static Month searchMonthByRus(String month) {
-        RussianMonths ru = RussianMonths.valueOf(month);
-        return months.get(ru);
-//        Month key = null;
-//        switch (month) {
-//            case "Январь":
-//                key = Month.JANUARY;
-//                break;
-//            case "Февраль":
-//                key = Month.FEBRUARY;
-//                break;
-//            case "Март":
-//                key = Month.MARCH;
-//                break;
-//            case "Апрель":
-//                key = Month.APRIL;
-//                break;
-//            case "Май":
-//                key = Month.MAY;
-//                break;
-//            case "Июнь":
-//                key = Month.JUNE;
-//                break;
-//            case "Июль":
-//                key = Month.JULY;
-//                break;
-//            case "Август":
-//                key = Month.AUGUST;
-//                break;
-//            case "Сентябрь":
-//                key = Month.SEPTEMBER;
-//                break;
-//            case "Октябрь":
-//                key = Month.OCTOBER;
-//                break;
-//            case "Ноябрь":
-//                key = Month.NOVEMBER;
-//                break;
-//            case "Декабрь":
-//                key = Month.DECEMBER;
-//                break;
-//        }
-//        return key;
+    private static LinkedHashMap<Month,RussianMonths> createRuMonths(){
+        LinkedHashMap<Month,RussianMonths> inimonth = new LinkedHashMap<>();
+        inimonth.put(Month.JANUARY	,RussianMonths.Январь);
+        inimonth.put(Month.FEBRUARY	,RussianMonths.Февраль);
+        inimonth.put(Month.MARCH		,RussianMonths.Март);
+        inimonth.put(Month.APRIL		,RussianMonths.Апрель);
+        inimonth.put(Month.MAY		,RussianMonths.Май);
+        inimonth.put(Month.JUNE		,RussianMonths.Июнь);
+        inimonth.put(Month.JULY		,RussianMonths.Июль);
+        inimonth.put(Month.AUGUST	,RussianMonths.Август);
+        inimonth.put(Month.SEPTEMBER	,RussianMonths.Сентябрь);
+        inimonth.put(Month.OCTOBER	,RussianMonths.Октябрь);
+        inimonth.put(Month.NOVEMBER	,RussianMonths.Ноябрь);
+        inimonth.put(Month.DECEMBER	,RussianMonths.Декабрь);
+        return inimonth;
     }
 
-//    public static Month
+    //for balance
+    //TODO: переделать в вид Map<RuMonth,Month> и такой же для обратной конвертации (+)
+    public static Month searchEngMonthByRus(String month) {
+        RussianMonths ru = RussianMonths.valueOf(month);
+        return enMonths.get(ru);
+    }
+
+    public static RussianMonths searchRuMonthByEng(Month month){
+        return ruMonths.get(month);
+    }
 
     public static Integer findValueByMonth(Balance balance, String month, String eventName) {
-        Month key = searchMonthByRus(month);
+        Month key = searchEngMonthByRus(month);
         if (eventName == CustomConstants.INCOMING)
             return balance.getReceipt().get(key);
         if (eventName == CustomConstants.OUTCOMING)

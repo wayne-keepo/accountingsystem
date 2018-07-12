@@ -24,4 +24,9 @@ public class Day {
     public void setCount(int count) {
         this.count = count;
     }
+
+    @Override
+    public String toString() {
+        return String.format("DN: %d | C: %d",dayNumber,count);
+    }
 }
