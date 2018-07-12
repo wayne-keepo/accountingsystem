@@ -21,17 +21,18 @@ import views.tables.utils.RussianMonths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
 public class AccoutingHistoryWindow extends Application{
-    private  BorderPane mainPane ;
-    private  HBox hBoxCalendar ;
-    private  HBox hBoxButtons ;
-    private  GridPane gridPane ;
-    private  MonthBox monthBox = null;
+    private  BorderPane mainPane;
+    private  HBox hBoxCalendar;
+    private  HBox hBoxButtons;
+    private  GridPane gridPane;
+    private  MonthBox monthBox;
 
     private  Map<RussianMonths,List<AccoutingHistory>> historyMap;
-    private  Map<Map<Integer,Label>,List<TextField>> matrix ;
+    private  Map<Map<Integer,Label>,List<TextField>> matrix;
+
     private  Map<TextField, Day> associated;
+    private RussianMonths currentMonth;
 
     public AccoutingHistoryWindow(Map<RussianMonths,List<AccoutingHistory>> ah){historyMap = ah;}
 
@@ -80,7 +81,18 @@ public class AccoutingHistoryWindow extends Application{
 
     private void initButtons(){
         Button save = new Button("Сохранить");
+        save.setOnAction(action->{
+            //add value changes from text field into associated days
+            associated.forEach((k,v)->{
+                v.setCount(Integer.valueOf(k.getText()));
+            });
+            historyMap.get(currentMonth).forEach(history -> {
+                System.out.println(                history.getDays().toString());
+            });
+
+        });
         Button close = new Button("Закрыть");
+
         hBoxButtons.getChildren().addAll(save,close);
     }
 
@@ -136,6 +148,7 @@ public class AccoutingHistoryWindow extends Application{
 
         fillGrid();
     }
+
     private Map<TextField, Day> associatedDayWithField(List<TextField> fieldsI, List<TextField> fieldsO, List<AccoutingHistory> histories){
         Map<TextField, Day> tmp = new HashMap<>();
         AtomicInteger index = new AtomicInteger(0);
@@ -155,6 +168,7 @@ public class AccoutingHistoryWindow extends Application{
         });
         return !tmp.isEmpty()? tmp: null;
     }
+
     private void fillGrid(){
         Label incoming	= new Label("Приход");      Label inc	= new Label("Приход");
         Label outcoming	= new Label("Расход");      Label out	= new Label("Расход");
@@ -189,8 +203,10 @@ public class AccoutingHistoryWindow extends Application{
             // clear layout
             gridPane.getChildren().clear();
             // launch history for selected month
-            if (historyMap.containsKey(newValue))
+            if (historyMap.containsKey(newValue)) {
+                currentMonth = newValue;
                 initLablesAndFields(historyMap.get(newValue));
+            }
         });
 
     }
