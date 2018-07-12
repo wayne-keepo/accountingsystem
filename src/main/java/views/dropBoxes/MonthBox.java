@@ -11,9 +11,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 public class MonthBox extends ComboBox<RussianMonths> {
-    private static final ObservableList<RussianMonths> months
-            = FXCollections.observableList(new LinkedList<RussianMonths>(Arrays.asList(RussianMonths.values())));
-
 
     @Override
     protected ObservableList<Node> getChildren() {
@@ -21,9 +18,7 @@ public class MonthBox extends ComboBox<RussianMonths> {
     }
 
     public MonthBox(){
-        super();
-        this.getItems().clear();
-        this.getItems().addAll(months);
+        super(FXCollections.observableList(new LinkedList<RussianMonths>(Arrays.asList(RussianMonths.values()))));
     }
 
 }

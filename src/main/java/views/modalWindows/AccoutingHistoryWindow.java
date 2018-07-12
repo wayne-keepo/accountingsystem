@@ -27,7 +27,7 @@ public class AccoutingHistoryWindow extends Application{
     private  HBox hBoxCalendar ;
     private  HBox hBoxButtons ;
     private  GridPane gridPane ;
-    private  MonthBox monthBox ;
+    private  MonthBox monthBox = null;
 
     private  Map<RussianMonths,List<AccoutingHistory>> historyMap;
     private  Map<Map<Integer,Label>,List<TextField>> matrix ;
@@ -56,6 +56,7 @@ public class AccoutingHistoryWindow extends Application{
 
         hBoxCalendar.setAlignment(Pos.TOP_CENTER);
         hBoxCalendar.setPadding(new Insets(5));
+
         hBoxButtons.setAlignment(Pos.BOTTOM_RIGHT);
         hBoxButtons.setPadding(new Insets(5));
         hBoxButtons.setSpacing(20.0);
@@ -182,16 +183,15 @@ public class AccoutingHistoryWindow extends Application{
 
     private void initCalendar(){
         monthBox = new MonthBox();
+        hBoxCalendar.getChildren().add(monthBox);
         monthBox.visibleRowCountProperty().set(6);
         monthBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             // clear layout
             gridPane.getChildren().clear();
             // launch history for selected month
-            initLablesAndFields(historyMap.get(newValue));
-            System.out.println(newValue);
+            if (historyMap.containsKey(newValue))
+                initLablesAndFields(historyMap.get(newValue));
         });
-
-        hBoxCalendar.getChildren().add(monthBox);
 
     }
 
