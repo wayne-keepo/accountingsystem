@@ -1,5 +1,8 @@
 import databaselogic.controllers.DBAccountingHistoryController;
+import databaselogic.controllers.DBDetailController;
+import domain.Day;
 import entities.AccoutingHistory;
+import entities.Detail;
 import services.AccoutingHistoryService;
 import views.modalWindows.AccoutingHistoryWindow;
 import views.tables.utils.RussianMonths;
@@ -8,6 +11,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class TEST {
     public static void main(String[] args) {
@@ -21,34 +25,53 @@ public class TEST {
 //        System.out.println(RussianMonths.of(8)+ " "+ RussianMonths.Август.getValue());
 //        System.out.println(achis.toString());
 
-        //Accounting History Controller tests
+        //Detail tests
+        DBDetailController dbDetailController = new DBDetailController();
+        Detail detail = dbDetailController.get(1);
+        //Accounting History tests
+        DBAccountingHistoryController dbachc = new DBAccountingHistoryController();
 
-//        DBAccountingHistoryController dbachc = new DBAccountingHistoryController();
-//        AccoutingHistory achis = dbachc.getByDetail(1).get(0);
-//        List<AccoutingHistory> ahList = dbachc.getByDetail(1);
-//        Map<RussianMonths,List<AccoutingHistory>> testMap = AccoutingHistoryService.historyToMapForAccoutingWindow(ahList);
-//        testMap.forEach((k,v)->{
-//            System.out.println(k + "\n"+v+"\n");
-//        });
-        Simple s1 = new Simple(11);
-        Simple s2 = new Simple(22);
-        Map<Integer,Simple> m1 = new HashMap<>();
-        m1.put(1,s1);
-        m1.put(2,s2);
+        AccoutingHistory achis = dbachc.getByDetail(1).get(0);
+        achis.setDetail(detail);
+        List<AccoutingHistory> ahList = dbachc.getByDetail(1);
+        Map<RussianMonths, List<AccoutingHistory>> histories = AccoutingHistoryService.historyToMapForAccoutingWindow(ahList);
 
-        Map<Integer,Simple> m2 = new HashMap<>();
-        m2.put(3,s1);
-        m2.put(4,s2);
-        System.out.println("Befor update: ");
-        System.out.println(m1.toString()+"\n"+m2.toString());
-        m2.forEach((k,v)->{
-            v.setValue(123);
-        });
+        String days = "";
+        String batchUpdate="";
+//        for (Day day : achis.getDays()) {
+//            if (!(day.getDayNumber() == 31))
+//                days.append(String.format(" d%d = %d,\n", day.getDayNumber(), day.getCount()));
+//            else
+//                days.append(String.format(" d%d = %d\n", day.getDayNumber(), day.getCount()));
+//
+//        }
+//        String batchUpdate = String.format("UPDATE AccountingHistory SET\n%s WHERE\n id = %d", days.toString(), achis.getId());
 
-        System.out.println("After update: ");
-        System.out.println(m1.toString()+"\n"+m2.toString());
+        List<String> sqlForUpdate = new ArrayList<>();
+        System.out.println("RUN FOR HISTORY MAP:--------------------------------------------");
+        for (Map.Entry<RussianMonths,List<AccoutingHistory>> maps: histories.entrySet()){
+            System.out.println(maps.getKey());
+            System.out.println("RUN FOR HISTORY LIST:--------------------------------------------");
+            for (AccoutingHistory history: maps.getValue()){
+                System.out.println("RUN FOR HISTORY DAY:--------------------------------------------");
+                for (Day day: history.getDays()){
+                    if (!(day.getDayNumber() == 31))
+                        days+=String.format(" d%d = %d,", day.getDayNumber(), day.getCount());
+                    else
+                        days+=String.format(" d%d = %d", day.getDayNumber(), day.getCount());
+                }
+                batchUpdate = String.format("\nUPDATE AccountingHistory SET\n%s WHERE\n id = %d and year = %d and month = %d and acc = %d",
+                        days, history.getId(),history.getYear().getValue(),history.getMonth().getValue(),history.getAcc());
+                sqlForUpdate.add(batchUpdate);
+                batchUpdate ="";
+                days ="";
+            }
+        }
+        System.out.println(sqlForUpdate.get(7));
+
     }
-    static class Simple{
+
+    static class Simple {
         private int value;
 
         public Simple(int value) {
@@ -65,7 +88,7 @@ public class TEST {
 
         @Override
         public String toString() {
-            return "Simple: "+value;
+            return "Simple: " + value;
         }
     }
 }

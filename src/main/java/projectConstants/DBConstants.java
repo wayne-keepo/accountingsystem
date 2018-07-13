@@ -55,7 +55,10 @@ public class DBConstants {
                     " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 //    public static final String INSERT_ACCOUNTING_HISTORY_WITH_ID = "INSERT INTO AccountingHistory(id,idDetail,d1,d2,d3,d4,d5,d6,d7,d8,d9,d10,d11,d12,d13,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29,d30,d31)" +
 //            " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; для чего это нужно??
-//    public static final String UPDATE_ACCOUNTING_HISTORY =;
+public static final String INSERT_ACCOUNTING_HISTORY_START_INITIALIZE_FOR_NEW_BALANCE_HISTORY ="INSERT INTO AccountingHistory(idDetail,month,acc) VALUES(?,?,?)";
+    public static final String UPDATE_ACCOUNTING_HISTORY ="UPDATE AccountingHistory SET " +
+        "d1=?,d2=?,d3=?,d4=?,d5=?,d6=?,d7=?,d8=?,d9=?,d10=?,d11=?,d12=?,d13=?,d14=?,d15=?,d16=?,d17=?,d18=?,d19=?,d20=?,d21=?,d22=?,d23=?,d24=?,d25=?,d26=?,d27=?,d28=?,d29=?,d30=?,d31=?" +
+        "WHERE id = ? and year = ? and month = ? and acc = ?";
     public static final String SELECT_ACCOUNTING_HISTORY ="SELECT * FROM AccountingHistory";
     public static final String SELECT_ACCOUNTING_HISTORY_BY_DETAIL_ID ="SELECT * FROM AccountingHistory WHERE idDetail = ?";
     public static final String DELETE_ACCOUNTING_HISTORY = "DELETE TABLE AccountingHistory WHERE id = ?";

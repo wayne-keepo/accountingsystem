@@ -190,6 +190,8 @@ public class MainStage {
             //send history map in accounting window
             new AccoutingHistoryWindow(tmp).show();
 
+            System.out.println(tmp.toString());
+
         });
 
         horizontal.getChildren().addAll(history,detailDropBox.getDetailsBox(), add, commit);
