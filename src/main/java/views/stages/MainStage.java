@@ -100,17 +100,17 @@ public class MainStage {
         tabPane = new TabPane();
 
         Tab accounting = new Tab("Остатки");
+        accounting.setClosable(false);
         Tab componentsConsumptionForESMG = new Tab("Расход комплектующих для ЕСМГ");
+        componentsConsumptionForESMG.setClosable(false);
         Tab componentsConsumptionForESMGM = new Tab("Расход комплектующих для ЕСМГ-М");
+        componentsConsumptionForESMGM.setClosable(false);
         Tab electrods = new Tab("Электроды");
+        electrods.setClosable(false);
         Tab costDetailTab = new Tab("Детали");
+        costDetailTab.setClosable(false);
         Tab product = new Tab("Создать эклектрод");
-
-        //remove
-//        product.setContent(treeView.getTree());
-        //set table here
-//        accounting.setContent(paneForBalanceTab);
-//        paneForBalanceTab.setCenter(balancesTable.getTable());
+        product.setClosable(false);
 
         componentsConsumptionForESMG.setContent(esmgTable.getTable());
 
@@ -120,26 +120,6 @@ public class MainStage {
         addLogicOnBalanceTab(accounting);
         addLogicOnCostDetailTab(costDetailTab);
         addLogicOnCreateElectrodeTab(product);
-
-//        costDetailTab.setContent(costDetailTable.getCostDetailTable());
-
-
-//        detailDropBox.getDetailsBox().setMaxSize(170,20);
-//
-//        VBox vertical = new VBox(20);
-//        vertical.setPadding(new Insets(10,5,5,5));
-//        vertical.setAlignment(Pos.CENTER_RIGHT);
-//        Button add = new AddButton().getAdd();
-//        add.setOnAction(event -> {
-//            String d = detailDropBox.getDetailsBox().getValue();
-//            Balance testBalance = new Balance();
-//            testBalance.setDetail(
-//                    InitializerForTest.getDetails().stream().findFirst(d::equals());
-//            );
-//            balancesTable.getTable().getItems().add(testBalance);
-//        });
-//        vertical.getChildren().addAll(detailDropBox.getDetailsBox(), add);
-//        paneForBalanceTab.setRight(vertical);
 
         tabPane.getTabs().addAll(
                 accounting,
@@ -167,6 +147,7 @@ public class MainStage {
             Balance balance = balancesTable.getTable().getSelectionModel().getSelectedItem();
             BalanceService.updateBalance(balance);
         });
+
         add.setOnAction(event -> {
             //get detail from drop box
             Detail detail = detailDropBox.getDetailsBox().getSelectionModel().getSelectedItem();
@@ -190,17 +171,17 @@ public class MainStage {
             //get gistory for current detail
             List<AccoutingHistory> ahList = ahController.getByDetail(detail.getId());
             //associated detail with her history
-            ChainUtil.associateDetailWithHistory(detail,ahList);
+            ChainUtil.associateDetailWithHistory(detail, ahList);
             //convert history for map for AccountingWindow
-            Map<RussianMonths,List<AccoutingHistory>> tmp = AccoutingHistoryService.historyToMapForAccoutingWindow(ahList);
+            Map<RussianMonths, List<AccoutingHistory>> tmp = AccoutingHistoryService.historyToMapForAccoutingWindow(ahList);
             //send history map in accounting window and wait return result for update (candidates on update)
-            tmp  = new AccoutingHistoryWindow(tmp).show();
+            tmp = new AccoutingHistoryWindow(tmp).show();
             // send candidates for update into updating logic
-            if (tmp!=null)
+            if (tmp != null)
                 AccoutingHistoryService.buildSqlForBatchUpdAccHist(tmp);
         });
 
-        horizontal.getChildren().addAll(history,detailDropBox.getDetailsBox(), add, commit);
+        horizontal.getChildren().addAll(history, detailDropBox.getDetailsBox(), add, commit);
         paneForBalanceTab.setBottom(horizontal);
 
     }

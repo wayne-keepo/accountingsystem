@@ -218,7 +218,6 @@ public class AccoutingHistoryWindow extends Application{
                 initLablesAndFields(historyMap.get(newValue));
             }
         });
-
     }
 
     @Override

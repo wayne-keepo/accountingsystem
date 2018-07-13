@@ -55,6 +55,7 @@ public class AccoutingHistoryService {
         }
         batchUpdate(sqlForUpdate);
     }
+
     // use when added new balance
     public static void buildSqlForBatchInsertAccHist(Detail detail) {
         List<String> sql = new ArrayList<>();
