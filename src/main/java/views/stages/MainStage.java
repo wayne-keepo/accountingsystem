@@ -37,6 +37,7 @@ import views.tables.utils.RussianMonths;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -167,15 +168,20 @@ public class MainStage {
             BalanceService.updateBalance(balance);
         });
         add.setOnAction(event -> {
+            //get detail from drop box
             Detail detail = detailDropBox.getDetailsBox().getSelectionModel().getSelectedItem();
+            // build primitiv for balance
             List<PrimitivityBalance> pBalances = BalanceService.buildPrimitivs(detail);
+            // ya ne pomnu sho tut dalshe (
             balanceController.saveAll(pBalances);
             pBalances = balanceController.getAllByDetailId(detail.getId());
             List<Balance> balances = ChainUtil.createBalanceChain(
-                    Arrays.asList(detail),
+                    Collections.singletonList(detail),
                     pBalances
             );
             balancesTable.getTable().getItems().addAll(balances);
+            // build accounting history for detail
+            AccoutingHistoryService.buildSqlForBatchInsertAccHist(detail);
         });
 
         history.setOnAction(event -> {
