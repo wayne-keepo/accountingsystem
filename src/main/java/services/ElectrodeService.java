@@ -32,6 +32,8 @@ public class ElectrodeService {
     public static ObservableList<ElectrodeSummary> buildElectrodeSummary(){
         List<Electrod> electrods = controller.getAll();
         List<Summary> summaries = SummaryService.getAll();
+        if (electrods.isEmpty() && summaries.isEmpty())
+            return null;
         List<ElectrodeSummary> es = new ArrayList<>();
         for (Summary summary: summaries){
             es.add(new ElectrodeSummary(

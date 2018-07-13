@@ -21,12 +21,14 @@ import java.time.LocalDate;
 public class ElectrodsTable {
 
     private TableView<ElectrodeSummary> table;
-    private ObservableList<ElectrodeSummary> es;
+    private ObservableList<ElectrodeSummary> es = FXCollections.observableArrayList();
 
     public ElectrodsTable(){createTable();}
 
     private void createTable(){
-        es = ElectrodeService.buildElectrodeSummary();
+        ObservableList<ElectrodeSummary> initial = ElectrodeService.buildElectrodeSummary();
+        if (initial!=null)
+            es.addAll(initial);
         table = new TableView<>();
         table.setEditable(true);
         table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);

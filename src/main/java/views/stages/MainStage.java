@@ -176,7 +176,7 @@ public class MainStage {
             Map<RussianMonths, List<AccoutingHistory>> tmp = AccoutingHistoryService.historyToMapForAccoutingWindow(ahList);
             //send history map in accounting window and wait return result for update (candidates on update)
             tmp = new AccoutingHistoryWindow(tmp).show();
-            System.out.println(tmp!=null);
+            System.out.println(tmp != null);
             // send candidates for update into updating logic
             if (tmp != null)
                 AccoutingHistoryService.buildSqlForBatchUpdAccHist(tmp);
@@ -219,19 +219,18 @@ public class MainStage {
                     new BigDecimal(cost.getText()),
                     descriptions.getText()
             );
+            costDetailTable.getCostDetailTable().getItems().add(d);
             detailController.save(d);
             title.clear();
             count.clear();
             cost.clear();
             descriptions.clear();
-            costDetailTable.getCostDetailTable().getItems().add(d);
         });
-//
         delete.setOnAction(event -> {
             TableView tmp = costDetailTable.getCostDetailTable();
             Detail d = (Detail) tmp.getSelectionModel().getSelectedItem();
-            detailController.delete(d.getId());
             tmp.getItems().remove(d);
+            detailController.delete(d.getId());
         });
 //        commit.setOnAction(event -> {
 //            List<Detail> det = costDetailTable.getCostDetailTable().getItems().stream().filter(d->d.getId()==0).collect(Collectors.toList());

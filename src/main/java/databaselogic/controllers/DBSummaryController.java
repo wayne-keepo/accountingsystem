@@ -15,14 +15,15 @@ public class DBSummaryController implements DBOperations<Summary> {
     public DBSummaryController() {
         this.template = Connector.getTemplate();
     }
+
     //idElectrode,produceDate,Customer,consumeDate,Note
     @Override
     public boolean save(Summary o) {
         int flag = template.update(
                 DBConstants.INSERT_SUMMARY,
-                o.getIdElectrode(),o.getProduceDate().toString(),o.getCustomer(),o.getConsumeDate().toString(),o.getNote()
+                o.getIdElectrode(), o.getProduceDate().toString(), o.getCustomer(), o.getConsumeDate().toString(), o.getNote()
         );
-        return flag>0;
+        return flag > 0;
     }
 
     @Override
@@ -31,19 +32,15 @@ public class DBSummaryController implements DBOperations<Summary> {
                 DBConstants.DELETE_SUMMARY_BY_ID_ELECTRODE,
                 idElectrode
         );
-        return flag>0;
+        return flag > 0;
     }
 
     @Override
     public List<Summary> getAll() {
-        List<Summary>
-                summaries = template.query(
-                        DBConstants.SELECT_ALL_SUMMARY,
-                        new SummaryRowMapper()
+        return template.query(
+                DBConstants.SELECT_ALL_SUMMARY,
+                new SummaryRowMapper()
         );
-        if (!summaries.isEmpty())
-            return summaries;
-        return null;
     }
 
     @Override
