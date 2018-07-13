@@ -22,11 +22,14 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AccoutingHistoryWindow extends Application{
+    private Stage window;
     private  BorderPane mainPane;
     private  HBox hBoxCalendar;
     private  HBox hBoxButtons;
     private  GridPane gridPane;
     private  MonthBox monthBox;
+    private Button save;
+    private Button close;
 
     private  Map<RussianMonths,List<AccoutingHistory>> historyMap;
     private  Map<Map<Integer,Label>,List<TextField>> matrix;
@@ -41,15 +44,18 @@ public class AccoutingHistoryWindow extends Application{
         initCalendar();
         initButtons();
 
-        Stage window = new Stage();
+        window = new Stage();
         Scene scene = new Scene(mainPane, 350, 590);
         window.setTitle("Приход/Расход по дням");
         window.initModality(Modality.APPLICATION_MODAL);
         window.setScene(scene);
         window.showAndWait();
+
         if (!candidateOnUpd.isEmpty())
-        return candidateOnUpd;
-        else return null;
+            return candidateOnUpd;
+        else
+            return null;
+
     }
 
     private void settingLayouts(){
@@ -83,19 +89,18 @@ public class AccoutingHistoryWindow extends Application{
     }
 
     private void initButtons(){
-        Button save = new Button("Сохранить");
+        save = new Button("Сохранить");
         save.setOnAction(action->{
             //add value changes from text field into associated days
             associated.forEach((k,v)->{
                 v.setCount(Integer.valueOf(k.getText()));
             });
-
-            historyMap.get(currentMonth).forEach(history -> {
-                System.out.println(history.getDays().toString());
-            });
-
+            candidateOnUpd.put(currentMonth,historyMap.get(currentMonth));
         });
-        Button close = new Button("Закрыть");
+        close = new Button("Закрыть");
+        close.setOnAction(action->{
+            window.close();
+        });
 
         hBoxButtons.getChildren().addAll(save,close);
     }
@@ -203,6 +208,7 @@ public class AccoutingHistoryWindow extends Application{
         monthBox = new MonthBox();
         hBoxCalendar.getChildren().add(monthBox);
         monthBox.visibleRowCountProperty().set(6);
+        candidateOnUpd = new HashMap<>();
         monthBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             // clear layout
             gridPane.getChildren().clear();

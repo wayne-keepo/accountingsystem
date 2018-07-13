@@ -187,11 +187,11 @@ public class MainStage {
             ChainUtil.associateDetailWithHistory(detail,ahList);
             //convert history for map for AccountingWindow
             Map<RussianMonths,List<AccoutingHistory>> tmp = AccoutingHistoryService.historyToMapForAccoutingWindow(ahList);
-            //send history map in accounting window
+            //send history map in accounting window and wait return result for update (candidates on update)
             tmp  = new AccoutingHistoryWindow(tmp).show();
-
-            System.out.println(tmp.toString());
-
+            // send candidates for update into updating logic
+            if (tmp!=null)
+                AccoutingHistoryService.buildSqlForBatchUpdAccHist(tmp);
         });
 
         horizontal.getChildren().addAll(history,detailDropBox.getDetailsBox(), add, commit);
