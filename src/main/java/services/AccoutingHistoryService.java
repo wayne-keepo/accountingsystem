@@ -60,15 +60,17 @@ public class AccoutingHistoryService {
     public static void buildSqlForBatchInsertAccHist(Detail detail) {
         List<String> sql = new ArrayList<>();
         for (Month current : Month.values()) {
-            String inInsert = String.format("\nINSERT INTO AccountingHistory(idDetail,month,acc) VALUES(%d,%d,%d)", detail.getId(), current.getValue(), 1);
-            String outInsert = String.format("\nINSERT INTO AccountingHistory(idDetail,month,acc) VALUES(%d,%d,%d)", detail.getId(), current.getValue(), 0);
+            String inInsert = String.format("INSERT INTO AccountingHistory(idDetail,month,acc) VALUES(%d,%d,%d)", detail.getId(), current.getValue(), 1);
+            String outInsert = String.format("INSERT INTO AccountingHistory(idDetail,month,acc) VALUES(%d,%d,%d)", detail.getId(), current.getValue(), 0);
             sql.add(inInsert);
             sql.add(outInsert);
         }
-        controller.batchInsert((String[]) sql.toArray());
+        String[] tmp = sql.toArray(new String[sql.size()]);
+        controller.batchInsert(tmp);
     }
 
     private static void batchUpdate(List<String> upd) {
-        controller.batchUpdate((String[]) upd.toArray());
+        String[] tmp = upd.toArray(new String[upd.size()]);
+        controller.batchUpdate(tmp);
     }
 }

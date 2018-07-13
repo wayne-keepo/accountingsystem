@@ -39,8 +39,10 @@ public class BalanceService {
         return pBalances;
     }
     public static ObservableList<Balance> buildBalances(){
-        List<Detail> details = DetailService.getAll();
         List<PrimitivityBalance> pBalances = controller.getAll();
+        if (pBalances==null)
+            return null;
+        List<Detail> details = DetailService.getAll();
         List<Balance> balances = ChainUtil.createBalanceChain(details,pBalances);
         return FXCollections.observableArrayList(balances);
 

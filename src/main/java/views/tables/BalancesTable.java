@@ -37,7 +37,9 @@ public class BalancesTable {
         table.setEditable(true);
         table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         table.getColumns().addAll(createColumn());
-        balances.addAll(BalanceService.buildBalances());
+        ObservableList<Balance> initialBalances = BalanceService.buildBalances();
+        if (initialBalances!=null)
+            balances.addAll(initialBalances); // продумать как быть при самом первом запуске, падает ошибка если в базе нет данных по балансу!! (+/-) протестировать изменения
         table.getItems().addAll(balances);
     }
 

@@ -16,25 +16,16 @@ import java.util.concurrent.atomic.AtomicReference;
 public class TEST {
     public static void main(String[] args) {
 
-//        Integer year = Year.now().getValue();
-//        System.out.println(year);
-//        System.out.println(Arrays.toString(Month.values()));
-//        System.out.println(Month.of(7));
-//        System.out.println(LocalDate.now().getMonth().getValue());
-//        System.out.println(Arrays.toString(RussianMonths.values()));
-//        System.out.println(RussianMonths.of(8)+ " "+ RussianMonths.Август.getValue());
-//        System.out.println(achis.toString());
-
         //Detail tests
-        DBDetailController dbDetailController = new DBDetailController();
-        Detail detail = dbDetailController.get(1);
+//        DBDetailController dbDetailController = new DBDetailController();
+//        Detail detail = dbDetailController.get(1);
 
         //Accounting History tests
-        DBAccountingHistoryController dbachc = new DBAccountingHistoryController();
-        AccoutingHistory achis = dbachc.getByDetail(1).get(0);
-        achis.setDetail(detail);
-        List<AccoutingHistory> ahList = dbachc.getByDetail(1);
-        Map<RussianMonths, List<AccoutingHistory>> histories = AccoutingHistoryService.historyToMapForAccoutingWindow(ahList);
+//        DBAccountingHistoryController dbachc = new DBAccountingHistoryController();
+//        AccoutingHistory achis = dbachc.getByDetail(1).get(0);
+//        achis.setDetail(detail);
+//        List<AccoutingHistory> ahList = dbachc.getByDetail(1);
+//        Map<RussianMonths, List<AccoutingHistory>> histories = AccoutingHistoryService.historyToMapForAccoutingWindow(ahList);
 
     }
 
