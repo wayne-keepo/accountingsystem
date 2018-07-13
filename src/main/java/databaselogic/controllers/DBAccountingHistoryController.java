@@ -87,6 +87,10 @@ public class DBAccountingHistoryController implements DBOperations<AccoutingHist
         )>0;
     }
 
+    public void batchInsert(String... sql){
+        template.batchUpdate(sql);
+    }
+
     public void batchUpdate(String[] sql){
         template.batchUpdate(sql);
     }

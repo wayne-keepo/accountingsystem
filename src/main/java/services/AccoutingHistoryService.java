@@ -3,6 +3,7 @@ package services;
 import databaselogic.controllers.DBAccountingHistoryController;
 import domain.Day;
 import entities.AccoutingHistory;
+import entities.Detail;
 import views.tables.utils.RussianMonths;
 import views.tables.utils.Searcher;
 
@@ -54,9 +55,19 @@ public class AccoutingHistoryService {
         }
         batchUpdate(sqlForUpdate);
     }
+    // use when added new balance
+    public static void buildSqlForBatchInsertAccHist(Detail detail) {
+        List<String> sql = new ArrayList<>();
+        for (Month current : Month.values()) {
+            String inInsert = String.format("\nINSERT INTO AccountingHistory(idDetail,month,acc) VALUES(%d,%d,%d)", detail.getId(), current.getValue(), 1);
+            String outInsert = String.format("\nINSERT INTO AccountingHistory(idDetail,month,acc) VALUES(%d,%d,%d)", detail.getId(), current.getValue(), 0);
+            sql.add(inInsert);
+            sql.add(outInsert);
+        }
+        controller.batchInsert((String[]) sql.toArray());
+    }
 
     private static void batchUpdate(List<String> upd) {
-        String[] tmp = (String[]) upd.toArray();
-        controller.batchUpdate(tmp);
+        controller.batchUpdate((String[]) upd.toArray());
     }
 }
