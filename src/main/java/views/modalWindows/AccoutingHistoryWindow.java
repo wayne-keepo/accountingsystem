@@ -30,13 +30,13 @@ public class AccoutingHistoryWindow extends Application{
 
     private  Map<RussianMonths,List<AccoutingHistory>> historyMap;
     private  Map<Map<Integer,Label>,List<TextField>> matrix;
-
+    private Map<RussianMonths,List<AccoutingHistory>> candidateOnUpd;
     private  Map<TextField, Day> associated;
     private RussianMonths currentMonth;
 
     public AccoutingHistoryWindow(Map<RussianMonths,List<AccoutingHistory>> ah){historyMap = ah;}
 
-    public void show() {
+    public Map<RussianMonths,List<AccoutingHistory>> show() {
         settingLayouts();
         initCalendar();
         initButtons();
@@ -47,6 +47,9 @@ public class AccoutingHistoryWindow extends Application{
         window.initModality(Modality.APPLICATION_MODAL);
         window.setScene(scene);
         window.showAndWait();
+        if (!candidateOnUpd.isEmpty())
+        return candidateOnUpd;
+        else return null;
     }
 
     private void settingLayouts(){
@@ -86,8 +89,9 @@ public class AccoutingHistoryWindow extends Application{
             associated.forEach((k,v)->{
                 v.setCount(Integer.valueOf(k.getText()));
             });
+
             historyMap.get(currentMonth).forEach(history -> {
-                System.out.println(                history.getDays().toString());
+                System.out.println(history.getDays().toString());
             });
 
         });

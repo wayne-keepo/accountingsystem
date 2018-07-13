@@ -36,8 +36,6 @@ public class TEST {
         List<AccoutingHistory> ahList = dbachc.getByDetail(1);
         Map<RussianMonths, List<AccoutingHistory>> histories = AccoutingHistoryService.historyToMapForAccoutingWindow(ahList);
 
-        String days = "";
-        String batchUpdate="";
 //        for (Day day : achis.getDays()) {
 //            if (!(day.getDayNumber() == 31))
 //                days.append(String.format(" d%d = %d,\n", day.getDayNumber(), day.getCount()));
@@ -48,26 +46,25 @@ public class TEST {
 //        String batchUpdate = String.format("UPDATE AccountingHistory SET\n%s WHERE\n id = %d", days.toString(), achis.getId());
 
         List<String> sqlForUpdate = new ArrayList<>();
-        System.out.println("RUN FOR HISTORY MAP:--------------------------------------------");
-        for (Map.Entry<RussianMonths,List<AccoutingHistory>> maps: histories.entrySet()){
-            System.out.println(maps.getKey());
-            System.out.println("RUN FOR HISTORY LIST:--------------------------------------------");
-            for (AccoutingHistory history: maps.getValue()){
-                System.out.println("RUN FOR HISTORY DAY:--------------------------------------------");
-                for (Day day: history.getDays()){
+        String days = "";
+
+        for (Map.Entry<RussianMonths, List<AccoutingHistory>> maps : histories.entrySet()) {
+
+            for (AccoutingHistory history : maps.getValue()) {
+
+                for (Day day : history.getDays()) {
                     if (!(day.getDayNumber() == 31))
-                        days+=String.format(" d%d = %d,", day.getDayNumber(), day.getCount());
+                        days += String.format(" d%d = %d,", day.getDayNumber(), day.getCount());
                     else
-                        days+=String.format(" d%d = %d", day.getDayNumber(), day.getCount());
+                        days += String.format(" d%d = %d", day.getDayNumber(), day.getCount());
                 }
-                batchUpdate = String.format("\nUPDATE AccountingHistory SET\n%s WHERE\n id = %d and year = %d and month = %d and acc = %d",
-                        days, history.getId(),history.getYear().getValue(),history.getMonth().getValue(),history.getAcc());
+                String batchUpdate = String.format("\nUPDATE AccountingHistory SET %s WHERE id = %d and year = %d and month = %d and acc = %d",
+                        days, history.getId(), history.getYear().getValue(), history.getMonth().getValue(), history.getAcc());
                 sqlForUpdate.add(batchUpdate);
-                batchUpdate ="";
-                days ="";
+                days = "";
             }
         }
-        System.out.println(sqlForUpdate.get(7));
+        System.out.println(sqlForUpdate.toString());
 
     }
 

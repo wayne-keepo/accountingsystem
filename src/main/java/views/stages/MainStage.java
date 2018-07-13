@@ -185,10 +185,10 @@ public class MainStage {
             List<AccoutingHistory> ahList = ahController.getByDetail(detail.getId());
             //associated detail with her history
             ChainUtil.associateDetailWithHistory(detail,ahList);
-            //convert history for map for AccoutingWindow
+            //convert history for map for AccountingWindow
             Map<RussianMonths,List<AccoutingHistory>> tmp = AccoutingHistoryService.historyToMapForAccoutingWindow(ahList);
             //send history map in accounting window
-            new AccoutingHistoryWindow(tmp).show();
+            tmp  = new AccoutingHistoryWindow(tmp).show();
 
             System.out.println(tmp.toString());
 
