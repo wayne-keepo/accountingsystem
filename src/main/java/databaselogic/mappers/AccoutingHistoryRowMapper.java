@@ -56,8 +56,8 @@ public class AccoutingHistoryRowMapper implements RowMapper<AccoutingHistory> {
         Year year = Year.of(resultSet.getInt("year"));
         Month month = Month.of(resultSet.getInt("month"));
         int acc = resultSet.getInt("acc");
-
-        AccoutingHistory ah = new AccoutingHistory(year,month,acc,days);
+        int idDetail = resultSet.getInt("idDetail");
+        AccoutingHistory ah = new AccoutingHistory(idDetail,year,month,acc,days);
 
         ah.setId(resultSet.getInt("id"));
 

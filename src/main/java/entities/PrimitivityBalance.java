@@ -5,7 +5,7 @@ import java.time.Year;
 
 public class PrimitivityBalance {
 
-    private int id = 0;
+    private int id;
     private int idDetail;
     private Year year;
     private Month month;
@@ -17,10 +17,10 @@ public class PrimitivityBalance {
         this.idDetail = idDetail;
         this.year = year;
         this.month = month;
-        this.incoming = 0;
-        this.outcoming = 0;
-        this.balanceAtBeginningYear = 0;
-        this.balanceAtEndOfYear = 0;
+        this.incoming = 0.0;
+        this.outcoming = 0.0;
+        this.balanceAtBeginningYear = 0.0;
+        this.balanceAtEndOfYear = 0.0;
     }
     public PrimitivityBalance(int idDetail, Year year, Month month, double incoming, double outcoming, double balanceAtBeginningYear, double balanceAtEndOfYear) {
         this.idDetail = idDetail;

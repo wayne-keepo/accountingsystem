@@ -15,6 +15,25 @@ import java.util.stream.Collectors;
 public class AccoutingHistoryService {
     private static final DBAccountingHistoryController controller = new DBAccountingHistoryController();
 
+    public static double[] calculate(List<AccoutingHistory> histories){
+        System.out.println("Run calculate sum of month ");
+        double incSum = 0.0;
+        double outSum = 0.0;
+        for (AccoutingHistory history: histories){
+            if (history.getAcc()==1){
+                for (Day day: history.getDays()){
+                    incSum+=day.getCount();
+                }
+            } else {
+                for (Day day: history.getDays()){
+                    outSum+=day.getCount();
+                }
+            }
+        }
+        System.out.println(String.format("End calculate sum of month. Sum: Inc - %f | Out - %f ",incSum,outSum));
+        return new double[]{incSum,outSum};
+    }
+
     public static Map<RussianMonths, List<AccoutingHistory>> historyToMapForAccoutingWindow(List<AccoutingHistory> histories) {
         Map<RussianMonths, List<AccoutingHistory>> map = new HashMap<>();
         Month[] months = Month.values();
@@ -72,5 +91,13 @@ public class AccoutingHistoryService {
     private static void batchUpdate(List<String> upd) {
         String[] tmp = upd.toArray(new String[upd.size()]);
         controller.batchUpdate(tmp);
+    }
+
+    public static List<AccoutingHistory> getAll() {
+        return controller.getAll();
+    }
+
+    public static List<AccoutingHistory> getHistoryByDetail(Detail detail) {
+        return controller.getByDetail(detail.getId());
     }
 }

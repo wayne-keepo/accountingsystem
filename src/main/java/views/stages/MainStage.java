@@ -150,19 +150,26 @@ public class MainStage {
 
         add.setOnAction(event -> {
             //get detail from drop box
+            //TODO: in future delete selected Detail from dropbox
             Detail detail = detailDropBox.getDetailsBox().getSelectionModel().getSelectedItem();
-            // build primitiv for balance
-            List<PrimitivityBalance> pBalances = BalanceService.buildPrimitivs(detail);
-            // ya ne pomnu sho tut dalshe (
-            balanceController.saveAll(pBalances);
-            pBalances = balanceController.getAllByDetailId(detail.getId());
-            List<Balance> balances = ChainUtil.createBalanceChain(
-                    Collections.singletonList(detail),
-                    pBalances
-            );
-            balancesTable.getTable().getItems().addAll(balances);
             // build accounting history for detail
             AccoutingHistoryService.buildSqlForBatchInsertAccHist(detail);
+            List<AccoutingHistory> histories = AccoutingHistoryService.getHistoryByDetail(detail);
+            // build primitiv for balance
+            List<PrimitivityBalance> pBalances = BalanceService.buildPrimitivs(detail);
+            // save it on db Balance
+            balanceController.saveAll(pBalances);
+            // get primitive balance from table (with id)
+            pBalances = balanceController.getAllByDetailId(detail.getId());
+
+            List<Balance> balances = ChainUtil.createBalanceChain(
+                    Collections.singletonList(detail),
+                    pBalances,
+                    histories
+            );
+            if (balances!=null) {
+                balancesTable.getTable().getItems().addAll(balances);
+            }
         });
 
         history.setOnAction(event -> {

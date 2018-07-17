@@ -64,9 +64,9 @@ public class Searcher {
 
     public static Double findValueByMonth(Balance balance, String month, String eventName) {
         Month key = searchEngMonthByRus(month);
-        if (eventName == CustomConstants.INCOMING)
+        if (eventName.equals(CustomConstants.INCOMING))
             return balance.getIncoming().get(key);
-        if (eventName == CustomConstants.OUTCOMING)
+        if (eventName.equals(CustomConstants.OUTCOMING))
             return balance.getOutcoming().get(key);
         return null;
     }

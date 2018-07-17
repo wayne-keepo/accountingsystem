@@ -43,6 +43,14 @@ public class Balance {
         this.outcoming = outcoming;
     }
 
+    public void updateIncomingValue(Month key, Double value){
+        incoming.replace(key,value);
+    }
+
+    public void updateOutcomingValue(Month key, Double value){
+        outcoming.replace(key,value);
+    }
+
     public int getId() {
         return id;
     }
@@ -113,14 +121,6 @@ public class Balance {
 
     public void setOutcoming(Map<Month, Double> outcoming) {
         this.outcoming = outcoming;
-    }
-
-    public void updateIncomingValue(Month key, Double value){
-        incoming.replace(key,value);
-    }
-
-    public void updateOutcomingValue(Month key, Double value){
-        outcoming.replace(key,value);
     }
 
     @Override

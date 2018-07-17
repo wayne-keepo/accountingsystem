@@ -9,6 +9,7 @@ import java.util.List;
 public class AccoutingHistory {
     private int id;
     private Detail detail;
+    private int idDetail;
     private Year year;
     private Month month;
     private int acc;
@@ -23,12 +24,20 @@ public class AccoutingHistory {
         this.days = days;
     }
 
-    public AccoutingHistory(Detail detail, Year year, Month month, int acc, List<Day> days) {
-        this.detail = detail;
+    public AccoutingHistory(int idDetail, Year year, Month month, int acc, List<Day> days) {
+        this.idDetail = idDetail;
         this.year = year;
         this.month = month;
         this.acc = acc;
         this.days = days;
+    }
+
+    public int getIdDetail() {
+        return idDetail;
+    }
+
+    public void setIdDetail(int idDetail) {
+        this.idDetail = idDetail;
     }
 
     public int getId() {

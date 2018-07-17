@@ -24,7 +24,7 @@ public class DetailDropBox {
 //        detailsBox.setItems(InitializerForTest.getDetails());
     }
 
-    public void fillBox(ComboBox<Detail> box){
+    private void fillBox(ComboBox<Detail> box){
         for (Detail detail: details)
             box.getItems().add(detail);
     }

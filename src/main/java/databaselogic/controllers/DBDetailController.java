@@ -31,7 +31,7 @@ public class DBDetailController implements DBOperations<Detail> {
                 DBConstants.SELECT_ALL_DETAIL,
                 new DetailRowMapper()
         );
-        if (details.size() > 0)
+        if (!details.isEmpty())
             return details;
         return null;
     }

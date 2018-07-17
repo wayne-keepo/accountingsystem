@@ -38,12 +38,14 @@ public class BalanceService {
         pBalances = Arrays.asList(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12);
         return pBalances;
     }
+
     public static ObservableList<Balance> buildBalances(){
         List<PrimitivityBalance> pBalances = controller.getAll();
         if (pBalances==null)
             return null;
+        List<AccoutingHistory> histories = AccoutingHistoryService.getAll();
         List<Detail> details = DetailService.getAll();
-        List<Balance> balances = ChainUtil.createBalanceChain(details,pBalances);
+        List<Balance> balances = ChainUtil.createBalanceChain(details,pBalances,histories);
         return FXCollections.observableArrayList(balances);
 
     }
@@ -71,24 +73,7 @@ public class BalanceService {
         return pBalances;
     }
 
-    private static double[] calculate(List<AccoutingHistory> histories){
-        System.out.println("Run calculate sum of month ");
-        double incSum = 0.0;
-        double outSum = 0.0;
-        for (AccoutingHistory history: histories){
-            if (history.getAcc()==1){
-                for (Day day: history.getDays()){
-                    incSum+=day.getCount();
-                }
-            } else {
-                for (Day day: history.getDays()){
-                    outSum+=day.getCount();
-                }
-            }
-        }
-        System.out.println(String.format("End calculate sum of month. Sum: Inc - %f | Out - %f ",incSum,outSum));
-        return new double[]{incSum,outSum};
-    }
+
     // receipt;  приход
     // consumption; расход
     public static void updAccHistoryByDays(Balance balance, Map<RussianMonths, List<AccoutingHistory>> candidates) {
@@ -96,7 +81,7 @@ public class BalanceService {
         double[] sums;
         for (Map.Entry<RussianMonths,List<AccoutingHistory>> candidate: candidates.entrySet()){
             Month key = Searcher.searchEngMonthByRus(candidate.getKey());
-            sums = calculate(candidate.getValue());
+            sums = AccoutingHistoryService.calculate(candidate.getValue());
             balance.updateIncomingValue(key,sums[0]);
             balance.updateOutcomingValue(key,sums[1]);
         }

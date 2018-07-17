@@ -98,10 +98,12 @@ public class DBAccountingHistoryController implements DBOperations<AccoutingHist
         return null;
     }
 
-    @Deprecated
     @Override
     public List<AccoutingHistory> getAll() {
-        return null;
+        return template.query(
+                DBConstants.SELECT_ACCOUNTING_HISTORY,
+                new AccoutingHistoryRowMapper()
+        );
     }
 
 }

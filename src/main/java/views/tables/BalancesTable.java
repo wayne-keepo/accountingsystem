@@ -1,15 +1,10 @@
 package views.tables;
 
 import domain.Balance;
-import domain.InitializerForTest;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -17,7 +12,6 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
 import services.BalanceService;
 import views.tables.utils.Searcher;
-import views.tables.utils.Updater;
 
 import java.time.Year;
 import java.util.Arrays;
@@ -28,21 +22,29 @@ public class BalancesTable {
     private TableView<Balance> table;
     private ObservableList<Balance> balances = FXCollections.observableArrayList();
 
-    public BalancesTable(){
+    public BalancesTable() {
         createTable();
     }
 
     private void createTable() {
         table = new TableView<>();
-        table.setEditable(true);
+        initializingDataInTable();
+        settings();
+    }
+
+    private void settings() {
+        table.setEditable(false);
         table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         table.getColumns().addAll(createColumn());
-        ObservableList<Balance> initialBalances = BalanceService.buildBalances();
-        if (initialBalances!=null)
-            balances.addAll(initialBalances); // продумать как быть при самом первом запуске, падает ошибка если в базе нет данных по балансу!! (+/-) протестировать изменения
         table.getItems().addAll(balances);
     }
 
+    private void initializingDataInTable() {
+        ObservableList<Balance> initialBalances = BalanceService.buildBalances();
+        if (initialBalances != null)
+            balances.addAll(initialBalances); // продумать как быть при самом первом запуске, падает ошибка если в базе нет данных по балансу!! (+/-) протестировать изменения
+        table.getItems().addAll(balances);
+    }
 
     private List<TableColumn<Balance, ?>> createColumn() {
 
@@ -50,7 +52,7 @@ public class BalancesTable {
         id.setCellValueFactory(new PropertyValueFactory<>("id"));
 
         TableColumn<Balance, String> title = new TableColumn<>("Название");
-        title.setCellValueFactory(cellData->{
+        title.setCellValueFactory(cellData -> {
             return new SimpleStringProperty(cellData.getValue().getDetail().getTitle());
         });
         title.setCellFactory(TextFieldTableCell.<Balance>forTableColumn());
@@ -113,26 +115,30 @@ public class BalancesTable {
                 inJanuary, inFebruary, inMarch, inApril, inMay, inJune, inJuly, inAugust, inSeptember, inOctober, inNovember, inDecember,
                 outJanuary, outFebruary, outMarch, outApril, outMay, outJune, outJuly, outAugust, outSeptember, outOctober, outNovember, outDecember);
 
-        setBulkCellFactoryAndEditCommitForMonthColumn(months);
+//        setBulkCellFactoryAndEditCommitForMonthColumn(months);
         setBulkCellValueFactoryForMonthColumn(months);
 
         return Arrays.asList(year);
     }
-    private void setBulkCellFactoryAndEditCommitForMonthColumn(List<TableColumn<Balance, String>> columns){
-        for (TableColumn column : columns) {
-            column.setCellFactory(TextFieldTableCell.<Balance>forTableColumn());
 
-            column.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent>() {
-                @Override
-                public void handle(TableColumn.CellEditEvent event) {
-                    String parentColumnName = event.getTableColumn().getParentColumn().getText();
-                    String columnName = event.getTableColumn().getText();
-                    Double count = Double.valueOf(String.valueOf(event.getNewValue()));
-                    Updater.updateValueOfMonthColumn((Balance) event.getRowValue(),columnName,parentColumnName,count);
-                }
-            });
-        }
+    // candidate on delete
+    private void setBulkCellFactoryAndEditCommitForMonthColumn(List<TableColumn<Balance, String>> columns) {
+//        columns.forEach(column->column.setEditable(false));
+//        for (TableColumn column : columns) {
+//            column.setCellFactory(TextFieldTableCell.<Balance>forTableColumn());
+
+//            column.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent>() {
+//                @Override
+//                public void handle(TableColumn.CellEditEvent event) {
+//                    String parentColumnName = event.getTableColumn().getParentColumn().getText();
+//                    String columnName = event.getTableColumn().getText();
+//                    Double count = Double.valueOf(String.valueOf(event.getNewValue()));
+//                    Updater.updateValueOfMonthColumn((Balance) event.getRowValue(),columnName,parentColumnName,count);
+//                }
+//            });
+//        }
     }
+
     private void setBulkCellValueFactoryForMonthColumn(List<TableColumn<Balance, String>> columns) {
         for (TableColumn column : columns)
             column.setCellValueFactory(new Callback<TableColumn.CellDataFeatures, ObservableValue>() {
@@ -141,13 +147,13 @@ public class BalancesTable {
                     String parentColumnName = param.getTableColumn().getParentColumn().getText();
                     String columnName = param.getTableColumn().getText();
                     Balance balance = (Balance) param.getValue();
-                    Double count = Searcher.findValueByMonth(balance, columnName,parentColumnName);
+                    Double count = Searcher.findValueByMonth(balance, columnName, parentColumnName);
                     return new SimpleStringProperty(Double.toString(count));
                 }
             });
     }
 
-    public ObservableList<Balance> getBalances(){
+    public ObservableList<Balance> getBalances() {
         return balances;
     }
 
