@@ -7,6 +7,8 @@ import services.AccoutingHistoryService;
 import views.modalWindows.AccoutingHistoryWindow;
 import views.tables.utils.RussianMonths;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
@@ -26,18 +28,26 @@ public class TEST {
 //        achis.setDetail(detail);
 //        List<AccoutingHistory> ahList = dbachc.getByDetail(1);
 //        Map<RussianMonths, List<AccoutingHistory>> histories = AccoutingHistoryService.historyToMapForAccoutingWindow(ahList);
-        Double d = 10.0512;
-        String s = String.valueOf(d);
-        String s2 = String.format("test %s",s);
-        System.out.println(s2);
+//        Double d = 10.0512;
+//        String s = String.valueOf(d);
+//        String s2 = String.format("test %s",s);
+//        System.out.println(s2);
+//
+//        StringBuilder st = new StringBuilder();
+//        st.append(123).append(321).append("qweqwe");
+//        System.out.println(st+" "+st.length());
+//        st.setLength(0);
+//        System.out.println(st);
+//        st.append(1).append(2).append("zxc");
+//        System.out.println(st+" "+st.length());
 
-        StringBuilder st = new StringBuilder();
-        st.append(123).append(321).append("qweqwe");
-        System.out.println(st+" "+st.length());
-        st.setLength(0);
-        System.out.println(st);
-        st.append(1).append(2).append("zxc");
-        System.out.println(st+" "+st.length());
+        double templateDouble = 12.1354678578862;
+
+        System.out.println("Template double: " + templateDouble);
+
+        double newDouble = new BigDecimal(templateDouble).setScale(3, RoundingMode.UP).doubleValue();
+
+        System.out.println("New double: " + newDouble);
     }
 
     static class Simple {

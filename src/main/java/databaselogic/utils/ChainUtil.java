@@ -8,6 +8,8 @@ import domain.ElectrodeSummary;
 import entities.*;
 import services.AccoutingHistoryService;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Month;
 import java.time.Year;
 import java.util.ArrayList;
@@ -85,7 +87,9 @@ public class ChainUtil {
 
             AtomicReference<Double> incTotal = new AtomicReference<>(0.0);
             AtomicReference<Double> outTotal = new AtomicReference<>(0.0);
-            AtomicReference<Double> atYear = new AtomicReference<>(0.0);
+            AtomicReference<Double> begYear = new AtomicReference<>(0.0);
+            Double endYear = 0.0;
+
             Map<Month, Double> inc = new HashMap<>();
             Map<Month, Double> out = new HashMap<>();
 
@@ -94,12 +98,15 @@ public class ChainUtil {
                 out.put(p.getMonth(), p.getOutcoming());
                 incTotal.updateAndGet(v -> v + p.getIncoming());
                 outTotal.updateAndGet(v -> v + p.getOutcoming());
-                atYear.set(p.getBalanceAtBeginningYear());
+                begYear.set(p.getBalanceAtBeginningYear());
 
             });
+            // round to 3 symbols after dot
+            begYear.set(new BigDecimal(begYear.get()).setScale(3, RoundingMode.UP).doubleValue());
+            endYear = new BigDecimal(incTotal.get() - outTotal.get()).setScale(3, RoundingMode.UP).doubleValue();
 
-            balance.setBalanceAtBeginningYear(atYear.get());
-            balance.setBalanceAtEndOfYear(incTotal.get() - outTotal.get());
+            balance.setBalanceAtBeginningYear(begYear.get());
+            balance.setBalanceAtEndOfYear(endYear);
             balance.setInTotal(incTotal.get());
             balance.setOutTotal(outTotal.get());
             balance.setIncoming(inc);

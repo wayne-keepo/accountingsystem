@@ -148,7 +148,8 @@ public class BalancesTable {
                     String columnName = param.getTableColumn().getText();
                     Balance balance = (Balance) param.getValue();
                     Double count = Searcher.findValueByMonth(balance, columnName, parentColumnName);
-                    return new SimpleStringProperty(Double.toString(count));
+
+                    return new SimpleStringProperty(Double.toString(Math.ceil(count)));
                 }
             });
     }

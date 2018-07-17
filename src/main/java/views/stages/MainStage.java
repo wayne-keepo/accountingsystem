@@ -189,6 +189,9 @@ public class MainStage {
             if (tmp != null) {
                 BalanceService.updAccHistoryByDays(balance,tmp);
                 AccoutingHistoryService.buildSqlForBatchUpdAccHist(tmp);
+
+                balancesTable.getTable().getItems().remove(balance);
+                balancesTable.getTable().getItems().add(balance);
             }
         });
 
