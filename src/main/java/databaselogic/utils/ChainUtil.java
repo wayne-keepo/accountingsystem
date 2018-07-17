@@ -6,7 +6,6 @@ import domain.Electrod;
 import domain.ElectrodeSummary;
 import entities.*;
 import services.AccoutingHistoryService;
-import services.BalanceService;
 
 import java.time.Month;
 import java.time.Year;
@@ -61,8 +60,8 @@ public class ChainUtil {
             associations.put(detail, pBalanceAccHist);
         });
 
-        associations.forEach((d,pa)->{
-            pa.forEach((p,h)->{
+        associations.forEach((d, pa) -> {
+            pa.forEach((p, h) -> {
                 double[] sums = AccoutingHistoryService.calculate(h);
                 p.setIncoming(sums[0]);
                 p.setOutcoming(sums[1]);
@@ -74,48 +73,74 @@ public class ChainUtil {
 
     public static List<Balance> createBalanceChain(List<Detail> details, List<PrimitivityBalance> pBalances, List<AccoutingHistory> histories) {
         List<Balance> balances = new ArrayList<>();
+
         Map<Detail, Map<PrimitivityBalance, List<AccoutingHistory>>> associations = associateDetailWithPrimitiveAndHistory(details, pBalances, histories);
-        //int id, Detail detail, Year year, Double balanceAtBeginningYear, Double balanceAtEndOfYear, Double inTotal, Double outTotal, HashMap<Month, Double> incoming, HashMap<Month, Double> outcoming
-        associations.forEach((d,pa)->{
+
+        associations.forEach((d, pa) -> {
             Balance balance = new Balance();
+            balance.setId(d.getId());
+            balance.setDetail(d);
 
+            AtomicReference<Double> incTotal = new AtomicReference<>(0.0);
+            AtomicReference<Double> outTotal = new AtomicReference<>(0.0);
+            AtomicReference<Double> atYear = new AtomicReference<>(0.0);
+            Map<Month, Double> inc = new HashMap<>();
+            Map<Month, Double> out = new HashMap<>();
+
+            pa.forEach((p, h) -> {
+                inc.put(p.getMonth(), p.getIncoming());
+                out.put(p.getMonth(), p.getOutcoming());
+                incTotal.updateAndGet(v -> v + p.getIncoming());
+                outTotal.updateAndGet(v -> v + p.getOutcoming());
+                atYear.set(p.getBalanceAtBeginningYear());
+
+            });
+
+            balance.setBalanceAtBeginningYear(atYear.get());
+            balance.setBalanceAtEndOfYear(incTotal.get() - outTotal.get());
+            balance.setInTotal(incTotal.get());
+            balance.setOutTotal(outTotal.get());
+            balance.setIncoming(inc);
+            balance.setOutcoming(out);
+
+            balances.add(balance);
         });
-
-        for (Detail detail : details) {
-            if (pBalances.stream().anyMatch(p -> p.getIdDetail() == detail.getId())) {
-                Balance balance = new Balance();
-                Double balanceAtBeginningYear = 0.0;
-                Double balanceAtEndOfYear = 0.0;
-                Double inTotal = 0.0;
-                Double outTotal = 0.0;
-                Year year = null;
-                Map<Month, Double> incoming = new HashMap<>();
-                Map<Month, Double> outcoming = new HashMap<>();
-                for (PrimitivityBalance primitiv : pBalances) {
-                    if (primitiv.getIdDetail() == detail.getId()) {
-                        year = primitiv.getYear();
-//                        id = primitiv.getId();
-                        inTotal += primitiv.getIncoming();
-                        outTotal += primitiv.getOutcoming();
-                        balanceAtBeginningYear = primitiv.getBalanceAtBeginningYear();
-                        incoming.put(primitiv.getMonth(), primitiv.getIncoming());
-                        outcoming.put(primitiv.getMonth(), primitiv.getOutcoming());
-                    }
-
-                }
-                balanceAtEndOfYear = inTotal - outTotal;
-                balance.setDetail(detail);
-                balance.setId(detail.getId());
-                balance.setYear(year);
-                balance.setInTotal(inTotal);
-                balance.setOutTotal(outTotal);
-                balance.setBalanceAtBeginningYear(balanceAtBeginningYear);
-                balance.setBalanceAtEndOfYear(balanceAtEndOfYear);
-                balance.setIncoming(incoming);
-                balance.setOutcoming(outcoming);
-                balances.add(balance);
-            }
-        }
+        System.out.println(balances.toString());
+//        for (Detail detail : details) {
+//            if (pBalances.stream().anyMatch(p -> p.getIdDetail() == detail.getId())) {
+//                Balance balance = new Balance();
+//                Double balanceAtBeginningYear = 0.0;
+//                Double balanceAtEndOfYear = 0.0;
+//                Double inTotal = 0.0;
+//                Double outTotal = 0.0;
+//                Year year = null;
+//                Map<Month, Double> incoming = new HashMap<>();
+//                Map<Month, Double> outcoming = new HashMap<>();
+//                for (PrimitivityBalance primitiv : pBalances) {
+//                    if (primitiv.getIdDetail() == detail.getId()) {
+//                        year = primitiv.getYear();
+////                        id = primitiv.getId();
+//                        inTotal += primitiv.getIncoming();
+//                        outTotal += primitiv.getOutcoming();
+//                        balanceAtBeginningYear = primitiv.getBalanceAtBeginningYear();
+//                        incoming.put(primitiv.getMonth(), primitiv.getIncoming());
+//                        outcoming.put(primitiv.getMonth(), primitiv.getOutcoming());
+//                    }
+//
+//                }
+//                balanceAtEndOfYear = inTotal - outTotal;
+//                balance.setDetail(detail);
+//                balance.setId(detail.getId());
+//                balance.setYear(year);
+//                balance.setInTotal(inTotal);
+//                balance.setOutTotal(outTotal);
+//                balance.setBalanceAtBeginningYear(balanceAtBeginningYear);
+//                balance.setBalanceAtEndOfYear(balanceAtEndOfYear);
+//                balance.setIncoming(incoming);
+//                balance.setOutcoming(outcoming);
+//                balances.add(balance);
+//            }
+//        }
         return balances;
     }
 
