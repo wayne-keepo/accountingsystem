@@ -1,5 +1,6 @@
 package databaselogic.utils;
 
+import com.sun.istack.internal.NotNull;
 import domain.Balance;
 import domain.DetailElectrod;
 import domain.Electrod;
@@ -57,7 +58,8 @@ public class ChainUtil {
                         personalHistory.stream().filter(h -> h.getMonth().equals(p.getMonth())).collect(Collectors.toList())
                 );
             });
-            associations.put(detail, pBalanceAccHist);
+            if (!personalPrimBalance.isEmpty())
+                associations.put(detail, pBalanceAccHist);
         });
 
         associations.forEach((d, pa) -> {
