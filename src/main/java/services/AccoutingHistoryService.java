@@ -62,9 +62,9 @@ public class AccoutingHistoryService {
 
                 for (Day day : history.getDays()) {
                     if (!(day.getDayNumber() == 31))
-                        days += String.format(" d%d = %d,", day.getDayNumber(), day.getCount());
+                        days += String.format(" d%d = %f,", day.getDayNumber(), day.getCount());
                     else
-                        days += String.format(" d%d = %d", day.getDayNumber(), day.getCount());
+                        days += String.format(" d%d = %f", day.getDayNumber(), day.getCount());
                 }
                 String batchUpdate = String.format("UPDATE AccountingHistory SET %s WHERE id = %d and year = %d and month = %d and acc = %d",
                         days, history.getId(), history.getYear().getValue(), history.getMonth().getValue(), history.getAcc());

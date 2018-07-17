@@ -41,9 +41,9 @@ public class BalancesTable {
 
     private void initializingDataInTable() {
         ObservableList<Balance> initialBalances = BalanceService.buildBalances();
+//        System.out.println("Balances from BalanceTable#initializingDataInTable()\n"+initialBalances.toString());
         if (initialBalances != null)
             balances.addAll(initialBalances); // продумать как быть при самом первом запуске, падает ошибка если в базе нет данных по балансу!! (+/-) протестировать изменения
-        table.getItems().addAll(balances);
     }
 
     private List<TableColumn<Balance, ?>> createColumn() {
