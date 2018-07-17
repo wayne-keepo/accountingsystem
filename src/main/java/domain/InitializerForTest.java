@@ -59,56 +59,56 @@ public class InitializerForTest {
     public static ObservableList<Detail> getDetails() {
         return FXCollections.observableArrayList(details);
     }
-    public static ObservableList<Balance> getTestBalance() {
-        ObservableList<Balance> balances = FXCollections.observableArrayList();
-
-        HashMap<Month, Integer> receipt = new HashMap<>();
-        HashMap<Month, Integer> consumption = new HashMap<>();
-
-        receipt.put(Month.JANUARY, 1234);
-        receipt.put(Month.FEBRUARY, 1456);
-        receipt.put(Month.MARCH, 1786);
-        receipt.put(Month.APRIL, 1589);
-        receipt.put(Month.MAY, 1756);
-        receipt.put(Month.JUNE, 7896);
-        receipt.put(Month.JULY, 1238);
-        receipt.put(Month.AUGUST, 7539);
-        receipt.put(Month.SEPTEMBER, 7824);
-        receipt.put(Month.OCTOBER, 1234);
-        receipt.put(Month.NOVEMBER, 1234);
-        receipt.put(Month.DECEMBER, 1234);
-
-        consumption.put(Month.JANUARY, 999);
-        consumption.put(Month.FEBRUARY, 999);
-        consumption.put(Month.MARCH, 999);
-        consumption.put(Month.APRIL, 999);
-        consumption.put(Month.MAY, 999);
-        consumption.put(Month.JUNE, 999);
-        consumption.put(Month.JULY, 999);
-        consumption.put(Month.AUGUST, 999);
-        consumption.put(Month.SEPTEMBER, 999);
-        consumption.put(Month.OCTOBER, 999);
-        consumption.put(Month.NOVEMBER, 999);
-        consumption.put(Month.DECEMBER, 999);
-
-        Integer balanceAtBeginningYear = 1234;
-        Integer balanceAtEndOfYear = 1234 - 999;
-
-        for (int i = 0; i<details.size();i++){
-            balances.add(new Balance(
-                    i+1,
-                    details.get(i),
-                    Year.now(),
-                    balanceAtBeginningYear,
-                    balanceAtEndOfYear,
-                    1234,
-                    balanceAtEndOfYear,
-                    receipt,
-                    consumption
-            ));
-        }
-        return balances;
-    }
+//    public static ObservableList<Balance> getTestBalance() {
+//        ObservableList<Balance> balances = FXCollections.observableArrayList();
+//
+//        HashMap<Month, Double> receipt = new HashMap<>();
+//        HashMap<Month, Double> consumption = new HashMap<>();
+//
+//        receipt.put(Month.JANUARY, 1234);
+//        receipt.put(Month.FEBRUARY, 1456);
+//        receipt.put(Month.MARCH, 1786);
+//        receipt.put(Month.APRIL, 1589);
+//        receipt.put(Month.MAY, 1756);
+//        receipt.put(Month.JUNE, 7896);
+//        receipt.put(Month.JULY, 1238);
+//        receipt.put(Month.AUGUST, 7539);
+//        receipt.put(Month.SEPTEMBER, 7824);
+//        receipt.put(Month.OCTOBER, 1234);
+//        receipt.put(Month.NOVEMBER, 1234);
+//        receipt.put(Month.DECEMBER, 1234);
+//
+//        consumption.put(Month.JANUARY, 999);
+//        consumption.put(Month.FEBRUARY, 999);
+//        consumption.put(Month.MARCH, 999);
+//        consumption.put(Month.APRIL, 999);
+//        consumption.put(Month.MAY, 999);
+//        consumption.put(Month.JUNE, 999);
+//        consumption.put(Month.JULY, 999);
+//        consumption.put(Month.AUGUST, 999);
+//        consumption.put(Month.SEPTEMBER, 999);
+//        consumption.put(Month.OCTOBER, 999);
+//        consumption.put(Month.NOVEMBER, 999);
+//        consumption.put(Month.DECEMBER, 999);
+//
+//        Integer balanceAtBeginningYear = 1234;
+//        Integer balanceAtEndOfYear = 1234 - 999;
+//
+//        for (int i = 0; i<details.size();i++){
+//            balances.add(new Balance(
+//                    i+1,
+//                    details.get(i),
+//                    Year.now(),
+//                    balanceAtBeginningYear,
+//                    balanceAtEndOfYear,
+//                    1234,
+//                    balanceAtEndOfYear,
+//                    receipt,
+//                    consumption
+//            ));
+//        }
+//        return balances;
+//    }
     public static Electrod getElectrode() {
         return e1;
     }

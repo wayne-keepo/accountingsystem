@@ -23,18 +23,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class AccoutingHistoryWindow extends Application{
     private Stage window;
-    private  BorderPane mainPane;
-    private  HBox hBoxCalendar;
-    private  HBox hBoxButtons;
-    private  GridPane gridPane;
-    private  MonthBox monthBox;
+    private BorderPane mainPane;
+    private HBox hBoxCalendar;
+    private HBox hBoxButtons;
+    private GridPane gridPane;
+    private MonthBox monthBox;
     private Button save;
     private Button close;
 
-    private  Map<RussianMonths,List<AccoutingHistory>> historyMap;
-    private  Map<Map<Integer,Label>,List<TextField>> matrix;
+    private Map<RussianMonths,List<AccoutingHistory>> historyMap;
+    private Map<Map<Integer,Label>,List<TextField>> matrix;
     private Map<RussianMonths,List<AccoutingHistory>> candidateOnUpd;
-    private  Map<TextField, Day> associated;
+    private Map<TextField, Day> associated;
     private RussianMonths currentMonth;
 
     public AccoutingHistoryWindow(Map<RussianMonths,List<AccoutingHistory>> ah){historyMap = ah;}
@@ -93,7 +93,7 @@ public class AccoutingHistoryWindow extends Application{
         save.setOnAction(action->{
             //add value changes from text field into associated days
             associated.forEach((k,v)->{
-                v.setCount(Integer.valueOf(k.getText()));
+                v.setCount(Double.valueOf(k.getText()));
             });
             candidateOnUpd.put(currentMonth,historyMap.get(currentMonth));
         });

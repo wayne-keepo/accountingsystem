@@ -9,10 +9,10 @@ public class PrimitivityBalance {
     private int idDetail;
     private Year year;
     private Month month;
-    private int incoming;
-    private int outcoming;
-    private int balanceAtBeginningYear;
-    private int balanceAtEndOfYear;
+    private double incoming;
+    private double outcoming;
+    private double balanceAtBeginningYear;
+    private double balanceAtEndOfYear;
     public PrimitivityBalance(int idDetail,Year year,Month month){
         this.idDetail = idDetail;
         this.year = year;
@@ -22,7 +22,7 @@ public class PrimitivityBalance {
         this.balanceAtBeginningYear = 0;
         this.balanceAtEndOfYear = 0;
     }
-    public PrimitivityBalance(int idDetail, Year year, Month month, int incoming, int outcoming, int balanceAtBeginningYear, int balanceAtEndOfYear) {
+    public PrimitivityBalance(int idDetail, Year year, Month month, double incoming, double outcoming, double balanceAtBeginningYear, double balanceAtEndOfYear) {
         this.idDetail = idDetail;
         this.year = year;
         this.month = month;
@@ -32,7 +32,7 @@ public class PrimitivityBalance {
         this.balanceAtEndOfYear = balanceAtEndOfYear;
     }
 
-    public PrimitivityBalance(int id, int idDetail, Year year, Month month, int incoming, int outcoming, int balanceAtBeginningYear, int balanceAtEndOfYear) {
+    public PrimitivityBalance(int id, int idDetail, Year year, Month month, double incoming, double outcoming, double balanceAtBeginningYear, double balanceAtEndOfYear) {
         this.id = id;
         this.idDetail = idDetail;
         this.year = year;
@@ -75,35 +75,35 @@ public class PrimitivityBalance {
         this.month = month;
     }
 
-    public int getIncoming() {
+    public double getIncoming() {
         return incoming;
     }
 
-    public void setIncoming(int incoming) {
+    public void setIncoming(double incoming) {
         this.incoming = incoming;
     }
 
-    public int getOutcoming() {
+    public double getOutcoming() {
         return outcoming;
     }
 
-    public void setOutcoming(int outcoming) {
+    public void setOutcoming(double outcoming) {
         this.outcoming = outcoming;
     }
 
-    public int getBalanceAtBeginningYear() {
+    public double getBalanceAtBeginningYear() {
         return balanceAtBeginningYear;
     }
 
-    public void setBalanceAtBeginningYear(int balanceAtBeginningYear) {
+    public void setBalanceAtBeginningYear(double balanceAtBeginningYear) {
         this.balanceAtBeginningYear = balanceAtBeginningYear;
     }
 
-    public int getBalanceAtEndOfYear() {
+    public double getBalanceAtEndOfYear() {
         return balanceAtEndOfYear;
     }
 
-    public void setBalanceAtEndOfYear(int balanceAtEndOfYear) {
+    public void setBalanceAtEndOfYear(double balanceAtEndOfYear) {
         this.balanceAtEndOfYear = balanceAtEndOfYear;
     }
 

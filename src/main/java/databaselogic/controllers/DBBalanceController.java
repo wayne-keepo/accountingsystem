@@ -25,10 +25,10 @@ public class DBBalanceController implements DBOperations<PrimitivityBalance> {
         int[] updateCounts = template.batchUpdate(DBConstants.SINGLE_UPDATE_BALANCE, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
-                ps.setInt(1, pBalances.get(i).getIncoming());
-                ps.setInt(2, pBalances.get(i).getOutcoming());
-                ps.setInt(3, pBalances.get(i).getBalanceAtBeginningYear());
-                ps.setInt(4, pBalances.get(i).getBalanceAtEndOfYear());
+                ps.setDouble(1, pBalances.get(i).getIncoming());
+                ps.setDouble(2, pBalances.get(i).getOutcoming());
+                ps.setDouble(3, pBalances.get(i).getBalanceAtBeginningYear());
+                ps.setDouble(4, pBalances.get(i).getBalanceAtEndOfYear());
                 ps.setInt(5, pBalances.get(i).getIdDetail());
                 ps.setString(6, pBalances.get(i).getMonth().toString());
             }
@@ -48,9 +48,9 @@ public class DBBalanceController implements DBOperations<PrimitivityBalance> {
                 ps.setInt(1, pBalances.get(i).getIdDetail());
                 ps.setString(2, pBalances.get(i).getYear().toString());
                 ps.setString(3, pBalances.get(i).getMonth().toString());
-                ps.setInt(4, pBalances.get(i).getIncoming());
-                ps.setInt(5, pBalances.get(i).getOutcoming());
-                ps.setInt(6, pBalances.get(i).getBalanceAtBeginningYear());
+                ps.setDouble(4, pBalances.get(i).getIncoming());
+                ps.setDouble(5, pBalances.get(i).getOutcoming());
+                ps.setDouble(6, pBalances.get(i).getBalanceAtBeginningYear());
             }
             @Override
             public int getBatchSize() {

@@ -2,9 +2,9 @@ package domain;
 
 public class Day {
     private int dayNumber;
-    private int count;
+    private double count;
 
-    public Day(int dayNumber, int count) {
+    public Day(int dayNumber, double count) {
         this.dayNumber = dayNumber;
         this.count = count;
     }
@@ -17,11 +17,11 @@ public class Day {
         this.dayNumber = dayNumber;
     }
 
-    public int getCount() {
+    public double getCount() {
         return count;
     }
 
-    public void setCount(int count) {
+    public void setCount(double count) {
         this.count = count;
     }
 

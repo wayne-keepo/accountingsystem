@@ -127,7 +127,7 @@ public class BalancesTable {
                 public void handle(TableColumn.CellEditEvent event) {
                     String parentColumnName = event.getTableColumn().getParentColumn().getText();
                     String columnName = event.getTableColumn().getText();
-                    Integer count = Integer.valueOf(String.valueOf(event.getNewValue()));
+                    Double count = Double.valueOf(String.valueOf(event.getNewValue()));
                     Updater.updateValueOfMonthColumn((Balance) event.getRowValue(),columnName,parentColumnName,count);
                 }
             });
@@ -141,8 +141,8 @@ public class BalancesTable {
                     String parentColumnName = param.getTableColumn().getParentColumn().getText();
                     String columnName = param.getTableColumn().getText();
                     Balance balance = (Balance) param.getValue();
-                    Integer count = Searcher.findValueByMonth(balance, columnName,parentColumnName);
-                    return new SimpleStringProperty(Integer.toString(count));
+                    Double count = Searcher.findValueByMonth(balance, columnName,parentColumnName);
+                    return new SimpleStringProperty(Double.toString(count));
                 }
             });
     }

@@ -1,20 +1,20 @@
 package services;
 
 import databaselogic.controllers.DBBalanceController;
-import databaselogic.controllers.DBDetailController;
 import databaselogic.utils.ChainUtil;
 import domain.Balance;
+import domain.Day;
+import entities.AccoutingHistory;
 import entities.Detail;
 import entities.PrimitivityBalance;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import views.tables.utils.RussianMonths;
+import views.tables.utils.Searcher;
 
 import java.time.Month;
 import java.time.Year;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BalanceService {
     private static final DBBalanceController controller = new DBBalanceController();
@@ -52,16 +52,16 @@ public class BalanceService {
         List<PrimitivityBalance> pBalances = decompositionBalance(balance);
         controller.updateAll(pBalances);
     }
-//(int idDetail, Year year, Month month, int incoming, int outcoming, int balanceAtBeginningYear, int balanceAtEndOfYear)
+//(int idDetail, Year year, Month month, double incoming, double outcoming, double balanceAtBeginningYear, double balanceAtEndOfYear)
     private static List<PrimitivityBalance> decompositionBalance(Balance balance){
         List<PrimitivityBalance> pBalances = new ArrayList<>();
-        for (Map.Entry<Month,Integer> month: balance.getConsumption().entrySet()){
+        for (Map.Entry<Month,Double> month: balance.getOutcoming().entrySet()){
            pBalances.add(
                    new PrimitivityBalance(
                            balance.getDetail().getId(),
                            balance.getYear(),
                            month.getKey(),
-                           balance.getReceipt().get(month.getKey()),
+                           balance.getIncoming().get(month.getKey()),
                            month.getValue(),
                            balance.getBalanceAtBeginningYear(),
                            balance.getBalanceAtEndOfYear()
@@ -71,8 +71,37 @@ public class BalanceService {
         return pBalances;
     }
 
+    private static double[] calculate(List<AccoutingHistory> histories){
+        System.out.println("Run calculate sum of month ");
+        double incSum = 0.0;
+        double outSum = 0.0;
+        for (AccoutingHistory history: histories){
+            if (history.getAcc()==1){
+                for (Day day: history.getDays()){
+                    incSum+=day.getCount();
+                }
+            } else {
+                for (Day day: history.getDays()){
+                    outSum+=day.getCount();
+                }
+            }
+        }
+        System.out.println(String.format("End calculate sum of month. Sum: Inc - %f | Out - %f ",incSum,outSum));
+        return new double[]{incSum,outSum};
+    }
+    // receipt;  приход
+    // consumption; расход
+    public static void updAccHistoryByDays(Balance balance, Map<RussianMonths, List<AccoutingHistory>> candidates) {
+        System.out.println("Run update history of months"+candidates.keySet().toString());
+        double[] sums;
+        for (Map.Entry<RussianMonths,List<AccoutingHistory>> candidate: candidates.entrySet()){
+            Month key = Searcher.searchEngMonthByRus(candidate.getKey());
+            sums = calculate(candidate.getValue());
+            balance.updateIncomingValue(key,sums[0]);
+            balance.updateOutcomingValue(key,sums[1]);
+        }
+        System.out.println("End update history of months");
+        updateBalance(balance);
 
-
-
-
+    }
 }

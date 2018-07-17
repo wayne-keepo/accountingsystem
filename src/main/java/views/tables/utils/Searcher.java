@@ -54,17 +54,20 @@ public class Searcher {
         RussianMonths ru = RussianMonths.valueOf(month);
         return enMonths.get(ru);
     }
+    public static Month searchEngMonthByRus(RussianMonths month) {
+        return enMonths.get(month);
+    }
 
     public static RussianMonths searchRuMonthByEng(Month month){
         return ruMonths.get(month);
     }
 
-    public static Integer findValueByMonth(Balance balance, String month, String eventName) {
+    public static Double findValueByMonth(Balance balance, String month, String eventName) {
         Month key = searchEngMonthByRus(month);
         if (eventName == CustomConstants.INCOMING)
-            return balance.getReceipt().get(key);
+            return balance.getIncoming().get(key);
         if (eventName == CustomConstants.OUTCOMING)
-            return balance.getConsumption().get(key);
+            return balance.getOutcoming().get(key);
         return null;
     }
 

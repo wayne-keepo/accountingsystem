@@ -17,10 +17,10 @@ public class PrimitivityBalanceRowMapper implements RowMapper<PrimitivityBalance
                 rs.getInt("idDetail"),
                 Year.parse(rs.getString("year")),
                 Month.valueOf(rs.getString("month")),
-                rs.getInt("incoming"),
-                rs.getInt("outcoming"),
-                rs.getInt("bAtBeginingYear"),
-                rs.getInt("bAtEndOfYear")
+                rs.getDouble("incoming"),
+                rs.getDouble("outcoming"),
+                rs.getDouble("bAtBeginingYear"),
+                rs.getDouble("bAtEndOfYear")
         );
     }
 }

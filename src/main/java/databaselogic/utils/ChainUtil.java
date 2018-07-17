@@ -37,13 +37,13 @@ public class ChainUtil {
         for (Detail detail: details){
             if (pBalances.stream().anyMatch(p->p.getIdDetail()==detail.getId())) {
                 Balance balance = new Balance();
-                Integer balanceAtBeginningYear = 0;
-                Integer balanceAtEndOfYear = 0;
-                Integer inTotal = 0;
-                Integer outTotal = 0;
+                Double balanceAtBeginningYear = 0.0;
+                Double balanceAtEndOfYear = 0.0;
+                Double inTotal = 0.0;
+                Double outTotal = 0.0;
                 Year year = null;
-                Map<Month, Integer> receipt = new HashMap<>();
-                Map<Month, Integer> consumption = new HashMap<>();
+                Map<Month, Double> incoming = new HashMap<>();
+                Map<Month, Double> outcoming = new HashMap<>();
                 for (PrimitivityBalance primitiv : pBalances) {
                     if (primitiv.getIdDetail() == detail.getId()) {
                         year = primitiv.getYear();
@@ -51,8 +51,8 @@ public class ChainUtil {
                         inTotal += primitiv.getIncoming();
                         outTotal += primitiv.getOutcoming();
                         balanceAtBeginningYear = primitiv.getBalanceAtBeginningYear();
-                        receipt.put(primitiv.getMonth(), primitiv.getIncoming());
-                        consumption.put(primitiv.getMonth(), primitiv.getOutcoming());
+                        incoming.put(primitiv.getMonth(), primitiv.getIncoming());
+                        outcoming.put(primitiv.getMonth(), primitiv.getOutcoming());
                     }
 
                 }
@@ -64,8 +64,8 @@ public class ChainUtil {
                 balance.setOutTotal(outTotal);
                 balance.setBalanceAtBeginningYear(balanceAtBeginningYear);
                 balance.setBalanceAtEndOfYear(balanceAtEndOfYear);
-                balance.setReceipt(receipt);
-                balance.setConsumption(consumption);
+                balance.setIncoming(incoming);
+                balance.setOutcoming(outcoming);
                 balances.add(balance);
             }
         }

@@ -1,36 +1,37 @@
 package domain;
 
 import entities.Detail;
+import javafx.beans.value.ObservableValue;
 
 import java.time.Month;
 import java.time.Year;
 import java.util.HashMap;
 import java.util.Map;
-
+//TODO: may be implements ObservableValue<Balance>, think about this!!! (main task)
 public class Balance {
     private int id;
     private Detail detail;
     private Year year;
-    private Integer balanceAtBeginningYear;
-    private Integer balanceAtEndOfYear;
-    private Integer inTotal;
-    private Integer outTotal;
-    private Map<Month,Integer> receipt;
-    private Map<Month,Integer> consumption;
+    private Double balanceAtBeginningYear;
+    private Double balanceAtEndOfYear;
+    private Double inTotal;
+    private Double outTotal;
+    private Map<Month,Double> incoming; // приход
+    private Map<Month,Double> outcoming; // расход
 
     public Balance() {
         this.id = 0;
         this.detail = null;
         this.year = Year.now();
-        this.balanceAtBeginningYear = 0;
-        this.balanceAtEndOfYear = 0;
-        this.inTotal = 0;
-        this.outTotal = 0;
-        this.receipt  = new HashMap<Month,Integer>();
-        this.consumption = new HashMap<Month,Integer>();
+        this.balanceAtBeginningYear = 0.0;
+        this.balanceAtEndOfYear = 0.0;
+        this.inTotal = 0.0;
+        this.outTotal = 0.0;
+        this.incoming = new HashMap<Month,Double>();
+        this.outcoming = new HashMap<Month,Double>();
     }
 
-    public Balance(int id, Detail detail, Year year, Integer balanceAtBeginningYear, Integer balanceAtEndOfYear, Integer inTotal, Integer outTotal, HashMap<Month, Integer> receipt, HashMap<Month, Integer> consumption) {
+    public Balance(int id, Detail detail, Year year, Double balanceAtBeginningYear, Double balanceAtEndOfYear, Double inTotal, Double outTotal, HashMap<Month, Double> incoming, HashMap<Month, Double> outcoming) {
         this.id = id;
         this.detail = detail;
         this.year = year;
@@ -38,24 +39,8 @@ public class Balance {
         this.balanceAtEndOfYear = balanceAtEndOfYear;
         this.inTotal = inTotal;
         this.outTotal = outTotal;
-        this.receipt = receipt;
-        this.consumption = consumption;
-    }
-
-    public Integer getInTotal() {
-        return inTotal;
-    }
-
-    public void setInTotal(Integer inTotal) {
-        this.inTotal = inTotal;
-    }
-
-    public Integer getOutTotal() {
-        return outTotal;
-    }
-
-    public void setOutTotal(Integer outTotal) {
-        this.outTotal = outTotal;
+        this.incoming = incoming;
+        this.outcoming = outcoming;
     }
 
     public int getId() {
@@ -82,36 +67,60 @@ public class Balance {
         this.year = year;
     }
 
-    public Integer getBalanceAtBeginningYear() {
+    public Double getBalanceAtBeginningYear() {
         return balanceAtBeginningYear;
     }
 
-    public void setBalanceAtBeginningYear(Integer balanceAtBeginningYear) {
+    public void setBalanceAtBeginningYear(Double balanceAtBeginningYear) {
         this.balanceAtBeginningYear = balanceAtBeginningYear;
     }
 
-    public Integer getBalanceAtEndOfYear() {
+    public Double getBalanceAtEndOfYear() {
         return balanceAtEndOfYear;
     }
 
-    public void setBalanceAtEndOfYear(Integer balanceAtEndOfYear) {
+    public void setBalanceAtEndOfYear(Double balanceAtEndOfYear) {
         this.balanceAtEndOfYear = balanceAtEndOfYear;
     }
 
-    public Map<Month, Integer> getReceipt() {
-        return receipt;
+    public Double getInTotal() {
+        return inTotal;
     }
 
-    public void setReceipt(Map<Month, Integer> receipt) {
-        this.receipt = receipt;
+    public void setInTotal(Double inTotal) {
+        this.inTotal = inTotal;
     }
 
-    public Map<Month, Integer> getConsumption() {
-        return consumption;
+    public Double getOutTotal() {
+        return outTotal;
     }
 
-    public void setConsumption(Map<Month, Integer> consumption) {
-        this.consumption = consumption;
+    public void setOutTotal(Double outTotal) {
+        this.outTotal = outTotal;
+    }
+
+    public Map<Month, Double> getIncoming() {
+        return incoming;
+    }
+
+    public void setIncoming(Map<Month, Double> incoming) {
+        this.incoming = incoming;
+    }
+
+    public Map<Month, Double> getOutcoming() {
+        return outcoming;
+    }
+
+    public void setOutcoming(Map<Month, Double> outcoming) {
+        this.outcoming = outcoming;
+    }
+
+    public void updateIncomingValue(Month key, Double value){
+        incoming.replace(key,value);
+    }
+
+    public void updateOutcomingValue(Month key, Double value){
+        outcoming.replace(key,value);
     }
 
     @Override
@@ -124,8 +133,8 @@ public class Balance {
                 ", balanceAtEndOfYear=" + balanceAtEndOfYear +
                 ", inTotal=" + inTotal +
                 ", outTotal=" + outTotal +
-                ", receipt=" + receipt +
-                ", consumption=" + consumption +
+                ", incoming=" + incoming +
+                ", outcoming=" + outcoming +
                 '}';
     }
 }

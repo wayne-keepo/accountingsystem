@@ -167,7 +167,8 @@ public class MainStage {
 
         history.setOnAction(event -> {
             //get detail by selected balance
-            Detail detail = balancesTable.getTable().getSelectionModel().getSelectedItem().getDetail();
+            Balance balance = balancesTable.getTable().getSelectionModel().getSelectedItem();
+            Detail detail = balance.getDetail();
             //get gistory for current detail
             List<AccoutingHistory> ahList = ahController.getByDetail(detail.getId());
             //associated detail with her history
@@ -178,8 +179,10 @@ public class MainStage {
             tmp = new AccoutingHistoryWindow(tmp).show();
             System.out.println(tmp != null);
             // send candidates for update into updating logic
-            if (tmp != null)
+            if (tmp != null) {
+                BalanceService.updAccHistoryByDays(balance,tmp);
                 AccoutingHistoryService.buildSqlForBatchUpdAccHist(tmp);
+            }
         });
 
         horizontal.getChildren().addAll(history, detailDropBox.getDetailsBox(), add, commit);
