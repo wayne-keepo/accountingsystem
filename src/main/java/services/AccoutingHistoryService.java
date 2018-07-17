@@ -52,24 +52,24 @@ public class AccoutingHistoryService {
     }
 
     public static void buildSqlForBatchUpdAccHist(Map<RussianMonths, List<AccoutingHistory>> histories) {
-        String days = "";
+        StringBuilder days = new StringBuilder();
 
         List<String> sqlForUpdate = new ArrayList<>();
 
         for (Map.Entry<RussianMonths, List<AccoutingHistory>> maps : histories.entrySet()) {
 
             for (AccoutingHistory history : maps.getValue()) {
-
+//TODO: change to StringBuilder (faster and less memory-intensive)
                 for (Day day : history.getDays()) {
                     if (!(day.getDayNumber() == 31))
-                        days += String.format(" d%d = %f,", day.getDayNumber(), day.getCount());
+                        days.append(String.format(" d%d = %s,", day.getDayNumber(), String.valueOf(day.getCount())));
                     else
-                        days += String.format(" d%d = %f", day.getDayNumber(), day.getCount());
+                        days.append(String.format(" d%d = %s", day.getDayNumber(), String.valueOf(day.getCount())));
                 }
                 String batchUpdate = String.format("UPDATE AccountingHistory SET %s WHERE id = %d and year = %d and month = %d and acc = %d",
-                        days, history.getId(), history.getYear().getValue(), history.getMonth().getValue(), history.getAcc());
+                        days.toString(), history.getId(), history.getYear().getValue(), history.getMonth().getValue(), history.getAcc());
                 sqlForUpdate.add(batchUpdate);
-                days = "";
+                days.setLength(0);
             }
         }
         batchUpdate(sqlForUpdate);
@@ -90,6 +90,7 @@ public class AccoutingHistoryService {
 
     private static void batchUpdate(List<String> upd) {
         String[] tmp = upd.toArray(new String[upd.size()]);
+        System.out.println(Arrays.toString(tmp));
         controller.batchUpdate(tmp);
     }
 

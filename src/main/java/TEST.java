@@ -26,7 +26,18 @@ public class TEST {
 //        achis.setDetail(detail);
 //        List<AccoutingHistory> ahList = dbachc.getByDetail(1);
 //        Map<RussianMonths, List<AccoutingHistory>> histories = AccoutingHistoryService.historyToMapForAccoutingWindow(ahList);
+        Double d = 10.0512;
+        String s = String.valueOf(d);
+        String s2 = String.format("test %s",s);
+        System.out.println(s2);
 
+        StringBuilder st = new StringBuilder();
+        st.append(123).append(321).append("qweqwe");
+        System.out.println(st+" "+st.length());
+        st.setLength(0);
+        System.out.println(st);
+        st.append(1).append(2).append("zxc");
+        System.out.println(st+" "+st.length());
     }
 
     static class Simple {
