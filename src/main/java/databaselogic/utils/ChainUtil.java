@@ -114,42 +114,6 @@ public class ChainUtil {
 
             balances.add(balance);
         });
-        System.out.println(balances.toString());
-//        for (Detail detail : details) {
-//            if (pBalances.stream().anyMatch(p -> p.getIdDetail() == detail.getId())) {
-//                Balance balance = new Balance();
-//                Double balanceAtBeginningYear = 0.0;
-//                Double balanceAtEndOfYear = 0.0;
-//                Double inTotal = 0.0;
-//                Double outTotal = 0.0;
-//                Year year = null;
-//                Map<Month, Double> incoming = new HashMap<>();
-//                Map<Month, Double> outcoming = new HashMap<>();
-//                for (PrimitivityBalance primitiv : pBalances) {
-//                    if (primitiv.getIdDetail() == detail.getId()) {
-//                        year = primitiv.getYear();
-////                        id = primitiv.getId();
-//                        inTotal += primitiv.getIncoming();
-//                        outTotal += primitiv.getOutcoming();
-//                        balanceAtBeginningYear = primitiv.getBalanceAtBeginningYear();
-//                        incoming.put(primitiv.getMonth(), primitiv.getIncoming());
-//                        outcoming.put(primitiv.getMonth(), primitiv.getOutcoming());
-//                    }
-//
-//                }
-//                balanceAtEndOfYear = inTotal - outTotal;
-//                balance.setDetail(detail);
-//                balance.setId(detail.getId());
-//                balance.setYear(year);
-//                balance.setInTotal(inTotal);
-//                balance.setOutTotal(outTotal);
-//                balance.setBalanceAtBeginningYear(balanceAtBeginningYear);
-//                balance.setBalanceAtEndOfYear(balanceAtEndOfYear);
-//                balance.setIncoming(incoming);
-//                balance.setOutcoming(outcoming);
-//                balances.add(balance);
-//            }
-//        }
         return balances;
     }
 

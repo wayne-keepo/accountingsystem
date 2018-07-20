@@ -4,15 +4,19 @@ import databaselogic.Connector;
 import databaselogic.interfaces.DBOperations;
 import databaselogic.mappers.DetailRowMapper;
 import entities.Detail;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import projectConstants.DBConstants;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 //table detail(id,title,count,cost,descriptors)
 public class DBDetailController implements DBOperations<Detail> {
     private JdbcTemplate template;
 
-    public DBDetailController(){
+    public DBDetailController() {
         template = Connector.getTemplate();
     }
 
@@ -64,6 +68,28 @@ public class DBDetailController implements DBOperations<Detail> {
                 DBConstants.SINGLE_DELETE_DETAIL,
                 id
         );
-        return flag>0;
+        return flag > 0;
+    }
+
+    public void bulkUpdate(List<Detail> details) {
+        template.batchUpdate(
+                DBConstants.SINGLE_UPDATE_DETAIL,
+                new BatchPreparedStatementSetter() {
+                    @Override
+                    public void setValues(PreparedStatement ps, int i) throws SQLException {
+                        Detail d = details.get(i);
+                        ps.setString(1, d.getTitle());
+                        ps.setDouble(2, d.getCount());
+                        ps.setBigDecimal(3, d.getCost());
+                        ps.setString(4, d.getDescriptions());
+                        ps.setInt(5, d.getId());
+                    }
+
+                    @Override
+                    public int getBatchSize() {
+                        return details.size();
+                    }
+                }
+        );
     }
 }

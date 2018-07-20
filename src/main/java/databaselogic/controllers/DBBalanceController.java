@@ -19,9 +19,9 @@ public class DBBalanceController implements DBOperations<PrimitivityBalance> {
     public DBBalanceController() {
         this.template = Connector.getTemplate();
     }
-// (iddetail,year,month,incoming,outcoming,bAtBeginingYear,bAtEndOfYear) VALUES(?,?,?,?,?,0,0)
+
     public boolean updateAll(List<PrimitivityBalance> pBalances){
-        //incoming = ?, outcoming = ?, bAtBeginingYear = ?, bAtEndOfYear=? where IDdetail = ? AND month = ?
+
         int[] updateCounts = template.batchUpdate(DBConstants.SINGLE_UPDATE_BALANCE, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {

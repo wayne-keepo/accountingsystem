@@ -22,10 +22,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import projectConstants.CustomConstants;
-import services.AccoutingHistoryService;
-import services.BalanceService;
-import services.ElectrodeService;
-import services.SummaryService;
+import services.*;
 import views.buttons.AddButton;
 import views.buttons.CommitButton;
 import views.buttons.DeleteButton;
@@ -142,7 +139,7 @@ public class MainStage {
         Button history = new Button("История");
         Button add = new AddButton().getAdd();
         Button commit = new CommitButton().getCommit();
-
+// think can delete it , hmmm ???
         commit.setOnAction(event -> {
             Balance balance = balancesTable.getTable().getSelectionModel().getSelectedItem();
             BalanceService.updateBalance(balance);
@@ -167,7 +164,7 @@ public class MainStage {
                     pBalances,
                     histories
             );
-            if (balances!=null) {
+            if (balances != null) {
                 balancesTable.getTable().getItems().addAll(balances);
             }
         });
@@ -188,8 +185,11 @@ public class MainStage {
             System.out.println(tmp != null);
             // send candidates for update into updating logic
             if (tmp != null) {
-                BalanceService.updAccHistoryByDays(balance,tmp);
-                balancesTable.getTable().getItems().set(position,balance);
+                // upd history by month
+                BalanceService.updAccHistoryByDays(balance, tmp);
+                // rewrite balance on table
+                balancesTable.getTable().getItems().set(position, balance);
+                // upd hist on db
                 AccoutingHistoryService.buildSqlForBatchUpdAccHist(tmp);
             }
         });
@@ -200,7 +200,6 @@ public class MainStage {
     }
 
     private void addLogicOnCostDetailTab(Tab tab) {
-//        detailController = new DBDetailController();
         tab.setContent(paneForCostDetail);
         paneForCostDetail.setCenter(costDetailTable.getCostDetailTable());
 
@@ -225,29 +224,39 @@ public class MainStage {
         paneForCostDetail.setBottom(horizontal);
 
         add.setOnAction(event -> {
+            if (title.getText().isEmpty() || count.getText().isEmpty() || cost.getText().isEmpty()) {
+                return;
+            }
             Detail d = new Detail(
                     title.getText(),
                     Double.valueOf(count.getText()),
                     new BigDecimal(cost.getText()),
                     descriptions.getText()
             );
-            costDetailTable.getCostDetailTable().getItems().add(d);
             detailController.save(d);
+            d = detailController.get(d.getTitle());
+            costDetailTable.getCostDetailTable().getItems().add(d);
             title.clear();
             count.clear();
             cost.clear();
             descriptions.clear();
+
         });
+
         delete.setOnAction(event -> {
-            TableView tmp = costDetailTable.getCostDetailTable();
-            Detail d = (Detail) tmp.getSelectionModel().getSelectedItem();
-            tmp.getItems().remove(d);
+            if (costDetailTable.getCostDetailTable().getSelectionModel().getSelectedItem() == null)
+                return;
+            Detail d = costDetailTable.getCostDetailTable().getSelectionModel().getSelectedItem();
+            costDetailTable.getCostDetailTable().getItems().remove(d);
             detailController.delete(d.getId());
         });
-//        commit.setOnAction(event -> {
-//            List<Detail> det = costDetailTable.getCostDetailTable().getItems().stream().filter(d->d.getId()==0).collect(Collectors.toList());
-//            System.out.println(det.toString());
-//        });
+
+        commit.setOnAction(event -> {
+            if (costDetailTable.getChanges().isEmpty())
+                return;
+            DetailService.findCandidatesOnUpdating(costDetailTable.getCostDetailTable().getItems(), costDetailTable.getChanges());
+            costDetailTable.clearChanges();
+        });
 
     }
 
