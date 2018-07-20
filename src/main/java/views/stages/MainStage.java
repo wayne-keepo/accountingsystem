@@ -175,6 +175,7 @@ public class MainStage {
         history.setOnAction(event -> {
             //get detail by selected balance
             Balance balance = balancesTable.getTable().getSelectionModel().getSelectedItem();
+            int position = balancesTable.getTable().getItems().indexOf(balance);
             Detail detail = balance.getDetail();
             //get gistory for current detail
             List<AccoutingHistory> ahList = ahController.getByDetail(detail.getId());
@@ -188,10 +189,8 @@ public class MainStage {
             // send candidates for update into updating logic
             if (tmp != null) {
                 BalanceService.updAccHistoryByDays(balance,tmp);
+                balancesTable.getTable().getItems().set(position,balance);
                 AccoutingHistoryService.buildSqlForBatchUpdAccHist(tmp);
-
-                balancesTable.getTable().getItems().remove(balance);
-                balancesTable.getTable().getItems().add(balance);
             }
         });
 

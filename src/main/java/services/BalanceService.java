@@ -39,53 +39,67 @@ public class BalanceService {
         return pBalances;
     }
 
-    public static ObservableList<Balance> buildBalances(){
+    public static ObservableList<Balance> buildBalances() {
         List<PrimitivityBalance> pBalances = controller.getAll();
-        if (pBalances==null)
+        if (pBalances == null)
             return null;
         List<AccoutingHistory> histories = AccoutingHistoryService.getAll();
         List<Detail> details = DetailService.getAll();
-        List<Balance> balances = ChainUtil.createBalanceChain(details,pBalances,histories);
-        System.out.println("Balances from BalanceService#buildBalances()\n"+balances.toString());
+        List<Balance> balances = ChainUtil.createBalanceChain(details, pBalances, histories);
+        System.out.println("Balances from BalanceService#buildBalances()\n" + balances.toString());
         return FXCollections.observableArrayList(balances);
 
     }
 
-    public static void updateBalance(Balance balance){
+    public static void updateBalance(Balance balance) {
         List<PrimitivityBalance> pBalances = decompositionBalance(balance);
         controller.updateAll(pBalances);
     }
-//(int idDetail, Year year, Month month, double incoming, double outcoming, double balanceAtBeginningYear, double balanceAtEndOfYear)
-    private static List<PrimitivityBalance> decompositionBalance(Balance balance){
+
+    //(int idDetail, Year year, Month month, double incoming, double outcoming, double balanceAtBeginningYear, double balanceAtEndOfYear)
+    private static List<PrimitivityBalance> decompositionBalance(Balance balance) {
         List<PrimitivityBalance> pBalances = new ArrayList<>();
-        for (Map.Entry<Month,Double> month: balance.getOutcoming().entrySet()){
-           pBalances.add(
-                   new PrimitivityBalance(
-                           balance.getDetail().getId(),
-                           balance.getYear(),
-                           month.getKey(),
-                           balance.getIncoming().get(month.getKey()),
-                           month.getValue(),
-                           balance.getBalanceAtBeginningYear(),
-                           balance.getBalanceAtEndOfYear()
-                   )
-           );
+        for (Map.Entry<Month, Double> month : balance.getOutcoming().entrySet()) {
+            pBalances.add(
+                    new PrimitivityBalance(
+                            balance.getDetail().getId(),
+                            balance.getYear(),
+                            month.getKey(),
+                            balance.getIncoming().get(month.getKey()),
+                            month.getValue(),
+                            balance.getBalanceAtBeginningYear(),
+                            balance.getBalanceAtEndOfYear()
+                    )
+            );
         }
         return pBalances;
     }
 
+    private static void recalculateTotal(Balance balance) {
+        double incSum = 0.0, outSum = 0.0;
+        for (Map.Entry<Month, Double> i : balance.getIncoming().entrySet()) {
+            incSum += i.getValue();
+        }
+        for (Map.Entry<Month, Double> i : balance.getOutcoming().entrySet()) {
+            outSum += i.getValue();
+        }
+        balance.setInTotal(incSum);
+        balance.setOutTotal(outSum);
+
+    }
 
     // receipt;  приход
     // consumption; расход
     public static void updAccHistoryByDays(Balance balance, Map<RussianMonths, List<AccoutingHistory>> candidates) {
-        System.out.println("Run update history of months"+candidates.keySet().toString());
+        System.out.println("Run update history of months" + candidates.keySet().toString());
         double[] sums;
-        for (Map.Entry<RussianMonths,List<AccoutingHistory>> candidate: candidates.entrySet()){
+        for (Map.Entry<RussianMonths, List<AccoutingHistory>> candidate : candidates.entrySet()) {
             Month key = Searcher.searchEngMonthByRus(candidate.getKey());
             sums = AccoutingHistoryService.calculate(candidate.getValue());
-            balance.updateIncomingValue(key,sums[0]);
-            balance.updateOutcomingValue(key,sums[1]);
+            balance.updateIncomingValue(key, sums[0]);
+            balance.updateOutcomingValue(key, sums[1]);
         }
+        recalculateTotal(balance);
         System.out.println("End update history of months");
         updateBalance(balance);
 
