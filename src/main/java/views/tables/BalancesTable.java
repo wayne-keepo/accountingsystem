@@ -13,6 +13,8 @@ import javafx.util.Callback;
 import services.BalanceService;
 import views.tables.utils.Searcher;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Year;
 import java.util.Arrays;
 import java.util.List;
@@ -148,8 +150,8 @@ public class BalancesTable {
                     String columnName = param.getTableColumn().getText();
                     Balance balance = (Balance) param.getValue();
                     Double count = Searcher.findValueByMonth(balance, columnName, parentColumnName);
-
-                    return new SimpleStringProperty(Double.toString(Math.ceil(count)));
+                    count = new BigDecimal(count).setScale(3, RoundingMode.UP).doubleValue();
+                    return new SimpleStringProperty(Double.toString(count));
                 }
             });
     }

@@ -3,6 +3,7 @@ package views.tables;
 import databaselogic.controllers.DBDetailController;
 import entities.Detail;
 import domain.InitializerForTest;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -56,8 +57,17 @@ public class CostDetailTable {
         });
 
         TableColumn<Detail, Double> count = new TableColumn<>("Количество");
-        count.setCellValueFactory(new PropertyValueFactory<>("count"));
-
+        count.setCellValueFactory(cellData-> new SimpleObjectProperty<Double>(cellData.getValue().getCount()));
+        count.setCellFactory(cell -> new TableCell<Detail, Double>() {
+            @Override
+            protected void updateItem(Double item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty)
+                    setText(null);
+                else
+                    setText(String.valueOf(item));
+            }
+        });
         count.setOnEditCommit(event -> {
             Double value = event.getNewValue();
             event.getRowValue().setCount(value);
@@ -67,7 +77,17 @@ public class CostDetailTable {
         });
 
         TableColumn<Detail, BigDecimal> cost = new TableColumn<>("Стоимость");
-        cost.setCellValueFactory(new PropertyValueFactory<>("cost"));
+        cost.setCellValueFactory(data->new SimpleObjectProperty<BigDecimal>(data.getValue().getCost()));
+        cost.setCellFactory(cell-> new TableCell<Detail,BigDecimal>(){
+            @Override
+            protected void updateItem(BigDecimal item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item==null||empty)
+                    setText(null);
+                else
+                    setText(item.toString());
+            }
+        });
         cost.setOnEditCommit(event -> {
             BigDecimal value = event.getNewValue();
             event.getRowValue().setCost(value);
@@ -86,9 +106,11 @@ public class CostDetailTable {
     public List<Integer> getChanges() {
         return changes;
     }
-    public  void clearChanges(){
+
+    public void clearChanges() {
         changes.clear();
     }
+
     public TableView<Detail> getCostDetailTable() {
         return costDetailTable;
     }
