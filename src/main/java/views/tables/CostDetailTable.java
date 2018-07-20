@@ -16,12 +16,12 @@ import javafx.util.Callback;
 import services.DetailService;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CostDetailTable {
     private TableView<Detail> costDetailTable;
-    private final DBDetailController dbController;
     private List<Integer> changes;
 
     private void createTable() {
@@ -35,7 +35,6 @@ public class CostDetailTable {
     }
 
     public CostDetailTable() {
-        dbController = new DBDetailController();
         createTable();
     }
 
@@ -58,14 +57,19 @@ public class CostDetailTable {
 
         TableColumn<Detail, Double> count = new TableColumn<>("Количество");
         count.setCellValueFactory(cellData-> new SimpleObjectProperty<Double>(cellData.getValue().getCount()));
-        count.setCellFactory(cell -> new TableCell<Detail, Double>() {
+        count.setCellFactory(new Callback<TableColumn<Detail, Double>, TableCell<Detail, Double>>() {
             @Override
-            protected void updateItem(Double item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null || empty)
-                    setText(null);
-                else
-                    setText(String.valueOf(item));
+            public TableCell<Detail, Double> call(TableColumn<Detail, Double> param) {
+                return new TableCell<Detail,Double>(){
+                    @Override
+                    protected void updateItem(Double item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item!=null)
+                            setText(String.valueOf(
+                                    new BigDecimal(item).setScale(3, RoundingMode.UP).toString()
+                            ));
+                    }
+                };
             }
         });
         count.setOnEditCommit(event -> {
@@ -75,17 +79,21 @@ public class CostDetailTable {
             if (!changes.contains(chId))
                 changes.add(chId);
         });
+        count.setEditable(true);
 
         TableColumn<Detail, BigDecimal> cost = new TableColumn<>("Стоимость");
         cost.setCellValueFactory(data->new SimpleObjectProperty<BigDecimal>(data.getValue().getCost()));
-        cost.setCellFactory(cell-> new TableCell<Detail,BigDecimal>(){
+        cost.setCellFactory(new Callback<TableColumn<Detail, BigDecimal>, TableCell<Detail, BigDecimal>>() {
             @Override
-            protected void updateItem(BigDecimal item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item==null||empty)
-                    setText(null);
-                else
-                    setText(item.toString());
+            public TableCell<Detail, BigDecimal> call(TableColumn<Detail, BigDecimal> param) {
+                return new TableCell<Detail,BigDecimal>(){
+                    @Override
+                    protected void updateItem(BigDecimal item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item!=null)
+                            setText(item.toString());
+                    }
+                };
             }
         });
         cost.setOnEditCommit(event -> {

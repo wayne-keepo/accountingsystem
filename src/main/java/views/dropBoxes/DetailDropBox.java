@@ -28,7 +28,12 @@ public class DetailDropBox {
         for (Detail detail: details)
             box.getItems().add(detail);
     }
-
+    public void deleteDetail(Detail detail){
+        detailsBox.getItems().remove(detail);
+    }
+    public void addDetail(Detail detail){
+        detailsBox.getItems().add(detail);
+    }
     public ComboBox<Detail> getDetailsBox() {
         return detailsBox;
     }

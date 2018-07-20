@@ -74,7 +74,7 @@ public class Searcher {
     public static List<DetailElectrod> findProductInfo(List<DetailElectrod> items, String type) {
         List<DetailElectrod> electrods = new ArrayList<>();
         for (DetailElectrod electrod : items) {
-            if (electrod.getElectrod().getType() == type)
+            if (electrod.getElectrod().getType().equals(type))
                 electrods.add(electrod);
         }
         return electrods;

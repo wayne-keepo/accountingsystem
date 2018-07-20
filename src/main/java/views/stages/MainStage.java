@@ -140,15 +140,17 @@ public class MainStage {
         Button add = new AddButton().getAdd();
         Button commit = new CommitButton().getCommit();
 // think can delete it , hmmm ???
-        commit.setOnAction(event -> {
-            Balance balance = balancesTable.getTable().getSelectionModel().getSelectedItem();
-            BalanceService.updateBalance(balance);
-        });
+//        commit.setOnAction(event -> {
+//            Balance balance = balancesTable.getTable().getSelectionModel().getSelectedItem();
+//            BalanceService.updateBalance(balance);
+//        });
 
         add.setOnAction(event -> {
             //get detail from drop box
             //TODO: in future delete selected Detail from dropbox
             Detail detail = detailDropBox.getDetailsBox().getSelectionModel().getSelectedItem();
+            if (detail == null)
+                return;
             // build accounting history for detail
             AccoutingHistoryService.buildSqlForBatchInsertAccHist(detail);
             List<AccoutingHistory> histories = AccoutingHistoryService.getHistoryByDetail(detail);
@@ -166,12 +168,15 @@ public class MainStage {
             );
             if (balances != null) {
                 balancesTable.getTable().getItems().addAll(balances);
+                detailDropBox.deleteDetail(detail);
             }
         });
 
         history.setOnAction(event -> {
             //get detail by selected balance
             Balance balance = balancesTable.getTable().getSelectionModel().getSelectedItem();
+            if (balance == null)
+                return;
             int position = balancesTable.getTable().getItems().indexOf(balance);
             Detail detail = balance.getDetail();
             //get gistory for current detail
@@ -236,6 +241,7 @@ public class MainStage {
             detailController.save(d);
             d = detailController.get(d.getTitle());
             costDetailTable.getCostDetailTable().getItems().add(d);
+            detailDropBox.addDetail(d);
             title.clear();
             count.clear();
             cost.clear();
