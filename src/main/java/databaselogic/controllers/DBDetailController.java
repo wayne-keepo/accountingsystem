@@ -11,6 +11,7 @@ import projectConstants.DBConstants;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 //table detail(id,title,count,cost,descriptors)
 public class DBDetailController implements DBOperations<Detail> {
@@ -18,6 +19,12 @@ public class DBDetailController implements DBOperations<Detail> {
 
     public DBDetailController() {
         template = Connector.getTemplate();
+    }
+
+    //delete after test
+    public List<Map<String,Object>> test(){
+        List<Map<String,Object>> test = template.queryForList("SELECT * FROM Detail");
+        return test;
     }
 
     @Override

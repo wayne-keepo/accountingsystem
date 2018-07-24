@@ -19,8 +19,8 @@ public class CreateColumnForEMSAndESMGM {
         id.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DetailElectrod, Integer>, ObservableValue<Integer>>() {
             @Override
             public ObservableValue<Integer> call(TableColumn.CellDataFeatures<DetailElectrod, Integer> param) {
-                int id = param.getValue().getDetail().getId();
-                return new SimpleObjectProperty<Integer>(id);
+//                int id = param.getValue().getDetail().getId();
+                return new SimpleObjectProperty<Integer>(null);
             }
         });
 
@@ -28,8 +28,8 @@ public class CreateColumnForEMSAndESMGM {
         title.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DetailElectrod, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<DetailElectrod, String> param) {
-                String title = param.getValue().getDetail().getTitle();
-                return new SimpleStringProperty(title);
+//                String title = param.getValue().getDetail().getTitle();
+                return new SimpleStringProperty(null);
             }
         });
         TableColumn<DetailElectrod, BigDecimal> cost = null;
@@ -40,7 +40,7 @@ public class CreateColumnForEMSAndESMGM {
                 @Override
                 public ObservableValue<Integer> call(TableColumn.CellDataFeatures<DetailElectrod, Integer> param) {
                     DetailElectrod de = param.getValue();
-                    return new SimpleObjectProperty<Integer>(de.getCountDetailForElectrode());
+                    return new SimpleObjectProperty<Integer>(null);
                 }
             });
 
@@ -48,8 +48,8 @@ public class CreateColumnForEMSAndESMGM {
             cost.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DetailElectrod, BigDecimal>, ObservableValue<BigDecimal>>() {
                 @Override
                 public ObservableValue<BigDecimal> call(TableColumn.CellDataFeatures<DetailElectrod, BigDecimal> param) {
-                    BigDecimal cost = param.getValue().getDetail().getCost();
-                    return new SimpleObjectProperty<BigDecimal>(cost);
+//                    BigDecimal cost = param.getValue().getDetail().getCost();
+                    return new SimpleObjectProperty<BigDecimal>(null);
                 }
             });
         }
@@ -59,7 +59,7 @@ public class CreateColumnForEMSAndESMGM {
                 @Override
                 public ObservableValue<Integer> call(TableColumn.CellDataFeatures<DetailElectrod, Integer> param) {
                     DetailElectrod de = param.getValue();
-                    return new SimpleObjectProperty<Integer>(de.getCountDetailForElectrode());
+                    return new SimpleObjectProperty<Integer>(null);
 
                 }
             });
@@ -67,8 +67,8 @@ public class CreateColumnForEMSAndESMGM {
             cost.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DetailElectrod, BigDecimal>, ObservableValue<BigDecimal>>() {
                 @Override
                 public ObservableValue<BigDecimal> call(TableColumn.CellDataFeatures<DetailElectrod, BigDecimal> param) {
-                    BigDecimal cost = param.getValue().getDetail().getCost();
-                    return new SimpleObjectProperty<BigDecimal>(cost);
+//                    BigDecimal cost = param.getValue().getDetail().getCost();
+                    return new SimpleObjectProperty<BigDecimal>(null);
                 }
             });
         }

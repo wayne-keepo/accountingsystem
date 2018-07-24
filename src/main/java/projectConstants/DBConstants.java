@@ -25,13 +25,15 @@ public class DBConstants {
     public static final String SELECT_ALL_BALANCE_BY_DETAIL = "SELECT * FROM BALANCE WHERE IDdetail = ?";
     public static final String SELECT_ALL_BALANCE = "SELECT * FROM BALANCE";
 
-    // ElectrodeDetail(idProduct, idDetail,count)
-    public static final String INSERT_ELECTRODE_DETAIL = "INSERT INTO ElectrodeDetail(idProduct, idDetail,count) VALUES(?,?,?)";
+    // ElectrodeDetail(idDetail,electrodeType,count)
+    public static final String INSERT_ELECTRODE_DETAIL = "INSERT INTO ElectrodeDetail(idDetail,electrodeType,count) VALUES(?,?,?)";
     public static final String UPDATE_ELECTRODE_DETAIL = "UPDATE ElectrodeDetail SET count = ? WHERE idProduct = ? AND idDetail = ?";
-    public static final String SELECT_ALL_ELECTRODE_DETAIL = "SELECT * FROM ElectrodeDetail";
-    public static final String DELETE_ELECTRODE_DETAIL = "DELETE FROM ElectrodeDetail WHERE idProduct = ? AND idDetail = ?";
-    public static final String SELECT_ELECTRODE_DETAIL_BY_IDS = "SELECT * FROM ElectrodeDetail WHERE idProduct = ? AND idDetail = ?";
+    public static final String DELETE_ELECTRODE_DETAIL_BY_ID = "DELETE FROM ElectrodeDetail WHERE id = ?";
 
+    public static final String SELECT_ALL_ELECTRODE_DETAIL = "SELECT * FROM ElectrodeDetail";
+    public static final String SELECT_DETAIL_ELECTRODE_BY_DETAIL_ID_AND_TYPE = "SELECT * FROM ElectrodeDetail WHERE idDetail = ? AND electrodeType = ?";
+    public static final String SELECT_DETAIL_ELECTRODE_BY_TYPE = "SELECT * FROM ElectrodeDetail WHERE electrodeType = ?";
+    public static final String SELECT_DETAIL_ELECTRODE_BY_ID = "SELECT * FROM ElectrodeDetail WHERE id = ?";
 
     // Summary id idElectrode produceDate Customer consumeDate Note
     public static final String SELECT_SUMMARY_BY_ELECTRODE_ID = "SELECT * FROM Summary WHERE idElectrode = ?";
@@ -62,7 +64,4 @@ public class DBConstants {
     public static final String SELECT_ACCOUNTING_HISTORY ="SELECT * FROM AccountingHistory";
     public static final String SELECT_ACCOUNTING_HISTORY_BY_DETAIL_ID ="SELECT * FROM AccountingHistory WHERE idDetail = ?";
     public static final String DELETE_ACCOUNTING_HISTORY = "DELETE TABLE AccountingHistory WHERE id = ?";
-
-
-
 }

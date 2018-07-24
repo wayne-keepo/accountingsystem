@@ -26,8 +26,8 @@ public class ComponentsConsumptionESMGTable {
         table.getColumns().addAll(createColumns());
         table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         //delete after test
-        List<DetailElectrod> de = Searcher.findProductInfo(InitializerForTest.getTestDE(),ESMG);
-        table.getItems().addAll(de);
+//        List<DetailElectrod> de = Searcher.findProductInfo(InitializerForTest.getTestDE(),ESMG);
+//        table.getItems().addAll(de);
 
     }
 

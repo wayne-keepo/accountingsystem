@@ -4,6 +4,7 @@ import domain.Day;
 import entities.AccoutingHistory;
 import entities.Detail;
 import services.AccoutingHistoryService;
+import services.DetailElectrodeService;
 import views.modalWindows.AccoutingHistoryWindow;
 import views.tables.utils.RussianMonths;
 
@@ -19,7 +20,7 @@ public class TEST {
     public static void main(String[] args) {
 
         //Detail tests
-//        DBDetailController dbDetailController = new DBDetailController();
+        DBDetailController dbDetailController = new DBDetailController();
 //        Detail detail = dbDetailController.get(1);
 
         //Accounting History tests
@@ -40,14 +41,29 @@ public class TEST {
 //        System.out.println(st);
 //        st.append(1).append(2).append("zxc");
 //        System.out.println(st+" "+st.length());
+//
+//        double templateDouble = 12.1354678578862;
+//
+//        System.out.println("Template double: " + templateDouble);
+//
+//        double newDouble = new BigDecimal(templateDouble).setScale(3, RoundingMode.UP).doubleValue();
+//
+//        System.out.println("New double: " + newDouble);
+//        List<Map<String,Object>> test = dbDetailController.test();
+//        Map<String,Object> tm = test.get(0);
+        System.out.println(DetailElectrodeService.getAllDEPrimitivs().toString());
+//        System.out.println(c.getSimpleName());
+//        System.out.println(tm.toString());
+//        dbDetailController.test().forEach(m->{
+//            m.forEach((key, value) -> {
+//                System.out.println(
+//                        " Key: "+key+" Key Class: "+key.getClass().getSimpleName()+
+//                        " Value: "+value+" Value Class: "+value.getClass().getName()+"\n");
+//            });
+//            System.out.println(m.keySet()+"\n"+m.values().toString());
+//        });
+//        System.out.println(dbDetailController.test().toString());
 
-        double templateDouble = 12.1354678578862;
-
-        System.out.println("Template double: " + templateDouble);
-
-        double newDouble = new BigDecimal(templateDouble).setScale(3, RoundingMode.UP).doubleValue();
-
-        System.out.println("New double: " + newDouble);
     }
 
     static class Simple {

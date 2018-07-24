@@ -6,6 +6,7 @@ import domain.DetailElectrod;
 import domain.Electrod;
 import domain.ElectrodeSummary;
 import entities.*;
+import projectConstants.CustomConstants;
 import services.AccoutingHistoryService;
 
 import java.math.BigDecimal;
@@ -19,21 +20,34 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import static projectConstants.CustomConstants.ESMG;
+import static projectConstants.CustomConstants.ESMG_M;
+
 public class ChainUtil {
 
-    public static List<DetailElectrod> createChainElectrodeDetail(List<Detail> details, List<Electrod> electrods, List<PrimitiveElectrodeDetail> primitivs) {
-        List<DetailElectrod> detailElectrods = new ArrayList<>();
-        for (PrimitiveElectrodeDetail primitive : primitivs) {
+    public static List<DetailElectrod> createChainDetailElectrode(List<Detail> details, List<DetailElectrodePrimitive> primitivs) {
+        List<DetailElectrod> des = new ArrayList<>();
+
+        Map<String,List<DetailElectrodePrimitive>> depByType = new HashMap<>();
+
+        depByType.put(
+                ESMG,
+                primitivs.stream().filter(p->p.getElectrodeType().equals(ESMG)).collect(Collectors.toList())
+        );
+        depByType.put(
+                ESMG_M,
+                primitivs.stream().filter(p->p.getElectrodeType().equals(ESMG_M)).collect(Collectors.toList())
+        );
+
+        depByType.forEach((k,v)->{
+            Map<Detail,Double> dd = new HashMap<>();
+
             DetailElectrod de = new DetailElectrod();
-            Detail detail = details.stream().findFirst().filter(e -> e.getId() == primitive.getIdDetail()).get();
-            Electrod electrod = electrods.stream().filter(e -> e.getId() == primitive.getIdElectrode()).findFirst().get();
-            de.setElectrod(electrod);
-            de.setDetail(detail);
-            de.setCountDetailForElectrode(primitive.getCount());
-            detailElectrods.add(de);
-        }
-        if (!detailElectrods.isEmpty())
-            return detailElectrods;
+            de.setElectrodeType(k);
+            de.setDetails(v.stream().collect(Collectors.toMap(details.)));
+            des.add(de);
+        });
+
         return null;
     }
 

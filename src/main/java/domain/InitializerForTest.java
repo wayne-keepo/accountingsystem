@@ -117,26 +117,4 @@ public class InitializerForTest {
         return FXCollections.observableArrayList(electrodeSummaries);
     }
 
-    public static ObservableList<DetailElectrod> getTestDE() {
-        ObservableList<DetailElectrod> des = FXCollections.observableArrayList();
-        init(des);
-        return des;
-    }
-
-    private static void init(ObservableList<DetailElectrod> des){
-        for (Detail detail: details){
-            des.addAll(
-                    new DetailElectrod(
-                            detail,
-                            e1,
-                            100
-                            ),
-                    new DetailElectrod(
-                            detail,
-                            e2,
-                            200
-                            )
-            );
-        }
-    }
 }
