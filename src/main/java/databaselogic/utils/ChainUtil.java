@@ -28,27 +28,36 @@ public class ChainUtil {
     public static List<DetailElectrod> createChainDetailElectrode(List<Detail> details, List<DetailElectrodePrimitive> primitivs) {
         List<DetailElectrod> des = new ArrayList<>();
 
-        Map<String,List<DetailElectrodePrimitive>> depByType = new HashMap<>();
+        Map<String, List<DetailElectrodePrimitive>> depByType = new HashMap<>();
 
         depByType.put(
                 ESMG,
-                primitivs.stream().filter(p->p.getElectrodeType().equals(ESMG)).collect(Collectors.toList())
+                primitivs.stream().filter(p -> p.getElectrodeType().equals(ESMG)).collect(Collectors.toList())
         );
         depByType.put(
                 ESMG_M,
-                primitivs.stream().filter(p->p.getElectrodeType().equals(ESMG_M)).collect(Collectors.toList())
+                primitivs.stream().filter(p -> p.getElectrodeType().equals(ESMG_M)).collect(Collectors.toList())
         );
 
-        depByType.forEach((k,v)->{
-            Map<Detail,Double> dd = new HashMap<>();
-
-            DetailElectrod de = new DetailElectrod();
-            de.setElectrodeType(k);
-            de.setDetails(v.stream().collect(Collectors.toMap(details.)));
-            des.add(de);
+        depByType.forEach((k, v) -> {
+            if (!v.isEmpty()) {
+                Map<Detail, Double> dd = new HashMap<>();
+                List<Integer> ids = new ArrayList<>();
+                v.forEach(p -> ids.add(p.getId()));
+                v.forEach(p -> {
+                    details.forEach(d -> {
+                        if (d.getId() == p.getIdDetail())
+                            dd.put(d, p.getCount());
+                    });
+                });
+                DetailElectrod de = new DetailElectrod();
+                de.setElectrodeType(k);
+                de.setDetails(dd);
+                de.setIds(ids);
+                des.add(de);
+            }
         });
-
-        return null;
+        return des;
     }
 
     public static void createAccHistoryChain(List<Detail> details, List<AccoutingHistory> histories) {

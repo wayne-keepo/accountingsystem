@@ -1,6 +1,8 @@
 import databaselogic.controllers.DBAccountingHistoryController;
 import databaselogic.controllers.DBDetailController;
+import databaselogic.utils.ChainUtil;
 import domain.Day;
+import domain.DetailElectrod;
 import entities.AccoutingHistory;
 import entities.Detail;
 import services.AccoutingHistoryService;
@@ -51,7 +53,12 @@ public class TEST {
 //        System.out.println("New double: " + newDouble);
 //        List<Map<String,Object>> test = dbDetailController.test();
 //        Map<String,Object> tm = test.get(0);
-        System.out.println(DetailElectrodeService.getAllDEPrimitivs().toString());
+//        System.out.println(DetailElectrodeService.getAllDEPrimitivs().toString());
+        List<DetailElectrod> de = ChainUtil.createChainDetailElectrode(
+                dbDetailController.getAll(),
+                DetailElectrodeService.getAllDEPrimitivs()
+        );
+        System.out.println(de.toString());
 //        System.out.println(c.getSimpleName());
 //        System.out.println(tm.toString());
 //        dbDetailController.test().forEach(m->{

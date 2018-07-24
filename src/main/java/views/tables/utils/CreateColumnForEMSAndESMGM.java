@@ -1,6 +1,8 @@
 package views.tables.utils;
 
 import domain.DetailElectrod;
+import entities.Detail;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -9,70 +11,25 @@ import javafx.util.Callback;
 import projectConstants.CustomConstants;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CreateColumnForEMSAndESMGM {
 
-    public List<TableColumn<DetailElectrod, ?>> createColumns(String type) {
-        TableColumn<DetailElectrod, Integer> id = new TableColumn<>("№ п/п");
-        id.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DetailElectrod, Integer>, ObservableValue<Integer>>() {
-            @Override
-            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<DetailElectrod, Integer> param) {
-//                int id = param.getValue().getDetail().getId();
-                return new SimpleObjectProperty<Integer>(null);
-            }
-        });
+    public List<TableColumn<Detail, ?>> createColumns(DetailElectrod de) {
 
-        TableColumn<DetailElectrod, String> title = new TableColumn<>("Название");
-        title.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DetailElectrod, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<DetailElectrod, String> param) {
-//                String title = param.getValue().getDetail().getTitle();
-                return new SimpleStringProperty(null);
-            }
-        });
-        TableColumn<DetailElectrod, BigDecimal> cost = null;
-        TableColumn<DetailElectrod, Integer> electrod = null;
-        if (type == CustomConstants.ESMG) {
-            electrod = new TableColumn<>("ЭСМГ");
-            electrod.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DetailElectrod, Integer>, ObservableValue<Integer>>() {
-                @Override
-                public ObservableValue<Integer> call(TableColumn.CellDataFeatures<DetailElectrod, Integer> param) {
-                    DetailElectrod de = param.getValue();
-                    return new SimpleObjectProperty<Integer>(null);
-                }
-            });
+        TableColumn<Detail,Integer> id = new TableColumn<>("№ п/п");
+        id.setCellValueFactory(value-> new SimpleObjectProperty<Integer>(value.getValue().getId()));
 
-            cost = new TableColumn<>("Цена");
-            cost.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DetailElectrod, BigDecimal>, ObservableValue<BigDecimal>>() {
-                @Override
-                public ObservableValue<BigDecimal> call(TableColumn.CellDataFeatures<DetailElectrod, BigDecimal> param) {
-//                    BigDecimal cost = param.getValue().getDetail().getCost();
-                    return new SimpleObjectProperty<BigDecimal>(null);
-                }
-            });
-        }
-        if (type == CustomConstants.ESMG_M) {
-            electrod = new TableColumn<>("ЭСМГ-М");
-            electrod.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DetailElectrod, Integer>, ObservableValue<Integer>>() {
-                @Override
-                public ObservableValue<Integer> call(TableColumn.CellDataFeatures<DetailElectrod, Integer> param) {
-                    DetailElectrod de = param.getValue();
-                    return new SimpleObjectProperty<Integer>(null);
+        TableColumn<Detail,String> title = new TableColumn<>("Название");
+        title.setCellValueFactory(value->new SimpleStringProperty(value.getValue().getTitle()));
 
-                }
-            });
-            cost = new TableColumn<>("Цена");
-            cost.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DetailElectrod, BigDecimal>, ObservableValue<BigDecimal>>() {
-                @Override
-                public ObservableValue<BigDecimal> call(TableColumn.CellDataFeatures<DetailElectrod, BigDecimal> param) {
-//                    BigDecimal cost = param.getValue().getDetail().getCost();
-                    return new SimpleObjectProperty<BigDecimal>(null);
-                }
-            });
-        }
+        TableColumn<Detail, Double> count = new TableColumn<>("Количество");
+        count.setCellValueFactory(value-> new SimpleObjectProperty<Double>(de.getDetails().get(value.getValue())));
 
-        return Arrays.asList(id, title, electrod, cost);
+        return Arrays.asList(id, title, count);
     }
 }
