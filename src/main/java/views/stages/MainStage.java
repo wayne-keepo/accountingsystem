@@ -300,6 +300,10 @@ public class MainStage {
         Button add = new AddButton().getAdd();
         Button delete = new DeleteButton().getDelete();
         Button produce = new Button("Произвести электрод");
+        Button bulkProduce = new Button("Массовое производство");
+        bulkProduce.setOnAction(event -> {
+
+        });
 //Integer idSummary, Integer idElectrode, LocalDate produceDate, String customer, LocalDate consumeDate, String note
         produce.setOnAction(event -> {
             Summary summary = new Summary();

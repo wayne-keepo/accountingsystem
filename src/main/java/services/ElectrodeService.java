@@ -6,6 +6,7 @@ import domain.ElectrodeSummary;
 import entities.Summary;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import projectConstants.DBConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,23 @@ import java.util.List;
 public class ElectrodeService {
     private static final DBElectrodeController controller = new DBElectrodeController();
 
+    private static void bulkSave(List<Electrod> electrods){
+        controller.bulkSave(electrods);
+    }
+
+    public static List<Electrod> getElectrodsByNumbers(List<String > numbers){
+        StringBuilder st = new StringBuilder();
+        for (int i = 0;i<numbers.size();i++){
+            if (numbers.size()-i==1)
+                st.append(numbers.get(i));
+            else
+                st.append(numbers.get(i)).append(",");
+        }
+        String sql = String.format("%s ( %s )",DBConstants.SELECT_ELECTRODS_BY_NUMBERS,st.toString());
+        st.setLength(0);
+        return controller.getByNumbers(sql);
+
+    }
     public static void save(Electrod electrod){
         controller.save(electrod);
     }
@@ -43,7 +61,7 @@ public class ElectrodeService {
         }
         return FXCollections.observableArrayList(es);
     }
-    public static List<ElectrodeSummary> bulkCreateElectrodeSummaryFromRange(String from, String to, String type, )
+
 // stupid decision, to find an acceptable
     public static List<Electrod> bulkCreateElectrodeFromRange(String from, String to, String type){
         int iFrom = Integer.valueOf(from);
@@ -62,6 +80,9 @@ public class ElectrodeService {
             electrods.add(new Electrod(number,type));
         }
         electrods.add(new Electrod(to,type));
+        List<String> numbers = new ArrayList<>();
+        electrods.forEach(e->numbers.add(e.getElectrodNumber()));
+        electrods = getElectrodsByNumbers(numbers);
         return electrods;
     }
 

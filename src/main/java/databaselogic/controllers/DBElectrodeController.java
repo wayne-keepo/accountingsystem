@@ -4,9 +4,12 @@ import databaselogic.Connector;
 import databaselogic.interfaces.DBOperations;
 import databaselogic.mappers.ElectrodeMapper;
 import domain.Electrod;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import projectConstants.DBConstants;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 public class DBElectrodeController implements DBOperations<Electrod> {
@@ -23,6 +26,32 @@ public class DBElectrodeController implements DBOperations<Electrod> {
                 o.getElectrodNumber(),o.getType()
         );
         return flag>0;
+    }
+
+    public List<Electrod> getByNumbers(String sql){
+        return template.query(
+                sql,
+                new ElectrodeMapper()
+        );
+    }
+
+    public void bulkSave(List<Electrod> electrods){
+        template.batchUpdate(
+                DBConstants.INSERT_ELECTRODE,
+                new BatchPreparedStatementSetter() {
+                    @Override
+                    public void setValues(PreparedStatement ps, int i) throws SQLException {
+                        ps.setString(1,electrods.get(i).getElectrodNumber());
+                        ps.setString(2,electrods.get(i).getType());
+                    }
+
+                    @Override
+                    public int getBatchSize() {
+                        return electrods.size();
+                    }
+                }
+        );
+
     }
 
     @Override

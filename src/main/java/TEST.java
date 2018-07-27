@@ -1,8 +1,10 @@
 import databaselogic.controllers.DBDetailController;
 import domain.Electrod;
 import projectConstants.CustomConstants;
+import projectConstants.DBConstants;
 import services.ElectrodeService;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class TEST {
@@ -62,10 +64,19 @@ public class TEST {
 //        System.out.println(TT.ONE.getSt("st1"));
 //        System.out.println(TT.ONE.getSt("st2"));
 //        System.out.println(TT.ONE.ordinal());
-        List<Electrod> electrods = ElectrodeService.createElectrodeFromRange("000001","100000", CustomConstants.ESMG);
-        System.out.println(electrods.isEmpty());
-        electrods.forEach(e->System.out.println(e.getElectrodNumber()));
-
+//        List<Electrod> electrods = ElectrodeService.bulkCreateElectrodeFromRange("000001","100000", CustomConstants.ESMG);
+//        System.out.println(electrods.isEmpty());
+//        electrods.forEach(e->System.out.println(e.getElectrodNumber()));
+        List<String> numbers = Arrays.asList("000111","000098","000052","000021","000071","000089","000051","000014","000013","000011","000012");
+        StringBuilder st = new StringBuilder();
+        for (int i = 0;i<numbers.size();i++){
+            if (numbers.size()-i==1)
+                st.append(numbers.get(i));
+            else
+                st.append(numbers.get(i)).append(",");
+        }
+        String sql = String.format("%s ( %s )", DBConstants.SELECT_ELECTRODS_BY_NUMBERS,st.toString());
+        System.out.println(sql);
     }
 
     static class Simple {

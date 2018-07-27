@@ -50,6 +50,7 @@ public class DBConstants {
     public static final String SELECT_ELECTRODE_BY_NUMBER = "SELECT * FROM Electrode WHERE number = ?";
     public static final String SELECT_ELECTRODS_BY_TYPE = "SELECT * FROM Electrode WHERE type = ?";
     public static final String SELECT_ALL_ELECTRODS = "SELECT * FROM Electrode";
+    public static final String SELECT_ELECTRODS_BY_NUMBERS = "SELECT * FROM Electrode where number in";
 
     //Accounting History
     public static final String INSERT_ACCOUNTING_HISTORY =
