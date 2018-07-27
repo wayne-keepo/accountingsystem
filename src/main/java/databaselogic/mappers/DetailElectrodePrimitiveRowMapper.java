@@ -3,6 +3,8 @@ package databaselogic.mappers;
 import entities.DetailElectrodePrimitive;
 import org.springframework.jdbc.core.RowMapper;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -14,7 +16,8 @@ public class DetailElectrodePrimitiveRowMapper implements RowMapper<DetailElectr
                 resultSet.getInt("id"),
                 resultSet.getInt("idDetail"),
                 resultSet.getString("electrodeType"),
-                resultSet.getDouble("count")
+                resultSet.getDouble("count"),
+                new BigDecimal(resultSet.getString("cost"))
         );
     }
 }

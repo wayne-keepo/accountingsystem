@@ -1,19 +1,24 @@
 package entities;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 public class DetailElectrodePrimitive {
     private Integer id;
     private Integer idDetail;
     private String electrodeType;
     private Double count;
+    private BigDecimal cost;
 
     public DetailElectrodePrimitive() {
     }
 
-    public DetailElectrodePrimitive(Integer id, Integer idDetail, String electrodeType, Double count) {
+    public DetailElectrodePrimitive(Integer id, Integer idDetail, String electrodeType, Double count, BigDecimal cost) {
         this.id = id;
         this.idDetail = idDetail;
         this.electrodeType = electrodeType;
         this.count = count;
+        this.cost = cost;
     }
 
     public Integer getId() {
@@ -48,6 +53,14 @@ public class DetailElectrodePrimitive {
         this.count = count;
     }
 
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
+    }
+
     @Override
     public String toString() {
         return "DetailElectrodePrimitive{" +
@@ -55,6 +68,7 @@ public class DetailElectrodePrimitive {
                 ", idDetail=" + idDetail +
                 ", electrodeType='" + electrodeType + '\'' +
                 ", count=" + count +
+                ", cost=" + cost +
                 '}';
     }
 }

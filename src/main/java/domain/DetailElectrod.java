@@ -2,13 +2,15 @@ package domain;
 
 import entities.Detail;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 public class DetailElectrod {
     private List<Integer> ids;
-    private Map<Detail,Double> details;
+    private Map<Detail,Map<Double,BigDecimal>> details;
 //    private List<Detail> details;
     private String electrodeType;
 //    private int countDetailForElectrode;
@@ -23,11 +25,11 @@ public class DetailElectrod {
         this.ids = ids;
     }
 
-    public Map<Detail, Double> getDetails() {
+    public Map<Detail, Map<Double, BigDecimal>> getDetails() {
         return details;
     }
 
-    public void setDetails(Map<Detail, Double> details) {
+    public void setDetails(Map<Detail, Map<Double, BigDecimal>> details) {
         this.details = details;
     }
 

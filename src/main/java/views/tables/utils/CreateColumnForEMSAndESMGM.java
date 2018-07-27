@@ -11,6 +11,7 @@ import javafx.util.Callback;
 import projectConstants.CustomConstants;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,8 +29,11 @@ public class CreateColumnForEMSAndESMGM {
         title.setCellValueFactory(value->new SimpleStringProperty(value.getValue().getTitle()));
 
         TableColumn<Detail, Double> count = new TableColumn<>("Количество");
-        count.setCellValueFactory(value-> new SimpleObjectProperty<Double>(de.getDetails().get(value.getValue())));
+        count.setCellValueFactory(value-> new SimpleObjectProperty<Double>(de.getDetails().get(value.getValue()).keySet().iterator().next()));
 
-        return Arrays.asList(id, title, count);
+        TableColumn<Detail,BigDecimal> cost = new TableColumn<>("Стоимость");
+        cost.setCellValueFactory(value->new SimpleObjectProperty<BigDecimal>(de.getDetails().get(value.getValue()).values().iterator().next()));
+
+        return Arrays.asList(id, title, count, cost);
     }
 }

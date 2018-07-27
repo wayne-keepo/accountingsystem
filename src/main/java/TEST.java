@@ -54,11 +54,11 @@ public class TEST {
 //        List<Map<String,Object>> test = dbDetailController.test();
 //        Map<String,Object> tm = test.get(0);
 //        System.out.println(DetailElectrodeService.getAllDEPrimitivs().toString());
-        List<DetailElectrod> de = ChainUtil.createChainDetailElectrode(
-                dbDetailController.getAll(),
-                DetailElectrodeService.getAllDEPrimitivs()
-        );
-        System.out.println(de.toString());
+//        List<DetailElectrod> de = ChainUtil.createChainDetailElectrode(
+//                dbDetailController.getAll(),
+//                DetailElectrodeService.getAllDEPrimitivs()
+//        );
+//        System.out.println(de.toString());
 //        System.out.println(c.getSimpleName());
 //        System.out.println(tm.toString());
 //        dbDetailController.test().forEach(m->{
@@ -70,6 +70,12 @@ public class TEST {
 //            System.out.println(m.keySet()+"\n"+m.values().toString());
 //        });
 //        System.out.println(dbDetailController.test().toString());
+        System.out.println(TT.ONE);
+        System.out.println(TT.ONE.getNum());
+        System.out.println(TT.ONE.getSt("st1"));
+        System.out.println(TT.ONE.getSt("st2"));
+        System.out.println(TT.ONE.ordinal());
+
 
     }
 
@@ -91,6 +97,28 @@ public class TEST {
         @Override
         public String toString() {
             return "Simple: " + value;
+        }
+    }
+
+    enum TT{
+        ONE(1,"Один","One");
+
+        private final int num;
+        private final String st1;
+        private final String st2;
+        private TT(int i, String ruOne, String one) {
+            num=i;st1=ruOne;st2=one;
+        }
+
+        public int getNum() {
+            return num;
+        }
+        public String getSt(String fl){
+            switch (fl){
+                case "st1":return st1;
+                case "st2":return st2;
+            }
+            throw new  AssertionError("Unknown op: " + this);
         }
     }
 }

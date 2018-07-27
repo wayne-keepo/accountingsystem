@@ -10,6 +10,7 @@ import projectConstants.CustomConstants;
 import services.AccoutingHistoryService;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.time.Month;
 import java.time.Year;
@@ -41,13 +42,16 @@ public class ChainUtil {
 
         depByType.forEach((k, v) -> {
             if (!v.isEmpty()) {
-                Map<Detail, Double> dd = new HashMap<>();
+                Map<Detail, Map<Double,BigDecimal>> dd = new HashMap<>();
                 List<Integer> ids = new ArrayList<>();
                 v.forEach(p -> ids.add(p.getId()));
                 v.forEach(p -> {
                     details.forEach(d -> {
-                        if (d.getId() == p.getIdDetail())
-                            dd.put(d, p.getCount());
+                        if (d.getId() == p.getIdDetail()) {
+                            Map<Double, BigDecimal> doubig = new HashMap<>();
+                            doubig.put(p.getCount(),p.getCost());
+                            dd.put(d, doubig);
+                        }
                     });
                 });
                 DetailElectrod de = new DetailElectrod();
