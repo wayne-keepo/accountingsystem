@@ -1,4 +1,4 @@
-package domain;
+package CandidatsOnDelete;
 
 import domain.Electrod;
 import entities.Detail;

@@ -1,5 +1,7 @@
-package domain;
+package CandidatsOnDelete;
 
+import domain.Electrod;
+import domain.ElectrodeSummary;
 import entities.Detail;
 import entities.Summary;
 import javafx.collections.FXCollections;
@@ -9,11 +11,8 @@ import projectConstants.CustomConstants;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.Month;
-import java.time.Year;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 public class InitializerForTest {

@@ -2,7 +2,6 @@ package views.tables;
 
 import domain.Electrod;
 import domain.ElectrodeSummary;
-import domain.InitializerForTest;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -11,11 +10,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import services.ElectrodeService;
 
-import javax.swing.plaf.PanelUI;
 import java.time.LocalDate;
 
 public class ElectrodsTable {

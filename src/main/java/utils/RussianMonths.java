@@ -1,4 +1,4 @@
-package views.tables.utils;
+package utils;
 
 import java.time.DateTimeException;
 

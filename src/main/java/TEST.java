@@ -1,22 +1,9 @@
-import databaselogic.controllers.DBAccountingHistoryController;
 import databaselogic.controllers.DBDetailController;
-import databaselogic.utils.ChainUtil;
-import domain.Day;
-import domain.DetailElectrod;
-import entities.AccoutingHistory;
-import entities.Detail;
-import services.AccoutingHistoryService;
-import services.DetailElectrodeService;
-import views.modalWindows.AccoutingHistoryWindow;
-import views.tables.utils.RussianMonths;
+import domain.Electrod;
+import projectConstants.CustomConstants;
+import services.ElectrodeService;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.Year;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.List;
 
 public class TEST {
     public static void main(String[] args) {
@@ -70,12 +57,14 @@ public class TEST {
 //            System.out.println(m.keySet()+"\n"+m.values().toString());
 //        });
 //        System.out.println(dbDetailController.test().toString());
-        System.out.println(TT.ONE);
-        System.out.println(TT.ONE.getNum());
-        System.out.println(TT.ONE.getSt("st1"));
-        System.out.println(TT.ONE.getSt("st2"));
-        System.out.println(TT.ONE.ordinal());
-
+//        System.out.println(TT.ONE);
+//        System.out.println(TT.ONE.getNum());
+//        System.out.println(TT.ONE.getSt("st1"));
+//        System.out.println(TT.ONE.getSt("st2"));
+//        System.out.println(TT.ONE.ordinal());
+        List<Electrod> electrods = ElectrodeService.createElectrodeFromRange("000001","100000", CustomConstants.ESMG);
+        System.out.println(electrods.isEmpty());
+        electrods.forEach(e->System.out.println(e.getElectrodNumber()));
 
     }
 

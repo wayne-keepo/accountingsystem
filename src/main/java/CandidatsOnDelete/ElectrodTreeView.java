@@ -1,10 +1,7 @@
 package CandidatsOnDelete;
 
 import domain.Electrod;
-import domain.ElectrodTree;
 
-import domain.InitializerForTest;
-import entities.Detail;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;

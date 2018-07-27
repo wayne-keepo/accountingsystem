@@ -4,9 +4,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
-import views.tables.utils.RussianMonths;
+import utils.RussianMonths;
 
-import java.time.Month;
 import java.util.Arrays;
 import java.util.LinkedList;
 

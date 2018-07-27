@@ -1,13 +1,12 @@
 package services;
 
 import databaselogic.controllers.DBDetaileElectrodeController;
-import databaselogic.utils.ChainUtil;
+import utils.ChainUtil;
 import domain.DetailElectrod;
 import entities.Detail;
 import entities.DetailElectrodePrimitive;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DetailElectrodeService {

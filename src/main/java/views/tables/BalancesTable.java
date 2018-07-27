@@ -11,7 +11,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
 import services.BalanceService;
-import views.tables.utils.Searcher;
+import utils.Searcher;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

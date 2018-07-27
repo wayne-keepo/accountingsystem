@@ -4,7 +4,7 @@ import databaselogic.controllers.DBAccountingHistoryController;
 import databaselogic.controllers.DBBalanceController;
 import databaselogic.controllers.DBDetailController;
 import databaselogic.controllers.DBElectrodeController;
-import databaselogic.utils.ChainUtil;
+import utils.ChainUtil;
 import domain.Balance;
 import domain.Electrod;
 import entities.AccoutingHistory;
@@ -29,7 +29,7 @@ import views.buttons.DeleteButton;
 import views.dropBoxes.DetailDropBox;
 import views.modalWindows.AccoutingHistoryWindow;
 import views.tables.*;
-import views.tables.utils.RussianMonths;
+import utils.RussianMonths;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

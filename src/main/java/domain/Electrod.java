@@ -14,6 +14,11 @@ public class Electrod {
     public Electrod() {
     }
 
+    public Electrod(String electrodNumber, String type) {
+        this.electrodNumber = electrodNumber;
+        this.type = type;
+    }
+
     public Electrod(Integer id, String electrodNumber, String type) {
         this.id = id;
         this.electrodNumber = electrodNumber;

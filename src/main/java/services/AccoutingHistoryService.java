@@ -4,12 +4,11 @@ import databaselogic.controllers.DBAccountingHistoryController;
 import domain.Day;
 import entities.AccoutingHistory;
 import entities.Detail;
-import views.tables.utils.RussianMonths;
-import views.tables.utils.Searcher;
+import utils.RussianMonths;
+import utils.Searcher;
 
 import java.time.Month;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class AccoutingHistoryService {

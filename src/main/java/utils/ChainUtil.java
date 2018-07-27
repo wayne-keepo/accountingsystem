@@ -1,4 +1,4 @@
-package databaselogic.utils;
+package utils;
 
 import com.sun.istack.internal.NotNull;
 import domain.Balance;

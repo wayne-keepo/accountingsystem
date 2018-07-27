@@ -1,4 +1,4 @@
-package views.tables.utils;
+package utils;
 
 import domain.Balance;
 import projectConstants.CustomConstants;
