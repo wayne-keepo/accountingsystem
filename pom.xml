@@ -34,7 +34,20 @@
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.21.0.1</version>
         </dependency>
-
+        <!--Work with .doc-->
+        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.17</version>
+        </dependency>
+        <!--Work with QR Code-->
+        <!-- https://mvnrepository.com/artifact/net.glxn/qrgen -->
+        <dependency>
+            <groupId>net.glxn</groupId>
+            <artifactId>qrgen</artifactId>
+            <version>1.2</version>
+        </dependency>
     </dependencies>
 
 </project>

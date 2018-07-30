@@ -40,7 +40,13 @@ public class ElectrodeService {
     }
 
     public static ObservableList<Electrod> getAll(){
-        return FXCollections.observableArrayList(controller.getAll());
+        List<Electrod> electrods = controller.getAll();
+        if (!electrods.isEmpty())
+            electrods.forEach(e->{
+                String num = ElectrodeService.formatElectrodeNumber(e.getElectrodNumber());
+                e.setElectrodNumber(num);
+            });
+        return FXCollections.observableArrayList(electrods);
     }
 
     public static void delete(Electrod electrod) {
@@ -48,7 +54,7 @@ public class ElectrodeService {
     }
 
     public static ObservableList<ElectrodeSummary> buildElectrodeSummary(){
-        List<Electrod> electrods = controller.getAll();
+        List<Electrod> electrods = getAll();
         List<Summary> summaries = SummaryService.getAll();
         if (electrods.isEmpty() && summaries.isEmpty())
             return null;
@@ -82,7 +88,7 @@ public class ElectrodeService {
         return electrods;
     }
 
-    private static String formatElectrodeNumber(String number){
+    public static String formatElectrodeNumber(String number){
         if (6-number.length()==0)
             return number;
         int delta = 6-number.length();

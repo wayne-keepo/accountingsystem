@@ -319,6 +319,8 @@ public class MainStage {
                         nFrom.getText(), nTo.getText(), types.getSelectionModel().getSelectedItem(),
                         produceDate.getValue(), consumeDate.getValue(), customer.getText(), note.getText());
                 electrodsTable.getTable().getItems().addAll(es);
+                createElectrodeTable.getTable().getItems().clear();
+                createElectrodeTable.getTable().getItems().addAll(ElectrodeService.getAll());
             } else {
                 List<Electrod> electrods = ElectrodeService.bulkCreateElectrodeFromRange(nFrom.getText(), nTo.getText(), types.getSelectionModel().getSelectedItem());
                 createElectrodeTable.getTable().getItems().addAll(electrods);

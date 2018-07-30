@@ -5,11 +5,14 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.paint.Color;
 import javafx.util.Callback;
+import projectConstants.CustomConstants;
 import services.BalanceService;
 import utils.Searcher;
 
@@ -113,23 +116,49 @@ public class BalancesTable {
         outcoming.getColumns().addAll(outJanuary, outFebruary, outMarch, outApril, outMay, outJune, outJuly, outAugust, outSeptember, outOctober, outNovember, outDecember, outTotal, atEndingYear);
 
         year.getColumns().addAll(id, title, incoming, outcoming);
+
         List<TableColumn<Balance, String>> months = Arrays.asList(
                 inJanuary, inFebruary, inMarch, inApril, inMay, inJune, inJuly, inAugust, inSeptember, inOctober, inNovember, inDecember,
                 outJanuary, outFebruary, outMarch, outApril, outMay, outJune, outJuly, outAugust, outSeptember, outOctober, outNovember, outDecember);
 
-//        setBulkCellFactoryAndEditCommitForMonthColumn(months);
         setBulkCellValueFactoryForMonthColumn(months);
 
+        colorCell(Arrays.asList(atBeginingYear,inJanuary, inFebruary, inMarch, inApril, inMay, inJune, inJuly, inAugust, inSeptember, inOctober, inNovember, inDecember, inTotal), CustomConstants.GREEN);
+        colorCell(Arrays.asList(outJanuary, outFebruary, outMarch, outApril, outMay, outJune, outJuly, outAugust, outSeptember, outOctober, outNovember, outDecember, outTotal,atEndingYear),CustomConstants.YELLOW);
         return Arrays.asList(year);
+    }
+
+    private void colorCell(List<TableColumn> columns, String style) {
+        columns.forEach(column -> {
+            column.setCellFactory(cell-> new TableCell<Object,Object>(){
+                @Override
+                protected void updateItem(Object item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item!=null) {
+                        setText(String.valueOf(item));
+                        setStyle(style);
+                    }
+                }
+            });
+        });
     }
 
     // candidate on delete
     private void setBulkCellFactoryAndEditCommitForMonthColumn(List<TableColumn<Balance, String>> columns) {
 //        columns.forEach(column->column.setEditable(false));
-//        for (TableColumn column : columns) {
-//            column.setCellFactory(TextFieldTableCell.<Balance>forTableColumn());
+//        for (TableColumn<Balance, String> column : columns) {
+//            column.setCellFactory(cell->{
+//                return new TableCell<Balance, String>(){
+//                    @Override
+//                    protected void updateItem(String item, boolean empty) {
+//                        super.updateItem(item, empty);
+//                        if (get)
+//                    }
+//                }
+//            });
 
-//            column.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent>() {
+
+//        column.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent>() {
 //                @Override
 //                public void handle(TableColumn.CellEditEvent event) {
 //                    String parentColumnName = event.getTableColumn().getParentColumn().getText();
@@ -138,7 +167,7 @@ public class BalancesTable {
 //                    Updater.updateValueOfMonthColumn((Balance) event.getRowValue(),columnName,parentColumnName,count);
 //                }
 //            });
-//        }
+//
     }
 
     private void setBulkCellValueFactoryForMonthColumn(List<TableColumn<Balance, String>> columns) {

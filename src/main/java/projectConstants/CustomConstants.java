@@ -17,4 +17,6 @@ public class CustomConstants {
     public static final int INCOMING_IFlag = 1;
     public static final int OUTCOMING_IFlag = 0;
 
+    public static final String GREEN = "-fx-background-color: rgba(181, 255, 192, 0.42)";
+    public static final String YELLOW = "-fx-background-color: rgba(254, 255, 181, 0.42)";
 }

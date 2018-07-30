@@ -40,6 +40,8 @@ public class SummaryService {
     }
 
     public static List<ElectrodeSummary> bulkCreateElectrodeSummaryFromRange(@NotNull String from, @NotNull String to, @NotNull String type, LocalDate produce, LocalDate consume, String customer, String note) {
+        if (from.isEmpty() || to.isEmpty() || type.isEmpty())
+            return null;
         List<Electrod> electrods = ElectrodeService.bulkCreateElectrodeFromRange(from, to, type);
         List<Summary> summaries = new ArrayList<>();
         List<ElectrodeSummary> electrodeSummaries = new ArrayList<>();
@@ -54,6 +56,8 @@ public class SummaryService {
     private static List<ElectrodeSummary> buildElectrodeSummaryFromSource(List<Electrod> electrods, List<Summary> summaries) {
         List<ElectrodeSummary> es = new ArrayList<>();
         electrods.forEach(electrod -> {
+            String num = ElectrodeService.formatElectrodeNumber(electrod.getElectrodNumber());
+            electrod.setElectrodNumber(num);
             summaries.stream()
                     .filter(s -> s.getIdElectrode().equals(electrod.getId()))
                     .findFirst()

@@ -71,9 +71,9 @@ public class DBSummaryController implements DBOperations<Summary> {
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
                         Summary tmp = summaries.get(i);
                         ps.setInt(1,tmp.getIdElectrode());
-                        ps.setDate(2, Date.valueOf(tmp.getProduceDate().toString()));
+                        ps.setString(2, tmp.getProduceDate().toString());
                         ps.setString(3, tmp.getCustomer());
-                        ps.setDate(4, Date.valueOf(tmp.getConsumeDate().toString()));
+                        ps.setString(4, tmp.getConsumeDate().toString());
                         ps.setString(5, tmp.getNote());
                         System.out.println(ps.getGeneratedKeys().getInt(1)+" "+i);
                     }
