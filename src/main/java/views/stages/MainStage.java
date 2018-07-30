@@ -110,11 +110,11 @@ public class MainStage {
         Tab product = new Tab("Создать эклектрод");
         product.setClosable(false);
 
-        componentsConsumptionForESMG.setContent(esmgTable.getTable());
-
         componentsConsumptionForESMGM.setContent(esmgmTable.getTable());
 
         electrods.setContent(electrodsTable.getTable());
+        addLogicOnAccoutingESMGMTab(componentsConsumptionForESMGM);
+        addLogicOnAccoutingESMGTab(componentsConsumptionForESMG);
         addLogicOnBalanceTab(accounting);
         addLogicOnCostDetailTab(costDetailTab);
         addLogicOnCreateElectrodeTab(product);
@@ -128,7 +128,50 @@ public class MainStage {
                 product
         );
     }
+    private void addLogicOnAccoutingESMGTab(Tab tab){
+        tab.setContent(paneForAccoutingESMGTab);
+        paneForAccoutingESMGTab.setCenter(esmgTable.getTable());
+        HBox horizontal = new HBox(10);
+        DetailDropBox ddb = new DetailDropBox();
+        TextField count = new TextField();
+        count.setPromptText("количество деталей");
+        TextField cost = new TextField();
+        cost.setPromptText("стоимость детали");
+        Button add = new Button("Добавить");
+        Button delete = new Button("Удалить");
+        horizontal.setPadding(new Insets(10, 0, 10, 0));
+        horizontal.setAlignment(Pos.BOTTOM_CENTER);
 
+        horizontal.getChildren().addAll(ddb.getDetailsBox(),count,cost,add,delete);
+        paneForAccoutingESMGTab.setBottom(horizontal);
+
+        List<Detail> initDet = esmgTable.getTable().getItems();
+        initDet.forEach(ddb::deleteDetail);
+
+        add.setOnAction(event -> {
+            Detail detail = ddb.getDetailsBox().getSelectionModel().getSelectedItem();
+
+        });
+    }
+    private void addLogicOnAccoutingESMGMTab(Tab tab){
+        tab.setContent(paneForAccoutingESMGMTab);
+        paneForAccoutingESMGMTab.setCenter(esmgmTable.getTable());
+        HBox horizontal = new HBox(10);
+        DetailDropBox ddbm = new DetailDropBox();
+        TextField count = new TextField();
+        count.setPromptText("количество деталей");
+        TextField cost = new TextField();
+        cost.setPromptText("стоимость детали");
+        Button add = new Button("Добавить");
+        Button delete = new Button("Удалить");
+        horizontal.setPadding(new Insets(10, 0, 10, 0));
+        horizontal.setAlignment(Pos.BOTTOM_CENTER);
+
+        horizontal.getChildren().addAll(ddbm.getDetailsBox(),count,cost,add,delete);
+        paneForAccoutingESMGMTab.setBottom(horizontal);
+        List<Detail> initDet = esmgTable.getTable().getItems();
+        initDet.forEach(ddbm::deleteDetail);
+    }
     private void addLogicOnBalanceTab(Tab tab) {
         tab.setContent(paneForBalanceTab);
         paneForBalanceTab.setCenter(balancesTable.getTable());
