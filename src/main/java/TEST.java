@@ -1,9 +1,12 @@
 import databaselogic.controllers.DBDetailController;
 import domain.Electrod;
+import entities.Summary;
 import projectConstants.CustomConstants;
 import projectConstants.DBConstants;
 import services.ElectrodeService;
+import services.SummaryService;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -67,16 +70,25 @@ public class TEST {
 //        List<Electrod> electrods = ElectrodeService.bulkCreateElectrodeFromRange("000001","100000", CustomConstants.ESMG);
 //        System.out.println(electrods.isEmpty());
 //        electrods.forEach(e->System.out.println(e.getElectrodNumber()));
-        List<String> numbers = Arrays.asList("000111","000098","000052","000021","000071","000089","000051","000014","000013","000011","000012");
-        StringBuilder st = new StringBuilder();
-        for (int i = 0;i<numbers.size();i++){
-            if (numbers.size()-i==1)
-                st.append(numbers.get(i));
-            else
-                st.append(numbers.get(i)).append(",");
-        }
-        String sql = String.format("%s ( %s )", DBConstants.SELECT_ELECTRODS_BY_NUMBERS,st.toString());
-        System.out.println(sql);
+//        List<String> numbers = Arrays.asList("000111","000098","000052","000021","000071","000089","000051","000014","000013","000011","000012");
+//        StringBuilder st = new StringBuilder();
+//        for (int i = 0;i<numbers.size();i++){
+//            if (numbers.size()-i==1)
+//                st.append(numbers.get(i));
+//            else
+//                st.append(numbers.get(i)).append(",");
+//        }
+//        String sql = String.format("%s ( %s )", DBConstants.SELECT_ELECTRODS_BY_NUMBERS,st.toString());
+//        System.out.println(sql);
+//        SummaryService.bulkCreateElectrodeSummaryFromRange("000001","000005",CustomConstants.ESMG, LocalDate.now(),LocalDate.now(),"Test Customer","Data Test");
+
+        StringBuilder ids = new StringBuilder();
+        ids.append("1").append(",").append("2").append(",").append("3").append(",").append("4").append(",").append("5").append(",").append("6").append(",").append("7").append(",").append("8").append(",").append("9").append(",");
+        System.out.println(ids);
+        ids.delete(ids.lastIndexOf(","),ids.lastIndexOf(",")+1);
+        System.out.println(ids);
+
+
     }
 
     static class Simple {

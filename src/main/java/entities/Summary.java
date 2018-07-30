@@ -13,6 +13,14 @@ public class Summary {
     public Summary() {
     }
 
+    public Summary(Integer idElectrode, LocalDate produceDate, String customer, LocalDate consumeDate, String note) {
+        this.idElectrode = idElectrode;
+        this.produceDate = produceDate;
+        this.customer = customer;
+        this.consumeDate = consumeDate;
+        this.note = note;
+    }
+
     public Summary(Integer idSummary, Integer idElectrode, LocalDate produceDate, String customer, LocalDate consumeDate, String note) {
         this.idSummary = idSummary;
         this.idElectrode = idElectrode;

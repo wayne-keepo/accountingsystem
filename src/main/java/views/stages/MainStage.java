@@ -4,6 +4,7 @@ import databaselogic.controllers.DBAccountingHistoryController;
 import databaselogic.controllers.DBBalanceController;
 import databaselogic.controllers.DBDetailController;
 import databaselogic.controllers.DBElectrodeController;
+import domain.ElectrodeSummary;
 import utils.ChainUtil;
 import domain.Balance;
 import domain.Electrod;
@@ -278,8 +279,18 @@ public class MainStage {
         Label customerL = new Label("Заказчик");
         Label consumeDateL = new Label("Дата отгрузки");
         Label noteL = new Label("Примечание");
+        Label range = new Label("Введите в поля ниже с какого по какой номер создать электрод");
 
         TextField number = new TextField();
+        TextField customer = new TextField();
+        TextField note = new TextField();
+        TextField nFrom = new TextField();
+        nFrom.setPromptText("с № электрода");
+        TextField nTo = new TextField();
+        nTo.setPromptText("по № электрода");
+
+        CheckBox isBulkCreate = new CheckBox("С созданием истории для эклектродов");
+        isBulkCreate.setSelected(false);
 
         DatePicker produceDate = new DatePicker();
         produceDate.setValue(LocalDate.now());
@@ -291,18 +302,27 @@ public class MainStage {
 
         setDateFormat(Arrays.asList(produceDate, consumeDate));
 
-        TextField customer = new TextField();
-        TextField note = new TextField();
-
         ComboBox<String> types = new ComboBox<>();
         types.getItems().addAll(CustomConstants.ESMG, CustomConstants.ESMG_M);
 
         Button add = new AddButton().getAdd();
         Button delete = new DeleteButton().getDelete();
         Button produce = new Button("Произвести электрод");
-        Button bulkProduce = new Button("Массовое производство");
-        bulkProduce.setOnAction(event -> {
 
+        Button bulkProduce = new Button("Массовое производство");
+
+        bulkProduce.setOnAction(event -> {
+            if (nFrom.getText().isEmpty() && nTo.getText().isEmpty())
+                return;
+            if (isBulkCreate.isSelected()) {
+                List<ElectrodeSummary> es = SummaryService.bulkCreateElectrodeSummaryFromRange(
+                        nFrom.getText(), nTo.getText(), types.getSelectionModel().getSelectedItem(),
+                        produceDate.getValue(), consumeDate.getValue(), customer.getText(), note.getText());
+                electrodsTable.getTable().getItems().addAll(es);
+            } else {
+                List<Electrod> electrods = ElectrodeService.bulkCreateElectrodeFromRange(nFrom.getText(), nTo.getText(), types.getSelectionModel().getSelectedItem());
+                createElectrodeTable.getTable().getItems().addAll(electrods);
+            }
         });
 //Integer idSummary, Integer idElectrode, LocalDate produceDate, String customer, LocalDate consumeDate, String note
         produce.setOnAction(event -> {
@@ -357,9 +377,15 @@ public class MainStage {
         GridPane.setConstraints(delete, 1, 2);
         GridPane.setConstraints(produce, 0, 8, 2, 1);
 
+        GridPane.setConstraints(range, 0, 9, 2, 1);
+        GridPane.setConstraints(nFrom,0,10);
+        GridPane.setConstraints(nTo,1,10);
+        GridPane.setConstraints(bulkProduce,0,11);
+        GridPane.setConstraints(isBulkCreate,1,11);
+
         gridPane.getChildren().addAll(
                 numberL, typeL, number, types, add, delete, produce,
-                produceDate, customerL, consumeDate, noteL, produceDateL, customer, consumeDateL, note);
+                produceDate, customerL, consumeDate, noteL, produceDateL, customer, consumeDateL, note,range,nFrom,nTo,bulkProduce,isBulkCreate);
         paneForCreateElectrodeTab.setRight(gridPane);
 
     }

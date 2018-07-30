@@ -67,24 +67,32 @@ public class ElectrodeService {
         int iFrom = Integer.valueOf(from);
         int iTo = Integer.valueOf(to);
         List<Electrod> electrods = new ArrayList<>();
+
         for (int i = iFrom;i<iTo;i++){
-            String number = String.valueOf(i);
-            int addZero = 6-number.length();
-            if (addZero>0) {
-                StringBuilder zero = new StringBuilder();
-                for (int z = 0; z < addZero; z++)
-                    zero.append("0");
-                number = zero.toString()+number;
-                zero.setLength(0);
-            }
+            String number = formatElectrodeNumber(String.valueOf(i));
             electrods.add(new Electrod(number,type));
         }
+
         electrods.add(new Electrod(to,type));
+        bulkSave(electrods);
+
         List<String> numbers = new ArrayList<>();
         electrods.forEach(e->numbers.add(e.getElectrodNumber()));
         electrods = getElectrodsByNumbers(numbers);
         return electrods;
     }
 
+    private static String formatElectrodeNumber(String number){
+        if (6-number.length()==0)
+            return number;
+        int delta = 6-number.length();
+        StringBuilder zeros = new StringBuilder();
+        for (int i = 0;i<delta;i++){
+            zeros.append("0");
+        }
+        number = zeros.toString()+number;
+        zeros.setLength(0);
+        return number;
+    }
 
 }

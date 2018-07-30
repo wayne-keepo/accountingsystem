@@ -3,10 +3,16 @@ package databaselogic.controllers;
 import databaselogic.Connector;
 import databaselogic.interfaces.DBOperations;
 import databaselogic.mappers.SummaryRowMapper;
+import domain.Electrod;
 import entities.Summary;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
+import projectConstants.CustomConstants;
 import projectConstants.DBConstants;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 public class DBSummaryController implements DBOperations<Summary> {
@@ -55,5 +61,38 @@ public class DBSummaryController implements DBOperations<Summary> {
     @Override
     public Summary get(String title) {
         return null;
+    }
+//idElectrode,produceDate,Customer,consumeDate,Note
+    public List<Summary> bulkInsert(List<Summary> summaries) {
+        template.batchUpdate(
+                DBConstants.INSERT_SUMMARY,
+                new BatchPreparedStatementSetter() {
+                    @Override
+                    public void setValues(PreparedStatement ps, int i) throws SQLException {
+                        Summary tmp = summaries.get(i);
+                        ps.setInt(1,tmp.getIdElectrode());
+                        ps.setDate(2, Date.valueOf(tmp.getProduceDate().toString()));
+                        ps.setString(3, tmp.getCustomer());
+                        ps.setDate(4, Date.valueOf(tmp.getConsumeDate().toString()));
+                        ps.setString(5, tmp.getNote());
+                        System.out.println(ps.getGeneratedKeys().getInt(1)+" "+i);
+                    }
+
+                    @Override
+                    public int getBatchSize() {
+                        return summaries.size();
+                    }
+                }
+        );
+
+    return null;
+    }
+
+    public List<Summary> getSummariesByElectrods(String electrods) {
+        return template.query(
+                electrods,
+                new SummaryRowMapper()
+        );
+//        return null;
     }
 }

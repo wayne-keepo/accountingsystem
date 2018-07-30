@@ -81,6 +81,15 @@ public class Electrod {
 //        this.note = note;
 //    }
 
+    @Override
+    public String toString() {
+        return "Electrod{" +
+                "id=" + id +
+                ", electrodNumber='" + electrodNumber + '\'' +
+                ", type='" + type + '\'' +
+                '}';
+    }
+
     public String getInfoForTree(){
         return electrodNumber+" "+type;
     }
