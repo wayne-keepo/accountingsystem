@@ -26,6 +26,7 @@ public class ComponentsConsumptionESMGTable {
 
     private void createTable() {
         table = new TableView<>();
+        table.setEditable(true);
         detailElectrods = DetailElectrodeService.getDEByType(
                 DetailService.getAll(),
                 CustomConstants.ESMG
@@ -40,7 +41,7 @@ public class ComponentsConsumptionESMGTable {
     private ObservableList<TableColumn<Detail, ?>> createColumns() {
         return FXCollections.observableArrayList(creator.createColumns(detailElectrods));
     }
-
+    public DetailElectrod getDetailElectrods(){return detailElectrods;}
     public TableView<Detail> getTable() {
         return table;
     }

@@ -34,10 +34,7 @@ import utils.RussianMonths;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MainStage {
     private static final Stage stage = new Stage();
@@ -151,6 +148,27 @@ public class MainStage {
         add.setOnAction(event -> {
             Detail detail = ddb.getDetailsBox().getSelectionModel().getSelectedItem();
 
+            if (detail==null || count.getText().isEmpty() || cost.getText().isEmpty())
+                return;
+
+            Map<Double,BigDecimal> tmp = new HashMap<>();
+            tmp.put(Double.valueOf(count.getText()),new BigDecimal(cost.getText()));
+            esmgTable.getDetailElectrods().getDetails().put(detail,tmp);
+            esmgTable.getTable().getItems().add(detail);
+            ddb.deleteDetail(detail);
+            // call upd on DB
+
+        });
+
+        delete.setOnAction(event -> {
+            Detail detail = esmgTable.getTable().getSelectionModel().getSelectedItem();
+            if (detail==null)
+                return;
+            esmgTable.getTable().getItems().remove(detail);
+            esmgTable.getDetailElectrods().getDetails().remove(detail);
+            ddb.addDetail(detail);
+            // call upd on DB
+
         });
     }
     private void addLogicOnAccoutingESMGMTab(Tab tab){
@@ -171,6 +189,32 @@ public class MainStage {
         paneForAccoutingESMGMTab.setBottom(horizontal);
         List<Detail> initDet = esmgTable.getTable().getItems();
         initDet.forEach(ddbm::deleteDetail);
+
+        add.setOnAction(event -> {
+            Detail detail = ddbm.getDetailsBox().getSelectionModel().getSelectedItem();
+
+            if (detail==null || count.getText().isEmpty() || cost.getText().isEmpty())
+                return;
+
+            Map<Double,BigDecimal> tmp = new HashMap<>();
+            tmp.put(Double.valueOf(count.getText()),new BigDecimal(cost.getText()));
+            esmgmTable.getDetailElectrods().getDetails().put(detail,tmp);
+            esmgmTable.getTable().getItems().add(detail);
+            ddbm.deleteDetail(detail);
+            // call upd on DB
+
+        });
+
+        delete.setOnAction(event -> {
+            Detail detail = esmgmTable.getTable().getSelectionModel().getSelectedItem();
+            if (detail==null)
+                return;
+            esmgmTable.getTable().getItems().remove(detail);
+            esmgmTable.getDetailElectrods().getDetails().remove(detail);
+            ddbm.addDetail(detail);
+            // call upd on DB
+
+        });
     }
     private void addLogicOnBalanceTab(Tab tab) {
         tab.setContent(paneForBalanceTab);
