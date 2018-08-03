@@ -125,6 +125,11 @@ public class MainStage {
                 product
         );
     }
+
+    private void addLogicOnSummaryTa(Tab tab){
+
+    }
+
     private void addLogicOnAccoutingESMGTab(Tab tab){
         tab.setContent(paneForAccoutingESMGTab);
         paneForAccoutingESMGTab.setCenter(esmgTable.getTable());
@@ -291,7 +296,6 @@ public class MainStage {
         paneForBalanceTab.setBottom(horizontal);
 
     }
-
     private void addLogicOnCostDetailTab(Tab tab) {
         tab.setContent(paneForCostDetail);
         paneForCostDetail.setCenter(costDetailTable.getCostDetailTable());
@@ -353,7 +357,6 @@ public class MainStage {
         });
 
     }
-
     private void addLogicOnCreateElectrodeTab(Tab tab) {
         tab.setContent(paneForCreateElectrodeTab);
 
@@ -366,7 +369,6 @@ public class MainStage {
         Label customerL = new Label("Заказчик");
         Label consumeDateL = new Label("Дата отгрузки");
         Label noteL = new Label("Примечание");
-        Label range = new Label("Введите в поля ниже с какого по какой номер создать электрод");
 
         TextField number = new TextField();
         TextField customer = new TextField();
@@ -448,33 +450,52 @@ public class MainStage {
         gridPane.setHgap(12);
         gridPane.setPadding(new Insets(10));
 
-        GridPane.setConstraints(numberL, 0, 0);
-        GridPane.setConstraints(typeL, 0, 1);
-        GridPane.setConstraints(number, 1, 0);
-        GridPane.setConstraints(types, 1, 1);
+//        gridPane.add(numberL,0, 0);
+//        gridPane.add(typeL, 0, 1);
+//        gridPane.add(number, 1, 0);
+//        gridPane.add(types, 1, 1);
+//
+//        gridPane.add(produceDateL, 0, 4);
+//        gridPane.add(customerL, 0, 5);
+//        gridPane.add(consumeDateL, 0, 6);
+//        gridPane.add(noteL, 0, 7);
+//        gridPane.add(produceDate, 1, 4);
+//        gridPane.add(customer, 1, 5);
+//        gridPane.add(consumeDate, 1, 6);
+//        gridPane.add(note, 1, 7);
+//
+//        gridPane.add(add, 0, 2);
+//        gridPane.add(delete, 1, 2);
+//        gridPane.add(produce, 0, 8, 2, 1);
+//
+//        gridPane.add(range, 0, 9, 2, 1);
+//        gridPane.add(nFrom,0,10);
+//        gridPane.add(nTo,1,10);
+//        gridPane.add(bulkProduce,0,11);
+//        gridPane.add(isBulkCreate,1,11);
+        gridPane.add(numberL,           0, 0);
+        gridPane.add(number,            1, 0);
+        gridPane.add(nFrom,             0,1);
+        gridPane.add(nTo,               1,1);
 
-        GridPane.setConstraints(produceDateL, 0, 4);
-        GridPane.setConstraints(customerL, 0, 5);
-        GridPane.setConstraints(consumeDateL, 0, 6);
-        GridPane.setConstraints(noteL, 0, 7);
-        GridPane.setConstraints(produceDate, 1, 4);
-        GridPane.setConstraints(customer, 1, 5);
-        GridPane.setConstraints(consumeDate, 1, 6);
-        GridPane.setConstraints(note, 1, 7);
+        gridPane.add(typeL,             0, 2);
+        gridPane.add(types,             1, 2);
 
-        GridPane.setConstraints(add, 0, 2);
-        GridPane.setConstraints(delete, 1, 2);
-        GridPane.setConstraints(produce, 0, 8, 2, 1);
+        gridPane.add(produceDateL,      0, 5);
+        gridPane.add(customerL,         0, 6);
+        gridPane.add(consumeDateL,      0, 7);
+        gridPane.add(noteL,             0, 8);
+        gridPane.add(produceDate,       1, 5);
+        gridPane.add(customer,          1, 6);
+        gridPane.add(consumeDate,       1, 7);
+        gridPane.add(note,              1, 8);
 
-        GridPane.setConstraints(range, 0, 9, 2, 1);
-        GridPane.setConstraints(nFrom,0,10);
-        GridPane.setConstraints(nTo,1,10);
-        GridPane.setConstraints(bulkProduce,0,11);
-        GridPane.setConstraints(isBulkCreate,1,11);
+        gridPane.add(add,               0, 3);
+        gridPane.add(delete,            1, 3);
+        gridPane.add(produce,           0, 9, 2, 1);
 
-        gridPane.getChildren().addAll(
-                numberL, typeL, number, types, add, delete, produce,
-                produceDate, customerL, consumeDate, noteL, produceDateL, customer, consumeDateL, note,range,nFrom,nTo,bulkProduce,isBulkCreate);
+
+        gridPane.add(bulkProduce,       0,10);
         paneForCreateElectrodeTab.setRight(gridPane);
 
     }
