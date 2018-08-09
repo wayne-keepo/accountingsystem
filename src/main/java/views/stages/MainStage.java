@@ -109,12 +109,11 @@ public class MainStage {
 
         componentsConsumptionForESMGM.setContent(esmgmTable.getTable());
 
-        electrods.setContent(electrodsTable.getTable());
+        addLogicOnSummaryTa(electrods);
         addLogicOnAccoutingESMGMTab(componentsConsumptionForESMGM);
         addLogicOnAccoutingESMGTab(componentsConsumptionForESMG);
         addLogicOnBalanceTab(accounting);
         addLogicOnCostDetailTab(costDetailTab);
-        addLogicOnCreateElectrodeTab(product);
 
         tabPane.getTabs().addAll(
                 accounting,
@@ -127,6 +126,126 @@ public class MainStage {
     }
 
     private void addLogicOnSummaryTa(Tab tab){
+        BorderPane pane = new BorderPane();
+        tab.setContent(pane);
+
+        pane.setPadding(new Insets(10));
+        pane.setCenter(electrodsTable.getTable());
+
+        Label numberL = new Label("Номер электрода");
+        TextField number = new TextField();
+        number.setPromptText("№ электрода");
+
+        Label typeL = new Label("Тип электрода");
+        ComboBox<String> types = new ComboBox<>();
+        types.getItems().addAll(CustomConstants.ESMG, CustomConstants.ESMG_M);
+
+        Label produceDateL = new Label("Дата производства");
+        DatePicker produceDate = new DatePicker();
+        produceDate.setValue(LocalDate.now());
+        produceDate.setShowWeekNumbers(true);
+
+        Label customerL = new Label("Заказчик");
+        TextField customer = new TextField();
+
+        Label consumeDateL = new Label("Дата отгрузки");
+        DatePicker consumeDate = new DatePicker();
+        consumeDate.setValue(LocalDate.now());
+        consumeDate.setShowWeekNumbers(true);
+
+        Label noteL = new Label("Примечание");
+        TextField note = new TextField();
+
+        TextField nFrom = new TextField();
+        nFrom.setPromptText("с № электрода");
+        TextField nTo = new TextField();
+        nTo.setPromptText("по № электрода");
+
+        TextField primaryProduction = new TextField();
+        primaryProduction.setPromptText("кол-во сырьевых электродов");
+
+        CheckBox isBulkCreate = new CheckBox("С созданием истории для эклектродов");
+        isBulkCreate.setSelected(false);
+
+        setDateFormat(Arrays.asList(produceDate, consumeDate));
+
+        Button add = new AddButton().getAdd();
+        Button delete = new DeleteButton().getDelete();
+        Button produce = new Button("Произвести электрод");
+
+        Button bulkProduce = new Button("Массовое производство");
+
+        bulkProduce.setOnAction(event -> {
+            if (nFrom.getText().isEmpty() && nTo.getText().isEmpty())
+                return;
+            if (isBulkCreate.isSelected()) {
+                List<ElectrodeSummary> es = SummaryService.bulkCreateElectrodeSummaryFromRange(
+                        nFrom.getText(), nTo.getText(), types.getSelectionModel().getSelectedItem(),
+                        produceDate.getValue(), consumeDate.getValue(), customer.getText(), note.getText());
+                electrodsTable.getTable().getItems().addAll(es);
+                createElectrodeTable.getTable().getItems().clear();
+                createElectrodeTable.getTable().getItems().addAll(ElectrodeService.getAll());
+            } else {
+                List<Electrod> electrods = ElectrodeService.bulkCreateElectrodeFromRange(nFrom.getText(), nTo.getText(), types.getSelectionModel().getSelectedItem());
+                createElectrodeTable.getTable().getItems().addAll(electrods);
+            }
+        });
+//Integer idSummary, Integer idElectrode, LocalDate produceDate, String customer, LocalDate consumeDate, String note
+        produce.setOnAction(event -> {
+            Summary summary = new Summary();
+            Electrod electrod = createElectrodeTable.getTable().getSelectionModel().getSelectedItem();
+            summary.setIdElectrode(electrod.getId());
+            summary.setProduceDate(produceDate.getValue());
+            summary.setCustomer(customer.getText());
+            summary.setConsumeDate(consumeDate.getValue());
+            summary.setNote(note.getText());
+            customer.clear();
+            note.clear();
+            SummaryService.save(summary);
+            electrodsTable.refresh();
+        });
+
+        add.setOnAction(event -> {
+            Electrod electrod = new Electrod();
+            electrod.setElectrodNumber(number.getText());
+            electrod.setType(types.getSelectionModel().getSelectedItem());
+            ElectrodeService.save(electrod);
+            electrod = ElectrodeService.getByNumber(electrod.getElectrodNumber());
+            createElectrodeTable.getTable().getItems().addAll(electrod);
+            number.clear();
+            types.getSelectionModel().clearSelection();
+        });
+        delete.setOnAction(event -> {
+            Electrod electrod = createElectrodeTable.getTable().getSelectionModel().getSelectedItem();
+            ElectrodeService.delete(electrod);
+        });
+
+        GridPane gridPane = new GridPane();
+        gridPane.setVgap(10);
+        gridPane.setHgap(12);
+        gridPane.setPadding(new Insets(10));
+
+        gridPane.add(numberL,           0, 0);
+        gridPane.add(number,            1, 0);
+        gridPane.add(nFrom,             0,1);
+        gridPane.add(nTo,               1,1);
+        gridPane.add(typeL,             0, 2);
+        gridPane.add(types,             1, 2);
+        gridPane.add(produceDateL,      0, 5);
+        gridPane.add(customerL,         0, 6);
+        gridPane.add(consumeDateL,      0, 7);
+        gridPane.add(noteL,             0, 8);
+        gridPane.add(produceDate,       1, 5);
+        gridPane.add(customer,          1, 6);
+        gridPane.add(consumeDate,       1, 7);
+        gridPane.add(note,              1, 8);
+        gridPane.add(add,               0, 3);
+        gridPane.add(delete,            1, 3);
+        gridPane.add(produce,           0, 9, 2, 1);
+        gridPane.add(primaryProduction,0,10);
+        gridPane.add(bulkProduce,       1,10);
+
+        pane.setRight(gridPane);
 
     }
 
@@ -355,148 +474,6 @@ public class MainStage {
             DetailService.findCandidatesOnUpdating(costDetailTable.getCostDetailTable().getItems(), costDetailTable.getChanges());
             costDetailTable.clearChanges();
         });
-
-    }
-    private void addLogicOnCreateElectrodeTab(Tab tab) {
-        tab.setContent(paneForCreateElectrodeTab);
-
-        paneForCreateElectrodeTab.setPadding(new Insets(10));
-        paneForCreateElectrodeTab.setCenter(createElectrodeTable.getTable());
-
-        Label numberL = new Label("Номер электрода");
-        Label typeL = new Label("Тип электрода");
-        Label produceDateL = new Label("Дата производства");
-        Label customerL = new Label("Заказчик");
-        Label consumeDateL = new Label("Дата отгрузки");
-        Label noteL = new Label("Примечание");
-
-        TextField number = new TextField();
-        TextField customer = new TextField();
-        TextField note = new TextField();
-        TextField nFrom = new TextField();
-        nFrom.setPromptText("с № электрода");
-        TextField nTo = new TextField();
-        nTo.setPromptText("по № электрода");
-
-        CheckBox isBulkCreate = new CheckBox("С созданием истории для эклектродов");
-        isBulkCreate.setSelected(false);
-
-        DatePicker produceDate = new DatePicker();
-        produceDate.setValue(LocalDate.now());
-        produceDate.setShowWeekNumbers(true);
-
-        DatePicker consumeDate = new DatePicker();
-        consumeDate.setValue(LocalDate.now());
-        consumeDate.setShowWeekNumbers(true);
-
-        setDateFormat(Arrays.asList(produceDate, consumeDate));
-
-        ComboBox<String> types = new ComboBox<>();
-        types.getItems().addAll(CustomConstants.ESMG, CustomConstants.ESMG_M);
-
-        Button add = new AddButton().getAdd();
-        Button delete = new DeleteButton().getDelete();
-        Button produce = new Button("Произвести электрод");
-
-        Button bulkProduce = new Button("Массовое производство");
-
-        bulkProduce.setOnAction(event -> {
-            if (nFrom.getText().isEmpty() && nTo.getText().isEmpty())
-                return;
-            if (isBulkCreate.isSelected()) {
-                List<ElectrodeSummary> es = SummaryService.bulkCreateElectrodeSummaryFromRange(
-                        nFrom.getText(), nTo.getText(), types.getSelectionModel().getSelectedItem(),
-                        produceDate.getValue(), consumeDate.getValue(), customer.getText(), note.getText());
-                electrodsTable.getTable().getItems().addAll(es);
-                createElectrodeTable.getTable().getItems().clear();
-                createElectrodeTable.getTable().getItems().addAll(ElectrodeService.getAll());
-            } else {
-                List<Electrod> electrods = ElectrodeService.bulkCreateElectrodeFromRange(nFrom.getText(), nTo.getText(), types.getSelectionModel().getSelectedItem());
-                createElectrodeTable.getTable().getItems().addAll(electrods);
-            }
-        });
-//Integer idSummary, Integer idElectrode, LocalDate produceDate, String customer, LocalDate consumeDate, String note
-        produce.setOnAction(event -> {
-            Summary summary = new Summary();
-            Electrod electrod = createElectrodeTable.getTable().getSelectionModel().getSelectedItem();
-            summary.setIdElectrode(electrod.getId());
-            summary.setProduceDate(produceDate.getValue());
-            summary.setCustomer(customer.getText());
-            summary.setConsumeDate(consumeDate.getValue());
-            summary.setNote(note.getText());
-            customer.clear();
-            note.clear();
-            SummaryService.save(summary);
-            electrodsTable.refresh();
-        });
-
-        add.setOnAction(event -> {
-            Electrod electrod = new Electrod();
-            electrod.setElectrodNumber(number.getText());
-            electrod.setType(types.getSelectionModel().getSelectedItem());
-            ElectrodeService.save(electrod);
-            electrod = ElectrodeService.getByNumber(electrod.getElectrodNumber());
-            createElectrodeTable.getTable().getItems().addAll(electrod);
-            number.clear();
-            types.getSelectionModel().clearSelection();
-        });
-        delete.setOnAction(event -> {
-            Electrod electrod = createElectrodeTable.getTable().getSelectionModel().getSelectedItem();
-            ElectrodeService.delete(electrod);
-        });
-
-        GridPane gridPane = new GridPane();
-        gridPane.setVgap(10);
-        gridPane.setHgap(12);
-        gridPane.setPadding(new Insets(10));
-
-//        gridPane.add(numberL,0, 0);
-//        gridPane.add(typeL, 0, 1);
-//        gridPane.add(number, 1, 0);
-//        gridPane.add(types, 1, 1);
-//
-//        gridPane.add(produceDateL, 0, 4);
-//        gridPane.add(customerL, 0, 5);
-//        gridPane.add(consumeDateL, 0, 6);
-//        gridPane.add(noteL, 0, 7);
-//        gridPane.add(produceDate, 1, 4);
-//        gridPane.add(customer, 1, 5);
-//        gridPane.add(consumeDate, 1, 6);
-//        gridPane.add(note, 1, 7);
-//
-//        gridPane.add(add, 0, 2);
-//        gridPane.add(delete, 1, 2);
-//        gridPane.add(produce, 0, 8, 2, 1);
-//
-//        gridPane.add(range, 0, 9, 2, 1);
-//        gridPane.add(nFrom,0,10);
-//        gridPane.add(nTo,1,10);
-//        gridPane.add(bulkProduce,0,11);
-//        gridPane.add(isBulkCreate,1,11);
-        gridPane.add(numberL,           0, 0);
-        gridPane.add(number,            1, 0);
-        gridPane.add(nFrom,             0,1);
-        gridPane.add(nTo,               1,1);
-
-        gridPane.add(typeL,             0, 2);
-        gridPane.add(types,             1, 2);
-
-        gridPane.add(produceDateL,      0, 5);
-        gridPane.add(customerL,         0, 6);
-        gridPane.add(consumeDateL,      0, 7);
-        gridPane.add(noteL,             0, 8);
-        gridPane.add(produceDate,       1, 5);
-        gridPane.add(customer,          1, 6);
-        gridPane.add(consumeDate,       1, 7);
-        gridPane.add(note,              1, 8);
-
-        gridPane.add(add,               0, 3);
-        gridPane.add(delete,            1, 3);
-        gridPane.add(produce,           0, 9, 2, 1);
-
-
-        gridPane.add(bulkProduce,       0,10);
-        paneForCreateElectrodeTab.setRight(gridPane);
 
     }
 
