@@ -1,25 +1,17 @@
 import databaselogic.controllers.DBDetailController;
-import domain.Electrod;
-import entities.Summary;
-import projectConstants.CustomConstants;
-import projectConstants.DBConstants;
-import services.ElectrodeService;
-import services.SummaryService;
-
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
+import databaselogic.controllers.DBRawElectrodeController;
+import entities.RawElectrode;
 
 public class TEST {
     public static void main(String[] args) {
 
         //Detail tests
         DBDetailController dbDetailController = new DBDetailController();
-//        Detail detail = dbDetailController.get(1);
+//        Detail detail = dbDetailController.initRawElectrodeValue(1);
 
         //Accounting History tests
 //        DBAccountingHistoryController dbachc = new DBAccountingHistoryController();
-//        AccoutingHistory achis = dbachc.getByDetail(1).get(0);
+//        AccoutingHistory achis = dbachc.getByDetail(1).initRawElectrodeValue(0);
 //        achis.setDetail(detail);
 //        List<AccoutingHistory> ahList = dbachc.getByDetail(1);
 //        Map<RussianMonths, List<AccoutingHistory>> histories = AccoutingHistoryService.historyToMapForAccoutingWindow(ahList);
@@ -44,7 +36,7 @@ public class TEST {
 //
 //        System.out.println("New double: " + newDouble);
 //        List<Map<String,Object>> test = dbDetailController.test();
-//        Map<String,Object> tm = test.get(0);
+//        Map<String,Object> tm = test.initRawElectrodeValue(0);
 //        System.out.println(DetailElectrodeService.getAllDEPrimitivs().toString());
 //        List<DetailElectrod> de = ChainUtil.createChainDetailElectrode(
 //                dbDetailController.getAll(),
@@ -74,19 +66,26 @@ public class TEST {
 //        StringBuilder st = new StringBuilder();
 //        for (int i = 0;i<numbers.size();i++){
 //            if (numbers.size()-i==1)
-//                st.append(numbers.get(i));
+//                st.append(numbers.initRawElectrodeValue(i));
 //            else
-//                st.append(numbers.get(i)).append(",");
+//                st.append(numbers.initRawElectrodeValue(i)).append(",");
 //        }
 //        String sql = String.format("%s ( %s )", DBConstants.SELECT_ELECTRODS_BY_NUMBERS,st.toString());
 //        System.out.println(sql);
 //        SummaryService.bulkCreateElectrodeSummaryFromRange("000001","000005",CustomConstants.ESMG, LocalDate.now(),LocalDate.now(),"Test Customer","Data Test");
 
-        StringBuilder ids = new StringBuilder();
-        ids.append("1").append(",").append("2").append(",").append("3").append(",").append("4").append(",").append("5").append(",").append("6").append(",").append("7").append(",").append("8").append(",").append("9").append(",");
-        System.out.println(ids);
-        ids.delete(ids.lastIndexOf(","),ids.lastIndexOf(",")+1);
-        System.out.println(ids);
+//        StringBuilder ids = new StringBuilder();
+//        ids.append("1").append(",").append("2").append(",").append("3").append(",").append("4").append(",").append("5").append(",").append("6").append(",").append("7").append(",").append("8").append(",").append("9").append(",");
+//        System.out.println(ids);
+//        ids.delete(ids.lastIndexOf(","),ids.lastIndexOf(",")+1);
+//        System.out.println(ids);
+//  Raw Electrode Tests
+//        DBRawElectrodeController controller = new DBRawElectrodeController();
+//        controller.initRawElectrodeValue();
+//        System.out.println(RawElectrode.getInstance().getCount());
+//        RawElectrode.getInstance().setCount(100);
+//        controller.updateCount();
+//        System.out.println(RawElectrode.getInstance().getCount());
 
 
     }

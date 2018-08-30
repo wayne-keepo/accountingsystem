@@ -161,19 +161,18 @@ public class MainStage {
         TextField nTo = new TextField();
         nTo.setPromptText("по № электрода");
 
-        TextField primaryProduction = new TextField();
-        primaryProduction.setPromptText("кол-во сырьевых электродов");
+        TextField rawProduction = new TextField();
+        rawProduction.setPromptText("кол-во сырьевых электродов");
 
         CheckBox isBulkCreate = new CheckBox("С созданием истории для эклектродов");
         isBulkCreate.setSelected(false);
 
         setDateFormat(Arrays.asList(produceDate, consumeDate));
 
-        Button add = new AddButton().getAdd();
         Button delete = new DeleteButton().getDelete();
         Button produce = new Button("Произвести электрод");
-
         Button bulkProduce = new Button("Массовое производство");
+        Button rawProduce = new Button("Сырьевой электрод");
 
         bulkProduce.setOnAction(event -> {
             if (nFrom.getText().isEmpty() && nTo.getText().isEmpty())
@@ -193,8 +192,7 @@ public class MainStage {
 //Integer idSummary, Integer idElectrode, LocalDate produceDate, String customer, LocalDate consumeDate, String note
         produce.setOnAction(event -> {
             Summary summary = new Summary();
-            Electrod electrod = createElectrodeTable.getTable().getSelectionModel().getSelectedItem();
-            summary.setIdElectrode(electrod.getId());
+            summary.setIdElectrode(1);
             summary.setProduceDate(produceDate.getValue());
             summary.setCustomer(customer.getText());
             summary.setConsumeDate(consumeDate.getValue());
@@ -205,19 +203,8 @@ public class MainStage {
             electrodsTable.refresh();
         });
 
-        add.setOnAction(event -> {
-            Electrod electrod = new Electrod();
-            electrod.setElectrodNumber(number.getText());
-            electrod.setType(types.getSelectionModel().getSelectedItem());
-            ElectrodeService.save(electrod);
-            electrod = ElectrodeService.getByNumber(electrod.getElectrodNumber());
-            createElectrodeTable.getTable().getItems().addAll(electrod);
-            number.clear();
-            types.getSelectionModel().clearSelection();
-        });
         delete.setOnAction(event -> {
-            Electrod electrod = createElectrodeTable.getTable().getSelectionModel().getSelectedItem();
-            ElectrodeService.delete(electrod);
+
         });
 
         GridPane gridPane = new GridPane();
@@ -227,10 +214,10 @@ public class MainStage {
 
         gridPane.add(numberL,           0, 0);
         gridPane.add(number,            1, 0);
-        gridPane.add(nFrom,             0,1);
-        gridPane.add(nTo,               1,1);
-        gridPane.add(typeL,             0, 2);
-        gridPane.add(types,             1, 2);
+        gridPane.add(nFrom,             0, 1);
+        gridPane.add(nTo,               1, 1);
+        gridPane.add(typeL,             0, 3);
+        gridPane.add(types,             1, 3);
         gridPane.add(produceDateL,      0, 5);
         gridPane.add(customerL,         0, 6);
         gridPane.add(consumeDateL,      0, 7);
@@ -239,11 +226,12 @@ public class MainStage {
         gridPane.add(customer,          1, 6);
         gridPane.add(consumeDate,       1, 7);
         gridPane.add(note,              1, 8);
-        gridPane.add(add,               0, 3);
-        gridPane.add(delete,            1, 3);
-        gridPane.add(produce,           0, 9, 2, 1);
-        gridPane.add(primaryProduction,0,10);
-        gridPane.add(bulkProduce,       1,10);
+        gridPane.add(rawProduction,     0, 2);
+        gridPane.add(rawProduce,        1, 2);
+//        gridPane.add(delete,            1, 3);
+        gridPane.add(produce,           0, 9);
+        gridPane.add(bulkProduce,       1, 9);
+//        gridPane.add(rawProduction,0,10);
 
         pane.setRight(gridPane);
 
@@ -295,6 +283,7 @@ public class MainStage {
 
         });
     }
+
     private void addLogicOnAccoutingESMGMTab(Tab tab){
         tab.setContent(paneForAccoutingESMGMTab);
         paneForAccoutingESMGMTab.setCenter(esmgmTable.getTable());
@@ -340,6 +329,7 @@ public class MainStage {
 
         });
     }
+
     private void addLogicOnBalanceTab(Tab tab) {
         tab.setContent(paneForBalanceTab);
         paneForBalanceTab.setCenter(balancesTable.getTable());
@@ -358,7 +348,7 @@ public class MainStage {
 //        });
 
         add.setOnAction(event -> {
-            //get detail from drop box
+            //initRawElectrodeValue detail from drop box
             //TODO: in future delete selected Detail from dropbox
             Detail detail = detailDropBox.getDetailsBox().getSelectionModel().getSelectedItem();
             if (detail == null)
@@ -370,7 +360,7 @@ public class MainStage {
             List<PrimitivityBalance> pBalances = BalanceService.buildPrimitivs(detail);
             // save it on db Balance
             balanceController.saveAll(pBalances);
-            // get primitive balance from table (with id)
+            // initRawElectrodeValue primitive balance from table (with id)
             pBalances = balanceController.getAllByDetailId(detail.getId());
 
             List<Balance> balances = ChainUtil.createBalanceChain(
@@ -385,13 +375,13 @@ public class MainStage {
         });
 
         history.setOnAction(event -> {
-            //get detail by selected balance
+            //initRawElectrodeValue detail by selected balance
             Balance balance = balancesTable.getTable().getSelectionModel().getSelectedItem();
             if (balance == null)
                 return;
             int position = balancesTable.getTable().getItems().indexOf(balance);
             Detail detail = balance.getDetail();
-            //get gistory for current detail
+            //initRawElectrodeValue gistory for current detail
             List<AccoutingHistory> ahList = ahController.getByDetail(detail.getId());
             //associated detail with her history
             ChainUtil.associateDetailWithHistory(detail, ahList);
@@ -415,6 +405,7 @@ public class MainStage {
         paneForBalanceTab.setBottom(horizontal);
 
     }
+
     private void addLogicOnCostDetailTab(Tab tab) {
         tab.setContent(paneForCostDetail);
         paneForCostDetail.setCenter(costDetailTable.getCostDetailTable());

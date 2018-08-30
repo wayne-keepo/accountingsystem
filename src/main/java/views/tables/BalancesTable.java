@@ -152,7 +152,7 @@ public class BalancesTable {
 //                    @Override
 //                    protected void updateItem(String item, boolean empty) {
 //                        super.updateItem(item, empty);
-//                        if (get)
+//                        if (initRawElectrodeValue)
 //                    }
 //                }
 //            });

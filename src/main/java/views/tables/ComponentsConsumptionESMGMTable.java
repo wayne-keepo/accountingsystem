@@ -52,4 +52,4 @@ public class ComponentsConsumptionESMGMTable {
         return detailElectrods;
     }
 }
-//            System.out.println(String.format("%s : \n Keys: %s \n %s \n Inc = %d Id = %d Inc>Size : %b--------------","ESMG-M", Arrays.toString(keys),value.getValue().toString(),i.get(),tmp,i.get()>size));
+//            System.out.println(String.format("%s : \n Keys: %s \n %s \n Inc = %d Id = %d Inc>Size : %b--------------","ESMG-M", Arrays.toString(keys),value.getValue().toString(),i.initRawElectrodeValue(),tmp,i.initRawElectrodeValue()>size));

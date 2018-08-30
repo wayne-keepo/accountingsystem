@@ -65,4 +65,7 @@ public class DBConstants {
     public static final String SELECT_ACCOUNTING_HISTORY ="SELECT * FROM AccountingHistory";
     public static final String SELECT_ACCOUNTING_HISTORY_BY_DETAIL_ID ="SELECT * FROM AccountingHistory WHERE idDetail = ?";
     public static final String DELETE_ACCOUNTING_HISTORY = "DELETE TABLE AccountingHistory WHERE id = ?";
+
+    public static final String GET_RAW_ELECTRODE = "SELECT * FROM RawElectrode where id = 1";
+    public static final String UPDATE_RAW_ELECTRODE_COUNT = "UPDATE RawElectrode SET count = ? WHERE id = 1";
 }
