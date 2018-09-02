@@ -6,6 +6,7 @@ import entities.AccoutingHistory;
 import entities.Detail;
 import utils.RussianMonths;
 import utils.Searcher;
+import views.modalWindows.AccoutingHistoryWindow;
 
 import java.time.Month;
 import java.util.*;
@@ -99,5 +100,11 @@ public class AccoutingHistoryService {
 
     public static List<AccoutingHistory> getHistoryByDetail(Detail detail) {
         return controller.getByDetail(detail.getId());
+    }
+
+    public static void updateHistoryForDay(int year, int month, int day, int acc, int detailId, double num) {
+        Double oldValue = controller.getDayValue(year, month, day, acc, detailId);
+        double newValue = oldValue+num;
+        controller.updateHistoryForDay(year, month, day, acc, detailId, newValue);
     }
 }

@@ -13,7 +13,9 @@ import java.util.List;
 public class DBAccountingHistoryController implements DBOperations<AccoutingHistory> {
     private JdbcTemplate template;
 
-    public DBAccountingHistoryController(){this.template = Connector.getTemplate();}
+    public DBAccountingHistoryController() {
+        this.template = Connector.getTemplate();
+    }
 
     @Override
     public boolean save(AccoutingHistory o) {
@@ -56,7 +58,7 @@ public class DBAccountingHistoryController implements DBOperations<AccoutingHist
                 days.get(30)
 
         );
-        return flag>0;
+        return flag > 0;
     }
 
     @Override
@@ -81,14 +83,14 @@ public class DBAccountingHistoryController implements DBOperations<AccoutingHist
         return template.update(
                 DBConstants.DELETE_ACCOUNTING_HISTORY,
                 id
-        )>0;
+        ) > 0;
     }
 
-    public void batchInsert(String... sql){
+    public void batchInsert(String... sql) {
         template.batchUpdate(sql);
     }
 
-    public void batchUpdate(String[] sql){
+    public void batchUpdate(String[] sql) {
         template.batchUpdate(sql);
     }
 
@@ -106,4 +108,17 @@ public class DBAccountingHistoryController implements DBOperations<AccoutingHist
         );
     }
 
+    public Double getDayValue(int year, int month, int day, int acc, int detailId) {
+        return template.queryForObject(
+                "SELECT d"+day+" FROM AccountingHistory WHERE year = ? and month = ? and acc = ? and idDetail = ?",
+                Double.class,
+                year, month, acc, detailId);
+    }
+
+    public void updateHistoryForDay(int year, int month, int day, int acc, int detailId, double newValue) {
+        template.update(
+                "UPDATE AccountingHistory SET d"+day+" = ? WHERE year = ? and month = ? and acc = ? and idDetail = ?",
+                newValue, year, month, acc, detailId
+        );
+    }
 }

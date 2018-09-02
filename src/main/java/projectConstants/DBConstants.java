@@ -11,7 +11,7 @@ public class DBConstants {
     public static final String SINGLE_SELECT_DETAIL_BY_ID = "SELECT * FROM DETAIL WHERE ID = ?";
     public static final String SINGLE_DELETE_DETAIL = "DELETE FROM DETAIL WHERE ID = ?";
     public static final String SINGLE_SELECT_DETAIL_BY_TITLE = "SELECT * FROM DETAIL WHERE TITLE = ?";
-
+    public static final String SELEC_DETAILS_BY_IDS = "SELECT * FROM DETAIL WHERE ID IN(?)";
     public static final String SELECT_ALL_DETAIL = "SELECT * FROM DETAIL";
 
     //table balance(id,IDdetail,year,month,incoming,outcoming,bAtBeginingYear,bAtEndOfYear)
@@ -56,16 +56,17 @@ public class DBConstants {
     public static final String INSERT_ACCOUNTING_HISTORY =
             "INSERT INTO AccountingHistory(idDetail,year,month,acc,d1,d2,d3,d4,d5,d6,d7,d8,d9,d10,d11,d12,d13,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29,d30,d31)" +
                     " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-
     public static final String INSERT_ACCOUNTING_HISTORY_START_INITIALIZE_FOR_NEW_BALANCE_HISTORY ="INSERT INTO AccountingHistory(idDetail,month,acc) VALUES(?,?,?)";
     // see on code, think that it's created on AccountingHistoryService
     public static final String UPDATE_ACCOUNTING_HISTORY ="UPDATE AccountingHistory SET " +
         "d1=?,d2=?,d3=?,d4=?,d5=?,d6=?,d7=?,d8=?,d9=?,d10=?,d11=?,d12=?,d13=?,d14=?,d15=?,d16=?,d17=?,d18=?,d19=?,d20=?,d21=?,d22=?,d23=?,d24=?,d25=?,d26=?,d27=?,d28=?,d29=?,d30=?,d31=?" +
         "WHERE id = ? and year = ? and month = ? and acc = ?";
+//    public static final String UPDATE_DAY_ACC_HIS = "UPDATE AccountingHistory SET d? = ? WHERE year = ? and month = ? and acc = ? and idDetail = ?";
     public static final String SELECT_ACCOUNTING_HISTORY ="SELECT * FROM AccountingHistory";
     public static final String SELECT_ACCOUNTING_HISTORY_BY_DETAIL_ID ="SELECT * FROM AccountingHistory WHERE idDetail = ?";
+//    public static final String SELECT_DAY_FROM_ACC_HIST = "SELECT d? FROM AccountingHistory WHERE year = ? and month = ? and acc = ? and idDetail = ?";
     public static final String DELETE_ACCOUNTING_HISTORY = "DELETE TABLE AccountingHistory WHERE id = ?";
 
-    public static final String GET_RAW_ELECTRODE = "SELECT * FROM RawElectrode where id = 1";
-    public static final String UPDATE_RAW_ELECTRODE_COUNT = "UPDATE RawElectrode SET count = ? WHERE id = 1";
+    public static final String GET_RAW_ELECTRODE = "SELECT * FROM RawElectrode where id = 0";
+    public static final String UPDATE_RAW_ELECTRODE_COUNT = "UPDATE RawElectrode SET count = ? WHERE id = 0";
 }

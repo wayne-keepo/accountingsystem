@@ -49,14 +49,13 @@ public class MainStage {
     private final BorderPane paneForCreateElectrodeTab = new BorderPane();
     private TabPane tabPane;
     //tables
-    //private TableView<Detail> table;
     private final BalancesTable balancesTable = new BalancesTable();
     private final ElectrodsTable electrodsTable = new ElectrodsTable();
     private final CostDetailTable costDetailTable = new CostDetailTable();
     private final ComponentsConsumptionESMGTable esmgTable = new ComponentsConsumptionESMGTable();
     private final ComponentsConsumptionESMGMTable esmgmTable = new ComponentsConsumptionESMGMTable();
     private final CreateElectrodeTable createElectrodeTable = new CreateElectrodeTable();
-
+    //custom classes
     private final DetailDropBox detailDropBox = new DetailDropBox();
 
     private DBAccountingHistoryController ahController = new DBAccountingHistoryController();
@@ -96,16 +95,14 @@ public class MainStage {
 
         Tab accounting = new Tab("Остатки");
         accounting.setClosable(false);
+        Tab costDetailTab = new Tab("Детали");
+        costDetailTab.setClosable(false);
         Tab componentsConsumptionForESMG = new Tab("Расход комплектующих для ЕСМГ");
         componentsConsumptionForESMG.setClosable(false);
         Tab componentsConsumptionForESMGM = new Tab("Расход комплектующих для ЕСМГ-М");
         componentsConsumptionForESMGM.setClosable(false);
         Tab electrods = new Tab("Электроды");
         electrods.setClosable(false);
-        Tab costDetailTab = new Tab("Детали");
-        costDetailTab.setClosable(false);
-        Tab product = new Tab("Создать эклектрод");
-        product.setClosable(false);
 
         componentsConsumptionForESMGM.setContent(esmgmTable.getTable());
 
@@ -117,11 +114,10 @@ public class MainStage {
 
         tabPane.getTabs().addAll(
                 accounting,
+                costDetailTab,
                 componentsConsumptionForESMG,
                 componentsConsumptionForESMGM,
-                electrods,
-                costDetailTab,
-                product
+                electrods
         );
     }
 
@@ -169,10 +165,21 @@ public class MainStage {
 
         setDateFormat(Arrays.asList(produceDate, consumeDate));
 
-        Button delete = new DeleteButton().getDelete();
+        Button delete = new Button("Удалить");
         Button produce = new Button("Произвести электрод");
         Button bulkProduce = new Button("Массовое производство");
         Button rawProduce = new Button("Сырьевой электрод");
+
+        rawProduce.setOnAction(event -> {
+            if (rawProduction.getText().isEmpty()|| types.getSelectionModel().getSelectedItem().isEmpty())
+                return;
+            String type = types.getSelectionModel().getSelectedItem();
+            ElectrodeService.initRawElectrode();
+            int count = Integer.valueOf(rawProduction.getText());
+            ElectrodeService.updateRawElectrodeCount(count);
+
+            // logic for check count fot produce electrodes
+        });
 
         bulkProduce.setOnAction(event -> {
             if (nFrom.getText().isEmpty() && nTo.getText().isEmpty())
@@ -228,10 +235,8 @@ public class MainStage {
         gridPane.add(note,              1, 8);
         gridPane.add(rawProduction,     0, 2);
         gridPane.add(rawProduce,        1, 2);
-//        gridPane.add(delete,            1, 3);
         gridPane.add(produce,           0, 9);
         gridPane.add(bulkProduce,       1, 9);
-//        gridPane.add(rawProduction,0,10);
 
         pane.setRight(gridPane);
 

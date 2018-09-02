@@ -1,8 +1,10 @@
 package services;
 
 import databaselogic.controllers.DBElectrodeController;
+import databaselogic.controllers.DBRawElectrodeController;
 import domain.Electrod;
 import domain.ElectrodeSummary;
+import entities.RawElectrode;
 import entities.Summary;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,6 +15,7 @@ import java.util.List;
 
 public class ElectrodeService {
     private static final DBElectrodeController controller = new DBElectrodeController();
+    private static final DBRawElectrodeController rawController = new DBRawElectrodeController();
 
     private static void bulkSave(List<Electrod> electrods){
         controller.bulkSave(electrods);
@@ -99,6 +102,16 @@ public class ElectrodeService {
         number = zeros.toString()+number;
         zeros.setLength(0);
         return number;
+    }
+
+    public static void initRawElectrode(){
+        rawController.initRawElectrodeValue();
+    }
+
+    public static void updateRawElectrodeCount(int count){
+        int old = RawElectrode.getInstance().getCount();
+        RawElectrode.getInstance().setCount(old+count);
+        rawController.updateCount();
     }
 
 }

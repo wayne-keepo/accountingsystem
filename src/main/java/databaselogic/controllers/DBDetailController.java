@@ -99,4 +99,13 @@ public class DBDetailController implements DBOperations<Detail> {
                 }
         );
     }
+
+    public List<Detail> getDetailsByIDs(List<Integer> ids) {
+        String tmp = ids.toString().replaceAll("[\\[\\]]","");
+        return template.query(
+                DBConstants.SELEC_DETAILS_BY_IDS,
+                new DetailRowMapper(),
+                tmp
+                );
+    }
 }

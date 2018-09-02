@@ -29,8 +29,12 @@ public class DetailService {
         return true;
     }
 
-    private static void bulkUpdate(List<Detail> details) {
+    public static void bulkUpdate(List<Detail> details) {
         controller.bulkUpdate(details);
+    }
+
+    public static List<Detail> getDetailsByIDs(List<Integer> ids){
+        return controller.getDetailsByIDs(ids);
     }
 
 }

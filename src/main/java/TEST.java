@@ -1,6 +1,11 @@
 import databaselogic.controllers.DBDetailController;
 import databaselogic.controllers.DBRawElectrodeController;
 import entities.RawElectrode;
+import services.AccoutingHistoryService;
+
+import java.time.MonthDay;
+import java.util.Arrays;
+import java.util.List;
 
 public class TEST {
     public static void main(String[] args) {
@@ -79,6 +84,8 @@ public class TEST {
 //        System.out.println(ids);
 //        ids.delete(ids.lastIndexOf(","),ids.lastIndexOf(",")+1);
 //        System.out.println(ids);
+//        AccoutingHistoryService.updateHistoryForDay(2018,8,1,1,1,100);
+
 //  Raw Electrode Tests
 //        DBRawElectrodeController controller = new DBRawElectrodeController();
 //        controller.initRawElectrodeValue();
@@ -87,6 +94,10 @@ public class TEST {
 //        controller.updateCount();
 //        System.out.println(RawElectrode.getInstance().getCount());
 
+//        List<Integer> ids = Arrays.asList(1,2,3,4,5,6,7,8,9);
+//        String tmp = ids.toString().replaceAll("[\\[\\]]","");
+//        System.out.println(tmp);
+//        System.out.println(MonthDay.now().getDayOfMonth());
 
     }
 
