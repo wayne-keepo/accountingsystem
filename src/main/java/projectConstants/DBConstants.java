@@ -11,7 +11,7 @@ public class DBConstants {
     public static final String SINGLE_SELECT_DETAIL_BY_ID = "SELECT * FROM DETAIL WHERE ID = ?";
     public static final String SINGLE_DELETE_DETAIL = "DELETE FROM DETAIL WHERE ID = ?";
     public static final String SINGLE_SELECT_DETAIL_BY_TITLE = "SELECT * FROM DETAIL WHERE TITLE = ?";
-    public static final String SELEC_DETAILS_BY_IDS = "SELECT * FROM DETAIL WHERE ID IN(?)";
+    public static final String SELEC_DETAILS_BY_IDS = "SELECT * FROM DETAIL WHERE ID in(?)";
     public static final String SELECT_ALL_DETAIL = "SELECT * FROM DETAIL";
 
     //table balance(id,IDdetail,year,month,incoming,outcoming,bAtBeginingYear,bAtEndOfYear)

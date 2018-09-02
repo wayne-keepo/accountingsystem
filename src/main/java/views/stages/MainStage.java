@@ -177,8 +177,8 @@ public class MainStage {
             ElectrodeService.initRawElectrode();
             int count = Integer.valueOf(rawProduction.getText());
             ElectrodeService.updateRawElectrodeCount(count);
-
-            // logic for check count fot produce electrodes
+            CountingService.countingForProduceRawElectrode(type,count);
+            rawProduction.clear();
         });
 
         bulkProduce.setOnAction(event -> {

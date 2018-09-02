@@ -12,7 +12,7 @@ public class AccoutingHistory {
     private int idDetail;
     private Year year;
     private Month month;
-    private int acc;
+    private int acc; // 1 - приход 0 - расход
     private List<Day> days;
 
     public AccoutingHistory() {}

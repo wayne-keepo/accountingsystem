@@ -102,10 +102,12 @@ public class DBDetailController implements DBOperations<Detail> {
 
     public List<Detail> getDetailsByIDs(List<Integer> ids) {
         String tmp = ids.toString().replaceAll("[\\[\\]]","");
+        String sql = DBConstants.SELEC_DETAILS_BY_IDS;
+        sql = sql.replace("?",tmp);
+        System.out.println(sql);
         return template.query(
-                DBConstants.SELEC_DETAILS_BY_IDS,
-                new DetailRowMapper(),
-                tmp
+                sql,
+                new DetailRowMapper()
                 );
     }
 }
