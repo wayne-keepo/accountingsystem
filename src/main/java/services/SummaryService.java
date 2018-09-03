@@ -24,7 +24,14 @@ public class SummaryService {
     }
 
     public static ObservableList<Summary> getAllAsObservableList() {
-        return FXCollections.observableList(controller.getAll());
+        List<Summary> summaries =controller.getAll();
+        summaries.forEach(summary -> {
+            String number = summary.getElectrodeNumber();
+            number = ElectrodeService.formatElectrodeNumber(number);
+            summary.setElectrodeNumber(number);
+        });
+
+        return FXCollections.observableList(summaries);
     }
 
     public static List<Summary> getAll() {
