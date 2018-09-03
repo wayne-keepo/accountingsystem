@@ -45,7 +45,7 @@ public class BalanceService {
         List<AccoutingHistory> histories = AccoutingHistoryService.getAll();
         List<Detail> details = DetailService.getAll();
         List<Balance> balances = ChainUtil.createBalanceChain(details, pBalances, histories);
-        System.out.println("Balances from BalanceService#buildBalances()\n" + balances.toString());
+//        System.out.println("Balances from BalanceService#buildBalances()\n" + balances.toString());
         return FXCollections.observableArrayList(balances);
 
     }

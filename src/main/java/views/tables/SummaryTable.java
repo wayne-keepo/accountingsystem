@@ -1,18 +1,13 @@
 package views.tables;
 
-import domain.Electrod;
-import domain.ElectrodeSummary;
 import entities.Summary;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.util.Callback;
-import services.ElectrodeService;
 import services.SummaryService;
 
 import java.time.LocalDate;

@@ -3,12 +3,10 @@ package views.stages;
 import databaselogic.controllers.DBAccountingHistoryController;
 import databaselogic.controllers.DBBalanceController;
 import databaselogic.controllers.DBDetailController;
-import databaselogic.controllers.DBElectrodeController;
-import domain.ElectrodeSummary;
+
 import entities.*;
 import utils.ChainUtil;
 import domain.Balance;
-import domain.Electrod;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -54,7 +52,6 @@ public class MainStage {
     private final DetailDropBox detailDropBox = new DetailDropBox();
 
     private DBAccountingHistoryController ahController = new DBAccountingHistoryController();
-    private DBElectrodeController electrodeController = new DBElectrodeController();
     private DBDetailController detailController = new DBDetailController();
     private DBBalanceController balanceController = new DBBalanceController();
 
@@ -114,6 +111,228 @@ public class MainStage {
                 componentsConsumptionForESMGM,
                 electrods
         );
+    }
+
+    private void addLogicOnBalanceTab(Tab tab) {
+        tab.setContent(paneForBalanceTab);
+        paneForBalanceTab.setCenter(balancesTable.getTable());
+
+        HBox horizontal = new HBox(10);
+        horizontal.setPadding(new Insets(10, 0, 10, 0));
+        horizontal.setAlignment(Pos.BOTTOM_CENTER);
+
+        DetailDropBox balanceDetailDropBox = new DetailDropBox();
+        balancesTable.getDetails().forEach(balanceDetailDropBox::deleteDetail);
+
+        Button history = new Button("История");
+        Button add = new AddButton().getAdd();
+
+        add.setOnAction(event -> {
+            //initRawElectrodeValue detail from drop box
+            //TODO: in future delete selected Detail from dropbox
+            Detail detail = balanceDetailDropBox.getDetailsBox().getSelectionModel().getSelectedItem();
+            if (detail == null)
+                return; // TODO: добавить обработку ошибки
+            balanceDetailDropBox.deleteDetail(detail);
+            // build accounting history for detail
+            AccoutingHistoryService.buildSqlForBatchInsertAccHist(detail);
+            List<AccoutingHistory> histories = AccoutingHistoryService.getHistoryByDetail(detail);
+            // build primitiv for balance
+            List<PrimitivityBalance> pBalances = BalanceService.buildPrimitivs(detail);
+            // save it on db Balance
+            balanceController.saveAll(pBalances);
+            // initRawElectrodeValue primitive balance from table (with id)
+            pBalances = balanceController.getAllByDetailId(detail.getId());
+
+            List<Balance> balances = ChainUtil.createBalanceChain(
+                    Collections.singletonList(detail),
+                    pBalances,
+                    histories
+            );
+            if (balances != null) {
+                balancesTable.getTable().getItems().addAll(balances);
+                detailDropBox.deleteDetail(detail);
+            }
+
+        });
+
+        history.setOnAction(event -> {
+            //initRawElectrodeValue detail by selected balance
+            Balance balance = balancesTable.getTable().getSelectionModel().getSelectedItem();
+            if (balance == null)
+                return;
+            int position = balancesTable.getTable().getItems().indexOf(balance);
+            Detail detail = balance.getDetail();
+            //initRawElectrodeValue gistory for current detail
+            List<AccoutingHistory> ahList = ahController.getByDetail(detail.getId());
+            //associated detail with her history
+            ChainUtil.associateDetailWithHistory(detail, ahList);
+            //convert history for map for AccountingWindow
+            Map<RussianMonths, List<AccoutingHistory>> tmp = AccoutingHistoryService.historyToMapForAccoutingWindow(ahList);
+            //send history map in accounting window and wait return result for update (candidates on update)
+            tmp = new AccoutingHistoryWindow(tmp).show();
+            System.out.println(tmp != null);
+            // send candidates for update into updating logic
+            if (tmp != null) {
+                // upd history by month
+                BalanceService.updAccHistoryByDays(balance, tmp);
+                // rewrite balance on table
+                balancesTable.getTable().getItems().set(position, balance);
+                // upd hist on db
+                AccoutingHistoryService.buildSqlForBatchUpdAccHist(tmp);
+            }
+        });
+
+        horizontal.getChildren().addAll(history, balanceDetailDropBox.getDetailsBox(), add);
+        paneForBalanceTab.setBottom(horizontal);
+
+    }
+
+    private void addLogicOnCostDetailTab(Tab tab) {
+        tab.setContent(paneForCostDetail);
+        paneForCostDetail.setCenter(costDetailTable.getCostDetailTable());
+
+        TextField title = new TextField();
+        title.setPromptText("Введите название детали");
+        TextField count = new TextField();
+        count.setPromptText("Введите количество детали");
+        TextField cost = new TextField();
+        cost.setPromptText("Введите стоимость детали");
+        TextField descriptions = new TextField();
+        descriptions.setPromptText("Примечание");
+
+        Button add = new AddButton().getAdd();
+        Button delete = new DeleteButton().getDelete();
+
+        HBox horizontal = new HBox(15);
+        horizontal.setPadding(new Insets(10, 0, 10, 0));
+        horizontal.setAlignment(Pos.BOTTOM_CENTER);
+        horizontal.getChildren().addAll(title, count, cost, descriptions, add, delete);
+
+        paneForCostDetail.setBottom(horizontal);
+
+        add.setOnAction(event -> {
+            if (title.getText().isEmpty() || count.getText().isEmpty() || cost.getText().isEmpty()) {
+                return;
+            }
+            Detail d = new Detail(
+                    title.getText(),
+                    Double.valueOf(count.getText()),
+                    new BigDecimal(cost.getText()),
+                    descriptions.getText()
+            );
+            detailController.save(d);
+            d = detailController.get(d.getTitle());
+            costDetailTable.getCostDetailTable().getItems().add(d);
+            detailDropBox.addDetail(d);
+            title.clear();
+            count.clear();
+            cost.clear();
+            descriptions.clear();
+
+        });
+
+        delete.setOnAction(event -> {
+            if (costDetailTable.getCostDetailTable().getSelectionModel().getSelectedItem() == null)
+                return;
+            Detail d = costDetailTable.getCostDetailTable().getSelectionModel().getSelectedItem();
+            costDetailTable.getCostDetailTable().getItems().remove(d);
+            detailController.delete(d.getId());
+        });
+
+    }
+
+    private void addLogicOnAccoutingESMGTab(Tab tab){
+        tab.setContent(paneForAccoutingESMGTab);
+        paneForAccoutingESMGTab.setCenter(esmgTable.getTable());
+        HBox horizontal = new HBox(10);
+        DetailDropBox ddb = new DetailDropBox();
+        TextField count = new TextField();
+        count.setPromptText("количество деталей");
+        TextField cost = new TextField();
+        cost.setPromptText("стоимость детали");
+        Button add = new Button("Добавить");
+        Button delete = new Button("Удалить");
+        horizontal.setPadding(new Insets(10, 0, 10, 0));
+        horizontal.setAlignment(Pos.BOTTOM_CENTER);
+
+        horizontal.getChildren().addAll(ddb.getDetailsBox(),count,cost,add,delete);
+        paneForAccoutingESMGTab.setBottom(horizontal);
+
+        List<Detail> initDet = esmgTable.getTable().getItems();
+        initDet.forEach(ddb::deleteDetail);
+
+        add.setOnAction(event -> {
+            Detail detail = ddb.getDetailsBox().getSelectionModel().getSelectedItem();
+
+            if (detail==null || count.getText().isEmpty() || cost.getText().isEmpty())
+                return;
+
+            Map<Double,BigDecimal> tmp = new HashMap<>();
+            tmp.put(Double.valueOf(count.getText()),new BigDecimal(cost.getText()));
+            esmgTable.getDetailElectrods().getDetails().put(detail,tmp);
+            esmgTable.getTable().getItems().add(detail);
+            ddb.deleteDetail(detail);
+            // call upd on DB
+
+        });
+
+        delete.setOnAction(event -> {
+            Detail detail = esmgTable.getTable().getSelectionModel().getSelectedItem();
+            if (detail==null)
+                return;
+            esmgTable.getTable().getItems().remove(detail);
+            esmgTable.getDetailElectrods().getDetails().remove(detail);
+            ddb.addDetail(detail);
+            // call upd on DB
+
+        });
+    }
+
+    private void addLogicOnAccoutingESMGMTab(Tab tab){
+        tab.setContent(paneForAccoutingESMGMTab);
+        paneForAccoutingESMGMTab.setCenter(esmgmTable.getTable());
+        HBox horizontal = new HBox(10);
+        DetailDropBox ddbm = new DetailDropBox();
+        TextField count = new TextField();
+        count.setPromptText("количество деталей");
+        TextField cost = new TextField();
+        cost.setPromptText("стоимость детали");
+        Button add = new Button("Добавить");
+        Button delete = new Button("Удалить");
+        horizontal.setPadding(new Insets(10, 0, 10, 0));
+        horizontal.setAlignment(Pos.BOTTOM_CENTER);
+
+        horizontal.getChildren().addAll(ddbm.getDetailsBox(),count,cost,add,delete);
+        paneForAccoutingESMGMTab.setBottom(horizontal);
+        List<Detail> initDet = esmgTable.getTable().getItems();
+        initDet.forEach(ddbm::deleteDetail);
+
+        add.setOnAction(event -> {
+            Detail detail = ddbm.getDetailsBox().getSelectionModel().getSelectedItem();
+
+            if (detail==null || count.getText().isEmpty() || cost.getText().isEmpty())
+                return;
+
+            Map<Double,BigDecimal> tmp = new HashMap<>();
+            tmp.put(Double.valueOf(count.getText()),new BigDecimal(cost.getText()));
+            esmgmTable.getDetailElectrods().getDetails().put(detail,tmp);
+            esmgmTable.getTable().getItems().add(detail);
+            ddbm.deleteDetail(detail);
+            // call upd on DB
+
+        });
+
+        delete.setOnAction(event -> {
+            Detail detail = esmgmTable.getTable().getSelectionModel().getSelectedItem();
+            if (detail==null)
+                return;
+            esmgmTable.getTable().getItems().remove(detail);
+            esmgmTable.getDetailElectrods().getDetails().remove(detail);
+            ddbm.addDetail(detail);
+            // call upd on DB
+
+        });
     }
 
     private void addLogicOnSummaryTa(Tab tab){
@@ -238,237 +457,6 @@ public class MainStage {
         gridPane.add(bulkProduce,       1, 9);
 
         pane.setRight(gridPane);
-
-    }
-
-    private void addLogicOnAccoutingESMGTab(Tab tab){
-        tab.setContent(paneForAccoutingESMGTab);
-        paneForAccoutingESMGTab.setCenter(esmgTable.getTable());
-        HBox horizontal = new HBox(10);
-        DetailDropBox ddb = new DetailDropBox();
-        TextField count = new TextField();
-        count.setPromptText("количество деталей");
-        TextField cost = new TextField();
-        cost.setPromptText("стоимость детали");
-        Button add = new Button("Добавить");
-        Button delete = new Button("Удалить");
-        horizontal.setPadding(new Insets(10, 0, 10, 0));
-        horizontal.setAlignment(Pos.BOTTOM_CENTER);
-
-        horizontal.getChildren().addAll(ddb.getDetailsBox(),count,cost,add,delete);
-        paneForAccoutingESMGTab.setBottom(horizontal);
-
-        List<Detail> initDet = esmgTable.getTable().getItems();
-        initDet.forEach(ddb::deleteDetail);
-
-        add.setOnAction(event -> {
-            Detail detail = ddb.getDetailsBox().getSelectionModel().getSelectedItem();
-
-            if (detail==null || count.getText().isEmpty() || cost.getText().isEmpty())
-                return;
-
-            Map<Double,BigDecimal> tmp = new HashMap<>();
-            tmp.put(Double.valueOf(count.getText()),new BigDecimal(cost.getText()));
-            esmgTable.getDetailElectrods().getDetails().put(detail,tmp);
-            esmgTable.getTable().getItems().add(detail);
-            ddb.deleteDetail(detail);
-            // call upd on DB
-
-        });
-
-        delete.setOnAction(event -> {
-            Detail detail = esmgTable.getTable().getSelectionModel().getSelectedItem();
-            if (detail==null)
-                return;
-            esmgTable.getTable().getItems().remove(detail);
-            esmgTable.getDetailElectrods().getDetails().remove(detail);
-            ddb.addDetail(detail);
-            // call upd on DB
-
-        });
-    }
-
-    private void addLogicOnAccoutingESMGMTab(Tab tab){
-        tab.setContent(paneForAccoutingESMGMTab);
-        paneForAccoutingESMGMTab.setCenter(esmgmTable.getTable());
-        HBox horizontal = new HBox(10);
-        DetailDropBox ddbm = new DetailDropBox();
-        TextField count = new TextField();
-        count.setPromptText("количество деталей");
-        TextField cost = new TextField();
-        cost.setPromptText("стоимость детали");
-        Button add = new Button("Добавить");
-        Button delete = new Button("Удалить");
-        horizontal.setPadding(new Insets(10, 0, 10, 0));
-        horizontal.setAlignment(Pos.BOTTOM_CENTER);
-
-        horizontal.getChildren().addAll(ddbm.getDetailsBox(),count,cost,add,delete);
-        paneForAccoutingESMGMTab.setBottom(horizontal);
-        List<Detail> initDet = esmgTable.getTable().getItems();
-        initDet.forEach(ddbm::deleteDetail);
-
-        add.setOnAction(event -> {
-            Detail detail = ddbm.getDetailsBox().getSelectionModel().getSelectedItem();
-
-            if (detail==null || count.getText().isEmpty() || cost.getText().isEmpty())
-                return;
-
-            Map<Double,BigDecimal> tmp = new HashMap<>();
-            tmp.put(Double.valueOf(count.getText()),new BigDecimal(cost.getText()));
-            esmgmTable.getDetailElectrods().getDetails().put(detail,tmp);
-            esmgmTable.getTable().getItems().add(detail);
-            ddbm.deleteDetail(detail);
-            // call upd on DB
-
-        });
-
-        delete.setOnAction(event -> {
-            Detail detail = esmgmTable.getTable().getSelectionModel().getSelectedItem();
-            if (detail==null)
-                return;
-            esmgmTable.getTable().getItems().remove(detail);
-            esmgmTable.getDetailElectrods().getDetails().remove(detail);
-            ddbm.addDetail(detail);
-            // call upd on DB
-
-        });
-    }
-
-    private void addLogicOnBalanceTab(Tab tab) {
-        tab.setContent(paneForBalanceTab);
-        paneForBalanceTab.setCenter(balancesTable.getTable());
-
-        HBox horizontal = new HBox(10);
-        horizontal.setPadding(new Insets(10, 0, 10, 0));
-        horizontal.setAlignment(Pos.BOTTOM_CENTER);
-
-        Button history = new Button("История");
-        Button add = new AddButton().getAdd();
-        Button commit = new CommitButton().getCommit();
-// think can delete it , hmmm ???
-//        commit.setOnAction(event -> {
-//            Balance balance = balancesTable.getTable().getSelectionModel().getSelectedItem();
-//            BalanceService.updateBalance(balance);
-//        });
-
-        add.setOnAction(event -> {
-            //initRawElectrodeValue detail from drop box
-            //TODO: in future delete selected Detail from dropbox
-            Detail detail = detailDropBox.getDetailsBox().getSelectionModel().getSelectedItem();
-            if (detail == null)
-                return;
-            // build accounting history for detail
-            AccoutingHistoryService.buildSqlForBatchInsertAccHist(detail);
-            List<AccoutingHistory> histories = AccoutingHistoryService.getHistoryByDetail(detail);
-            // build primitiv for balance
-            List<PrimitivityBalance> pBalances = BalanceService.buildPrimitivs(detail);
-            // save it on db Balance
-            balanceController.saveAll(pBalances);
-            // initRawElectrodeValue primitive balance from table (with id)
-            pBalances = balanceController.getAllByDetailId(detail.getId());
-
-            List<Balance> balances = ChainUtil.createBalanceChain(
-                    Collections.singletonList(detail),
-                    pBalances,
-                    histories
-            );
-            if (balances != null) {
-                balancesTable.getTable().getItems().addAll(balances);
-                detailDropBox.deleteDetail(detail);
-            }
-        });
-
-        history.setOnAction(event -> {
-            //initRawElectrodeValue detail by selected balance
-            Balance balance = balancesTable.getTable().getSelectionModel().getSelectedItem();
-            if (balance == null)
-                return;
-            int position = balancesTable.getTable().getItems().indexOf(balance);
-            Detail detail = balance.getDetail();
-            //initRawElectrodeValue gistory for current detail
-            List<AccoutingHistory> ahList = ahController.getByDetail(detail.getId());
-            //associated detail with her history
-            ChainUtil.associateDetailWithHistory(detail, ahList);
-            //convert history for map for AccountingWindow
-            Map<RussianMonths, List<AccoutingHistory>> tmp = AccoutingHistoryService.historyToMapForAccoutingWindow(ahList);
-            //send history map in accounting window and wait return result for update (candidates on update)
-            tmp = new AccoutingHistoryWindow(tmp).show();
-            System.out.println(tmp != null);
-            // send candidates for update into updating logic
-            if (tmp != null) {
-                // upd history by month
-                BalanceService.updAccHistoryByDays(balance, tmp);
-                // rewrite balance on table
-                balancesTable.getTable().getItems().set(position, balance);
-                // upd hist on db
-                AccoutingHistoryService.buildSqlForBatchUpdAccHist(tmp);
-            }
-        });
-
-        horizontal.getChildren().addAll(history, detailDropBox.getDetailsBox(), add, commit);
-        paneForBalanceTab.setBottom(horizontal);
-
-    }
-
-    private void addLogicOnCostDetailTab(Tab tab) {
-        tab.setContent(paneForCostDetail);
-        paneForCostDetail.setCenter(costDetailTable.getCostDetailTable());
-
-        TextField title = new TextField();
-        title.setPromptText("Введите название детали");
-        TextField count = new TextField();
-        count.setPromptText("Введите количество детали");
-        TextField cost = new TextField();
-        cost.setPromptText("Введите стоимость детали");
-        TextField descriptions = new TextField();
-        descriptions.setPromptText("Примечание");
-
-        Button add = new AddButton().getAdd();
-        Button delete = new DeleteButton().getDelete();
-        Button commit = new CommitButton().getCommit();
-
-        HBox horizontal = new HBox(15);
-        horizontal.setPadding(new Insets(10, 0, 10, 0));
-        horizontal.setAlignment(Pos.BOTTOM_CENTER);
-        horizontal.getChildren().addAll(title, count, cost, descriptions, add, delete, commit);
-
-        paneForCostDetail.setBottom(horizontal);
-
-        add.setOnAction(event -> {
-            if (title.getText().isEmpty() || count.getText().isEmpty() || cost.getText().isEmpty()) {
-                return;
-            }
-            Detail d = new Detail(
-                    title.getText(),
-                    Double.valueOf(count.getText()),
-                    new BigDecimal(cost.getText()),
-                    descriptions.getText()
-            );
-            detailController.save(d);
-            d = detailController.get(d.getTitle());
-            costDetailTable.getCostDetailTable().getItems().add(d);
-            detailDropBox.addDetail(d);
-            title.clear();
-            count.clear();
-            cost.clear();
-            descriptions.clear();
-
-        });
-
-        delete.setOnAction(event -> {
-            if (costDetailTable.getCostDetailTable().getSelectionModel().getSelectedItem() == null)
-                return;
-            Detail d = costDetailTable.getCostDetailTable().getSelectionModel().getSelectedItem();
-            costDetailTable.getCostDetailTable().getItems().remove(d);
-            detailController.delete(d.getId());
-        });
-
-        commit.setOnAction(event -> {
-            if (costDetailTable.getChanges().isEmpty())
-                return;
-            DetailService.findCandidatesOnUpdating(costDetailTable.getCostDetailTable().getItems(), costDetailTable.getChanges());
-            costDetailTable.clearChanges();
-        });
 
     }
 

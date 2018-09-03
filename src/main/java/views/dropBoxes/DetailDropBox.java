@@ -5,15 +5,15 @@ import entities.Detail;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
+import services.DetailService;
 
 public class DetailDropBox {
     private ComboBox<Detail> detailsBox;
     private ObservableList<Detail> details;
-    private final DBDetailController controller = new DBDetailController();
 
     public DetailDropBox(){
         details = FXCollections.observableArrayList();
-        details.addAll(controller.getAll());
+        details.addAll(DetailService.getAll());
         create();
     }
 
@@ -21,7 +21,6 @@ public class DetailDropBox {
         detailsBox = new ComboBox<>();
         detailsBox.setPromptText("Выберите деталь...");
         fillBox(detailsBox);
-//        detailsBox.setItems(InitializerForTest.getDetails());
     }
 
     private void fillBox(ComboBox<Detail> box){

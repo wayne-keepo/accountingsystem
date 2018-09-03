@@ -1,6 +1,7 @@
 package views.tables;
 
 import domain.Balance;
+import entities.Detail;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -19,6 +20,7 @@ import utils.Searcher;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,9 +59,7 @@ public class BalancesTable {
         id.setCellValueFactory(new PropertyValueFactory<>("id"));
 
         TableColumn<Balance, String> title = new TableColumn<>("Название");
-        title.setCellValueFactory(cellData -> {
-            return new SimpleStringProperty(cellData.getValue().getDetail().getTitle());
-        });
+        title.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDetail().getTitle()));
         title.setCellFactory(TextFieldTableCell.<Balance>forTableColumn());
         title.setOnEditCommit(event -> {
             event.getRowValue().getDetail().setTitle(event.getNewValue());
@@ -128,48 +128,6 @@ public class BalancesTable {
         return Arrays.asList(year);
     }
 
-    private void colorCell(List<TableColumn> columns, String style) {
-        columns.forEach(column -> {
-            column.setCellFactory(cell-> new TableCell<Object,Object>(){
-                @Override
-                protected void updateItem(Object item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (item!=null) {
-                        setText(String.valueOf(item));
-                        setStyle(style);
-                    }
-                }
-            });
-        });
-    }
-
-    // candidate on delete
-    private void setBulkCellFactoryAndEditCommitForMonthColumn(List<TableColumn<Balance, String>> columns) {
-//        columns.forEach(column->column.setEditable(false));
-//        for (TableColumn<Balance, String> column : columns) {
-//            column.setCellFactory(cell->{
-//                return new TableCell<Balance, String>(){
-//                    @Override
-//                    protected void updateItem(String item, boolean empty) {
-//                        super.updateItem(item, empty);
-//                        if (initRawElectrodeValue)
-//                    }
-//                }
-//            });
-
-
-//        column.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent>() {
-//                @Override
-//                public void handle(TableColumn.CellEditEvent event) {
-//                    String parentColumnName = event.getTableColumn().getParentColumn().getText();
-//                    String columnName = event.getTableColumn().getText();
-//                    Double count = Double.valueOf(String.valueOf(event.getNewValue()));
-//                    Updater.updateValueOfMonthColumn((Balance) event.getRowValue(),columnName,parentColumnName,count);
-//                }
-//            });
-//
-    }
-
     private void setBulkCellValueFactoryForMonthColumn(List<TableColumn<Balance, String>> columns) {
         for (TableColumn column : columns)
             column.setCellValueFactory(new Callback<TableColumn.CellDataFeatures, ObservableValue>() {
@@ -185,8 +143,31 @@ public class BalancesTable {
             });
     }
 
+    private void colorCell(List<TableColumn> columns, String style) {
+        columns.forEach(column -> {
+            column.setCellFactory(cell-> new TableCell<Object,Object>(){
+                @Override
+                protected void updateItem(Object item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item!=null) {
+                        setText(String.valueOf(item));
+                        setStyle(style);
+                    }
+                }
+            });
+        });
+    }
+
     public ObservableList<Balance> getBalances() {
         return balances;
+    }
+
+    public List<Detail> getDetails(){
+        List<Detail> details = new ArrayList<>();
+        balances.forEach(balance -> details.add(balance.getDetail()));
+        if (details.isEmpty())
+            return null;
+        return details;
     }
 
     public TableView<Balance> getTable() {

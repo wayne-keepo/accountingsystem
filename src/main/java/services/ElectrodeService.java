@@ -1,25 +1,13 @@
 package services;
 
-import databaselogic.controllers.DBElectrodeController;
 import databaselogic.controllers.DBRawElectrodeController;
-import domain.Electrod;
-import domain.ElectrodeSummary;
 import entities.RawElectrode;
-import entities.Summary;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import projectConstants.DBConstants;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class ElectrodeService {
-    private static final DBElectrodeController controller = new DBElectrodeController();
+
     private static final DBRawElectrodeController rawController = new DBRawElectrodeController();
 
-    private static void bulkSave(List<Electrod> electrods) {
-        controller.bulkSave(electrods);
-    }
 // TODO: пересмотреть решение
     public static String formatElectrodeNumber(String number) {
         if (6 - number.length() == 0)

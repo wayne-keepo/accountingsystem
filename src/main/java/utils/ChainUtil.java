@@ -3,14 +3,11 @@ package utils;
 import com.sun.istack.internal.NotNull;
 import domain.Balance;
 import domain.DetailElectrod;
-import domain.Electrod;
-import domain.ElectrodeSummary;
 import entities.*;
 import projectConstants.CustomConstants;
 import services.AccoutingHistoryService;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.time.Month;
 import java.time.Year;
@@ -143,21 +140,6 @@ public class ChainUtil {
         });
         return balances;
     }
-// TODO: пересмотреть
-//    public static List<ElectrodeSummary> createElectrodeSummaryChain(List<Electrod> electrods, List<Summary> summaries) {
-//        List<ElectrodeSummary> es = new ArrayList<>();
-//
-//        for (Electrod electrode : electrods) {
-//            ElectrodeSummary elEs = new ElectrodeSummary();
-//            Summary summary = summaries.stream().filter(s -> s.getIdElectrode().equals(electrode.getId())).findFirst().get();
-//            elEs.setElectrod(electrode);
-//            elEs.setSummary(summary);
-//            es.add(elEs);
-//        }
-//        if (!es.isEmpty())
-//            return es;
-//        return null;
-//    }
 
     public static void associateDetailWithHistory(Detail detail, List<AccoutingHistory> histories) {
         histories.forEach(history -> history.setDetail(detail));
