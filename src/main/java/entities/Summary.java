@@ -4,7 +4,8 @@ import java.time.LocalDate;
 
 public class Summary {
     private Integer idSummary;
-    private Integer idElectrode;
+    private String electrodeNumber;
+    private String type;
     private LocalDate produceDate;
     private String customer;
     private LocalDate consumeDate;
@@ -13,17 +14,19 @@ public class Summary {
     public Summary() {
     }
 
-    public Summary(Integer idElectrode, LocalDate produceDate, String customer, LocalDate consumeDate, String note) {
-        this.idElectrode = idElectrode;
+    public Summary(Integer idSummary, String electrodeNumber, String type, LocalDate produceDate, String customer, LocalDate consumeDate, String note) {
+        this.idSummary = idSummary;
+        this.electrodeNumber = electrodeNumber;
+        this.type = type;
         this.produceDate = produceDate;
         this.customer = customer;
         this.consumeDate = consumeDate;
         this.note = note;
     }
 
-    public Summary(Integer idSummary, Integer idElectrode, LocalDate produceDate, String customer, LocalDate consumeDate, String note) {
-        this.idSummary = idSummary;
-        this.idElectrode = idElectrode;
+    public Summary(String electrodeNumber, String type, LocalDate produceDate, String customer, LocalDate consumeDate, String note) {
+        this.electrodeNumber = electrodeNumber;
+        this.type = type;
         this.produceDate = produceDate;
         this.customer = customer;
         this.consumeDate = consumeDate;
@@ -38,12 +41,20 @@ public class Summary {
         this.idSummary = idSummary;
     }
 
-    public Integer getIdElectrode() {
-        return idElectrode;
+    public String getElectrodeNumber() {
+        return electrodeNumber;
     }
 
-    public void setIdElectrode(Integer idElectrode) {
-        this.idElectrode = idElectrode;
+    public void setElectrodeNumber(String electrodeNumber) {
+        this.electrodeNumber = electrodeNumber;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public LocalDate getProduceDate() {
@@ -76,5 +87,18 @@ public class Summary {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    @Override
+    public String toString() {
+        return "Summary{" +
+                "idSummary=" + idSummary +
+                ", electrodeNumber='" + electrodeNumber + '\'' +
+                ", type='" + type + '\'' +
+                ", produceDate=" + produceDate +
+                ", customer='" + customer + '\'' +
+                ", consumeDate=" + consumeDate +
+                ", note='" + note + '\'' +
+                '}';
     }
 }

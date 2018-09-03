@@ -17,100 +17,29 @@ public class ElectrodeService {
     private static final DBElectrodeController controller = new DBElectrodeController();
     private static final DBRawElectrodeController rawController = new DBRawElectrodeController();
 
-    private static void bulkSave(List<Electrod> electrods){
+    private static void bulkSave(List<Electrod> electrods) {
         controller.bulkSave(electrods);
     }
-
-    public static List<Electrod> getElectrodsByNumbers(List<String > numbers){
-        StringBuilder st = new StringBuilder();
-        for (int i = 0;i<numbers.size();i++){
-            if (numbers.size()-i==1)
-                st.append(numbers.get(i));
-            else
-                st.append(numbers.get(i)).append(",");
-        }
-        String sql = String.format("%s ( %s )",DBConstants.SELECT_ELECTRODS_BY_NUMBERS,st.toString());
-        st.setLength(0);
-        return controller.getByNumbers(sql);
-
-    }
-    public static void save(Electrod electrod){
-        controller.save(electrod);
-    }
-
-    public static Electrod getByNumber(String number){
-        return controller.get(number);
-    }
-
-    public static ObservableList<Electrod> getAll(){
-        List<Electrod> electrods = controller.getAll();
-        if (!electrods.isEmpty())
-            electrods.forEach(e->{
-                String num = ElectrodeService.formatElectrodeNumber(e.getElectrodNumber());
-                e.setElectrodNumber(num);
-            });
-        return FXCollections.observableArrayList(electrods);
-    }
-
-    public static void delete(Electrod electrod) {
-        controller.delete(electrod.getId());
-    }
-
-    public static ObservableList<ElectrodeSummary> buildElectrodeSummary(){
-        List<Electrod> electrods = getAll();
-        List<Summary> summaries = SummaryService.getAll();
-        if (electrods.isEmpty() && summaries.isEmpty())
-            return null;
-        List<ElectrodeSummary> es = new ArrayList<>();
-        for (Summary summary: summaries){
-            es.add(new ElectrodeSummary(
-                    electrods.stream().filter(e-> e.getId().equals(summary.getIdElectrode())).findFirst().get(),
-                    summary
-            ));
-        }
-        return FXCollections.observableArrayList(es);
-    }
-
-// stupid decision, to find an acceptable
-    public static List<Electrod> bulkCreateElectrodeFromRange(String from, String to, String type){
-        int iFrom = Integer.valueOf(from);
-        int iTo = Integer.valueOf(to);
-        List<Electrod> electrods = new ArrayList<>();
-
-        for (int i = iFrom;i<iTo;i++){
-            String number = formatElectrodeNumber(String.valueOf(i));
-            electrods.add(new Electrod(number,type));
-        }
-
-        electrods.add(new Electrod(to,type));
-        bulkSave(electrods);
-
-        List<String> numbers = new ArrayList<>();
-        electrods.forEach(e->numbers.add(e.getElectrodNumber()));
-        electrods = getElectrodsByNumbers(numbers);
-        return electrods;
-    }
-
-    public static String formatElectrodeNumber(String number){
-        if (6-number.length()==0)
+// TODO: пересмотреть решение
+    public static String formatElectrodeNumber(String number) {
+        if (6 - number.length() == 0)
             return number;
-        int delta = 6-number.length();
+        int delta = 6 - number.length();
         StringBuilder zeros = new StringBuilder();
-        for (int i = 0;i<delta;i++){
+        for (int i = 0; i < delta; i++) {
             zeros.append("0");
         }
-        number = zeros.toString()+number;
+        number = zeros.toString() + number;
         zeros.setLength(0);
         return number;
     }
 
-    public static void initRawElectrode(){
+    public static void initRawElectrode() {
         rawController.initRawElectrodeValue();
     }
 
-    public static void updateRawElectrodeCount(int count){
-        int old = RawElectrode.getInstance().getCount();
-        RawElectrode.getInstance().setCount(old+count);
+    public static void updateRawElectrodeCount(int count) {
+        RawElectrode.getInstance().setCount(count);
         rawController.updateCount();
     }
 

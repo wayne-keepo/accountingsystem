@@ -15,7 +15,6 @@ public class DBConstants {
     public static final String SELECT_ALL_DETAIL = "SELECT * FROM DETAIL";
 
     //table balance(id,IDdetail,year,month,incoming,outcoming,bAtBeginingYear,bAtEndOfYear)
-
     public static final String SINGLE_INSERT_BALANCE =
             "INSERT INTO BALANCE(IDdetail,year,month,incoming,outcoming,bAtBeginingYear,bAtEndOfYear) VALUES(?,?,?,?,?,?,?)";
     public static final String SINGLE_UPDATE_BALANCE = "UPDATE BALANCE SET " +
@@ -35,12 +34,11 @@ public class DBConstants {
     public static final String SELECT_DETAIL_ELECTRODE_BY_TYPE = "SELECT * FROM ElectrodeDetail WHERE electrodeType = ?";
     public static final String SELECT_DETAIL_ELECTRODE_BY_ID = "SELECT * FROM ElectrodeDetail WHERE id = ?";
 
-    // Summary id idElectrode produceDate Customer consumeDate Note
-    public static final String SELECT_SUMMARY_BY_ELECTRODE_ID = "SELECT * FROM Summary WHERE idElectrode = ?";
-    public static final String INSERT_SUMMARY = "INSERT INTO Summary(idElectrode,produceDate,Customer,consumeDate,Note) VALUES(?,date(?),?,date(?),?)";
+    // Summary id electrodeNumber, type produceDate Customer consumeDate Note
+    public static final String SELECT_SUMMARY_BY_ID = "SELECT * FROM Summary WHERE id = ?";
+    public static final String INSERT_SUMMARY = "INSERT INTO Summary(electrodeNumber,type,produceDate,Customer,consumeDate,Note) VALUES(?,?,date(?),?,date(?),?)";
     public static final String UPDATE_SUMMARY = "UPDATE Summary SET produceDate = ?, Customer = ?, consumeDate= ?, Note = ? WHERE id = ?";
     public static final String DELETE_SUMMARY_BY_ID = "DELETE FROM Summary WHERE id = ? ";
-    public static final String DELETE_SUMMARY_BY_ID_ELECTRODE = "DELETE Summary WHERE idElectrode = ? ";
     public static final String SELECT_ALL_SUMMARY = "SELECT * FROM Summary";
 
     // Electrode id number type
@@ -67,6 +65,7 @@ public class DBConstants {
 //    public static final String SELECT_DAY_FROM_ACC_HIST = "SELECT d? FROM AccountingHistory WHERE year = ? and month = ? and acc = ? and idDetail = ?";
     public static final String DELETE_ACCOUNTING_HISTORY = "DELETE TABLE AccountingHistory WHERE id = ?";
 
+    //RawElectrode( id = 0 , count)
     public static final String GET_RAW_ELECTRODE = "SELECT * FROM RawElectrode where id = 0";
     public static final String UPDATE_RAW_ELECTRODE_COUNT = "UPDATE RawElectrode SET count = ? WHERE id = 0";
 }

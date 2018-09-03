@@ -15,7 +15,8 @@ public class AccoutingHistory {
     private int acc; // 1 - приход 0 - расход
     private List<Day> days;
 
-    public AccoutingHistory() {}
+    public AccoutingHistory() {
+    }
 
     public AccoutingHistory(Year year, Month month, int acc, List<Day> days) {
         this.year = year;

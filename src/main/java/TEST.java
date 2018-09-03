@@ -1,6 +1,7 @@
 import databaselogic.controllers.DBDetailController;
 import databaselogic.controllers.DBRawElectrodeController;
 import entities.RawElectrode;
+import projectConstants.DBConstants;
 import services.AccoutingHistoryService;
 
 import java.time.MonthDay;
@@ -77,7 +78,7 @@ public class TEST {
 //        }
 //        String sql = String.format("%s ( %s )", DBConstants.SELECT_ELECTRODS_BY_NUMBERS,st.toString());
 //        System.out.println(sql);
-//        SummaryService.bulkCreateElectrodeSummaryFromRange("000001","000005",CustomConstants.ESMG, LocalDate.now(),LocalDate.now(),"Test Customer","Data Test");
+//        SummaryService.bulkCreateSummaryFromRange("000001","000005",CustomConstants.ESMG, LocalDate.now(),LocalDate.now(),"Test Customer","Data Test");
 
 //        StringBuilder ids = new StringBuilder();
 //        ids.append("1").append(",").append("2").append(",").append("3").append(",").append("4").append(",").append("5").append(",").append("6").append(",").append("7").append(",").append("8").append(",").append("9").append(",");
@@ -85,6 +86,8 @@ public class TEST {
 //        ids.delete(ids.lastIndexOf(","),ids.lastIndexOf(",")+1);
 //        System.out.println(ids);
 //        AccoutingHistoryService.updateHistoryForDay(2018,8,1,1,1,100);
+//        System.out.println(DBConstants.SELEC_DETAILS_BY_IDS.replace("?","1,2,3"));
+
 
 //  Raw Electrode Tests
 //        DBRawElectrodeController controller = new DBRawElectrodeController();

@@ -3,18 +3,16 @@ package databaselogic.controllers;
 import databaselogic.Connector;
 import databaselogic.interfaces.DBOperations;
 import databaselogic.mappers.SummaryRowMapper;
-import domain.Electrod;
 import entities.Summary;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
-import projectConstants.CustomConstants;
 import projectConstants.DBConstants;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+//electrodeNumber,type,produceDate,Customer,consumeDate,Note
 public class DBSummaryController implements DBOperations<Summary> {
     private JdbcTemplate template;
 
@@ -22,23 +20,19 @@ public class DBSummaryController implements DBOperations<Summary> {
         this.template = Connector.getTemplate();
     }
 
-    //idElectrode,produceDate,Customer,consumeDate,Note
     @Override
     public boolean save(Summary o) {
         int flag = template.update(
                 DBConstants.INSERT_SUMMARY,
-                o.getIdElectrode(), o.getProduceDate().toString(), o.getCustomer(), o.getConsumeDate().toString(), o.getNote()
+                o.getElectrodeNumber(), o.getType(), o.getProduceDate().toString(), o.getCustomer(), o.getConsumeDate().toString(), o.getNote()
         );
         return flag > 0;
     }
 
     @Override
-    public boolean delete(int idElectrode) {
-        int flag = template.update(
-                DBConstants.DELETE_SUMMARY_BY_ID_ELECTRODE,
-                idElectrode
-        );
-        return flag > 0;
+    public boolean delete(int id) {
+        int flag = template.update(DBConstants.DELETE_SUMMARY_BY_ID, id);
+        return flag>0;
     }
 
     @Override
@@ -50,32 +44,33 @@ public class DBSummaryController implements DBOperations<Summary> {
     }
 
     @Override
-    public Summary get(int idElectrode) {
+    public Summary get(int id) {
         return template.queryForObject(
-                DBConstants.SELECT_SUMMARY_BY_ELECTRODE_ID,
+                DBConstants.SELECT_SUMMARY_BY_ID,
                 new SummaryRowMapper(),
-                idElectrode
-        );
+                id);
     }
 
     @Override
     public Summary get(String title) {
         return null;
     }
-//idElectrode,produceDate,Customer,consumeDate,Note
-    public List<Summary> bulkInsert(List<Summary> summaries) {
+
+
+    public void bulkInsert(List<Summary> summaries) {
         template.batchUpdate(
                 DBConstants.INSERT_SUMMARY,
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
                         Summary tmp = summaries.get(i);
-                        ps.setInt(1,tmp.getIdElectrode());
-                        ps.setString(2, tmp.getProduceDate().toString());
-                        ps.setString(3, tmp.getCustomer());
-                        ps.setString(4, tmp.getConsumeDate().toString());
-                        ps.setString(5, tmp.getNote());
-                        System.out.println(ps.getGeneratedKeys().getInt(1)+" "+i);
+                        ps.setString(1, tmp.getElectrodeNumber());
+                        ps.setString(2, tmp.getType());
+                        ps.setString(3, tmp.getProduceDate().toString());
+                        ps.setString(4, tmp.getCustomer());
+                        ps.setString(5, tmp.getConsumeDate().toString());
+                        ps.setString(6, tmp.getNote());
+
                     }
 
                     @Override
@@ -84,15 +79,6 @@ public class DBSummaryController implements DBOperations<Summary> {
                     }
                 }
         );
-
-    return null;
     }
 
-    public List<Summary> getSummariesByElectrods(String electrods) {
-        return template.query(
-                electrods,
-                new SummaryRowMapper()
-        );
-//        return null;
-    }
 }

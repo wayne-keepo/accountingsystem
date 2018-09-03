@@ -33,7 +33,7 @@ public class DetailService {
         controller.bulkUpdate(details);
     }
 
-    public static List<Detail> getDetailsByIDs(List<Integer> ids){
+    public static List<Detail> getDetailsByIDs(List<Integer> ids) {
         return controller.getDetailsByIDs(ids);
     }
 

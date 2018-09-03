@@ -22,8 +22,8 @@ public class DBDetailController implements DBOperations<Detail> {
     }
 
     //delete after test
-    public List<Map<String,Object>> test(){
-        List<Map<String,Object>> test = template.queryForList("SELECT * FROM Detail");
+    public List<Map<String, Object>> test() {
+        List<Map<String, Object>> test = template.queryForList("SELECT * FROM Detail");
         return test;
     }
 
@@ -101,13 +101,10 @@ public class DBDetailController implements DBOperations<Detail> {
     }
 
     public List<Detail> getDetailsByIDs(List<Integer> ids) {
-        String tmp = ids.toString().replaceAll("[\\[\\]]","");
-        String sql = DBConstants.SELEC_DETAILS_BY_IDS;
-        sql = sql.replace("?",tmp);
-        System.out.println(sql);
-        return template.query(
-                sql,
-                new DetailRowMapper()
-                );
+        String sql = DBConstants.SELEC_DETAILS_BY_IDS
+                .replace(
+                        "?",
+                        ids.toString().replaceAll("[\\[\\]]", ""));
+        return template.query(sql, new DetailRowMapper());
     }
 }

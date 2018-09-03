@@ -143,21 +143,21 @@ public class ChainUtil {
         });
         return balances;
     }
-
-    public static List<ElectrodeSummary> createElectrodeSummaryChain(List<Electrod> electrods, List<Summary> summaries) {
-        List<ElectrodeSummary> es = new ArrayList<>();
-
-        for (Electrod electrode : electrods) {
-            ElectrodeSummary elEs = new ElectrodeSummary();
-            Summary summary = summaries.stream().filter(s -> s.getIdElectrode().equals(electrode.getId())).findFirst().get();
-            elEs.setElectrod(electrode);
-            elEs.setSummary(summary);
-            es.add(elEs);
-        }
-        if (!es.isEmpty())
-            return es;
-        return null;
-    }
+// TODO: пересмотреть
+//    public static List<ElectrodeSummary> createElectrodeSummaryChain(List<Electrod> electrods, List<Summary> summaries) {
+//        List<ElectrodeSummary> es = new ArrayList<>();
+//
+//        for (Electrod electrode : electrods) {
+//            ElectrodeSummary elEs = new ElectrodeSummary();
+//            Summary summary = summaries.stream().filter(s -> s.getIdElectrode().equals(electrode.getId())).findFirst().get();
+//            elEs.setElectrod(electrode);
+//            elEs.setSummary(summary);
+//            es.add(elEs);
+//        }
+//        if (!es.isEmpty())
+//            return es;
+//        return null;
+//    }
 
     public static void associateDetailWithHistory(Detail detail, List<AccoutingHistory> histories) {
         histories.forEach(history -> history.setDetail(detail));

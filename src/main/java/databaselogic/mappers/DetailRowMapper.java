@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class DetailRowMapper implements RowMapper<Detail>{
+public class DetailRowMapper implements RowMapper<Detail> {
     @Override
     public Detail mapRow(ResultSet rs, int i) throws SQLException {
         return new Detail(

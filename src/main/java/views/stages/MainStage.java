@@ -5,14 +5,11 @@ import databaselogic.controllers.DBBalanceController;
 import databaselogic.controllers.DBDetailController;
 import databaselogic.controllers.DBElectrodeController;
 import domain.ElectrodeSummary;
+import entities.*;
 import utils.ChainUtil;
 import domain.Balance;
 import domain.Electrod;
-import entities.AccoutingHistory;
-import entities.Detail;
 
-import entities.PrimitivityBalance;
-import entities.Summary;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -44,17 +41,15 @@ public class MainStage {
     private final BorderPane paneForBalanceTab = new BorderPane();
     private final BorderPane paneForAccoutingESMGTab = new BorderPane();
     private final BorderPane paneForAccoutingESMGMTab = new BorderPane();
-    private final BorderPane paneForElectrodeTab = new BorderPane();
     private final BorderPane paneForCostDetail = new BorderPane();
-    private final BorderPane paneForCreateElectrodeTab = new BorderPane();
     private TabPane tabPane;
     //tables
     private final BalancesTable balancesTable = new BalancesTable();
-    private final ElectrodsTable electrodsTable = new ElectrodsTable();
+    private final SummaryTable summaryTable = new SummaryTable();
     private final CostDetailTable costDetailTable = new CostDetailTable();
     private final ComponentsConsumptionESMGTable esmgTable = new ComponentsConsumptionESMGTable();
     private final ComponentsConsumptionESMGMTable esmgmTable = new ComponentsConsumptionESMGMTable();
-    private final CreateElectrodeTable createElectrodeTable = new CreateElectrodeTable();
+
     //custom classes
     private final DetailDropBox detailDropBox = new DetailDropBox();
 
@@ -126,7 +121,7 @@ public class MainStage {
         tab.setContent(pane);
 
         pane.setPadding(new Insets(10));
-        pane.setCenter(electrodsTable.getTable());
+        pane.setCenter(summaryTable.getTable());
 
         Label numberL = new Label("Номер электрода");
         TextField number = new TextField();
@@ -160,9 +155,6 @@ public class MainStage {
         TextField rawProduction = new TextField();
         rawProduction.setPromptText("кол-во сырьевых электродов");
 
-        CheckBox isBulkCreate = new CheckBox("С созданием истории для эклектродов");
-        isBulkCreate.setSelected(false);
-
         setDateFormat(Arrays.asList(produceDate, consumeDate));
 
         Button delete = new Button("Удалить");
@@ -171,47 +163,54 @@ public class MainStage {
         Button rawProduce = new Button("Сырьевой электрод");
 
         rawProduce.setOnAction(event -> {
-            if (rawProduction.getText().isEmpty()|| types.getSelectionModel().getSelectedItem().isEmpty())
-                return;
+            String count = rawProduction.getText().trim();
             String type = types.getSelectionModel().getSelectedItem();
-            ElectrodeService.initRawElectrode();
-            int count = Integer.valueOf(rawProduction.getText());
-            ElectrodeService.updateRawElectrodeCount(count);
-            CountingService.countingForProduceRawElectrode(type,count);
+
+            if (rawProduction.getText().isEmpty()|| type.isEmpty())
+                return;// TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
+
+            CountingService.countingForProduceRawElectrode(type,Integer.valueOf(count));
             rawProduction.clear();
         });
 
         bulkProduce.setOnAction(event -> {
-            if (nFrom.getText().isEmpty() && nTo.getText().isEmpty())
-                return;
-            if (isBulkCreate.isSelected()) {
-                List<ElectrodeSummary> es = SummaryService.bulkCreateElectrodeSummaryFromRange(
-                        nFrom.getText(), nTo.getText(), types.getSelectionModel().getSelectedItem(),
-                        produceDate.getValue(), consumeDate.getValue(), customer.getText(), note.getText());
-                electrodsTable.getTable().getItems().addAll(es);
-                createElectrodeTable.getTable().getItems().clear();
-                createElectrodeTable.getTable().getItems().addAll(ElectrodeService.getAll());
-            } else {
-                List<Electrod> electrods = ElectrodeService.bulkCreateElectrodeFromRange(nFrom.getText(), nTo.getText(), types.getSelectionModel().getSelectedItem());
-                createElectrodeTable.getTable().getItems().addAll(electrods);
-            }
+            String from = nFrom.getText().trim();
+            String to = nTo.getText().trim();
+            String type = types.getSelectionModel().getSelectedItem();
+            if (from.isEmpty() || to.isEmpty() || type.isEmpty())
+                return; // TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
+
+            CountingService.countingForProduceSummaryFromRawElectrode(from,to,type);
+            SummaryService.bulkCreateSummaryFromRange(from,to,type,produceDate.getValue(), consumeDate.getValue(), customer.getText(), note.getText());
+            summaryTable.refresh();
         });
-//Integer idSummary, Integer idElectrode, LocalDate produceDate, String customer, LocalDate consumeDate, String note
+
         produce.setOnAction(event -> {
-            Summary summary = new Summary();
-            summary.setIdElectrode(1);
-            summary.setProduceDate(produceDate.getValue());
-            summary.setCustomer(customer.getText());
-            summary.setConsumeDate(consumeDate.getValue());
-            summary.setNote(note.getText());
+            String elNumber = number.getText().trim();
+            String type = types.getSelectionModel().getSelectedItem();
+            if (elNumber.isEmpty() || type.isEmpty())
+                return; // TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
+            CountingService.countingForProduceSummaryFromRawElectrode("0","1",type);
+            Summary summary = new Summary(
+                    elNumber,
+                    type,
+                    produceDate.getValue(),
+                    customer.getText(),
+                    consumeDate.getValue(),
+                    note.getText()
+            );
+            number.clear();
             customer.clear();
             note.clear();
             SummaryService.save(summary);
-            electrodsTable.refresh();
+            summaryTable.refresh();
         });
 
         delete.setOnAction(event -> {
-
+            Summary summary = summaryTable.getTable().getSelectionModel().getSelectedItem();
+            if (summary==null)
+                return; // TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
+            SummaryService.delete(summary);
         });
 
         GridPane gridPane = new GridPane();
