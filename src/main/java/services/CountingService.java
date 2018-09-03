@@ -1,17 +1,22 @@
 package services;
 
+import domain.Balance;
+import domain.RefreshBalanceData;
 import entities.Detail;
 import entities.DetailElectrodePrimitive;
 import entities.RawElectrode;
+import javafx.collections.ObservableList;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.MonthDay;
 import java.time.Year;
 import java.util.*;
+
 // TODO: подумать над тем чтобы вынести инициализацию RawElectrode в main
 public class CountingService {
 
-    public static void countingForProduceRawElectrode(String type, int count) {
+    public static ObservableList<Balance> countingForProduceRawElectrode(String type, int count, ObservableList<Balance> balances) {
         ElectrodeService.initRawElectrode();
 
         List<String> detailTitlesForErrorMsg = new ArrayList<>();
@@ -39,28 +44,38 @@ public class CountingService {
 //        System.out.println("Error details: " + detailTitlesForErrorMsg.toString());
         if (!detailTitlesForErrorMsg.isEmpty())
             throw new RuntimeException( // TODO ERROR: добавить обработку ошибки (всплывающее сообщение/ кастомный класс ошибко )
-                    String.format("Количество деталей %s на складе недостаточно для производства электрода %S типа.",
+                    String.format("Количество деталей %s на складе недостаточно для производства %d электрода %S типа.",
                             detailTitlesForErrorMsg.toString().replaceAll("[\\[\\]]", ""),
+                            count,
                             type));
 
         int oldRawCount = RawElectrode.getInstance().getCount();
-        int newRawCount = oldRawCount+count;
+        int newRawCount = oldRawCount + count;
         ElectrodeService.updateRawElectrodeCount(newRawCount);
 
-//        System.out.println("Connected map map => detail -> detCount | neededCount: \n" + ddd.toString());
+        List<RefreshBalanceData> updBalanceData = new ArrayList<>();
+
         ddd.forEach((detail, map) -> {
             Double oldCount = detail.getCount();
             Double delta = map.get(oldCount);
             Double newCount = oldCount - delta;
             detail.setCount(newCount);
-//            System.out.println(String.format("Into foreach; \nOld count: %s | Delta: %s| New count: %s | Current count from detail: %s \n Start upd acc his for detailID: %d", String.valueOf(oldCount), String.valueOf(delta), String.valueOf(newCount), String.valueOf(detail.getCount()), detail.getId()));
-//            System.out.println(String.format("Year: %d Month: %d Day: %d", Year.now().getValue(), LocalDate.now().getMonthValue(), MonthDay.now().getDayOfMonth()));
-            AccoutingHistoryService.updateHistoryForDay(Year.now().getValue(), LocalDate.now().getMonthValue(), MonthDay.now().getDayOfMonth(), 0, detail.getId(), delta);
+
+            int year = Year.now().getValue();
+            int month = LocalDate.now().getMonthValue();
+            int day = MonthDay.now().getDayOfMonth();
+            int detailId = detail.getId();
+
+            AccoutingHistoryService.updateHistoryForDay(year, month, day, 0, detailId, delta);
+            updBalanceData.add(new RefreshBalanceData(Month.of(month),detailId, delta));
         });
 
         details = Arrays.asList(ddd.keySet().toArray(new Detail[ddd.keySet().size()]));
-//        System.out.println("Details for update: " + details.toString() + " \n Start upd details...");
         DetailService.bulkUpdate(details);
+
+        if (!updBalanceData.isEmpty())
+           return BalanceService.updBalanceWhenProduceRawElectrode(updBalanceData, balances);
+        return null;
     }
 
     public static void countingForProduceSummaryFromRawElectrode(String from, String to, String type) {
@@ -72,7 +87,7 @@ public class CountingService {
         int rawElectrodeCount = RawElectrode.getInstance().getCount();
 
         if (!(rawElectrodeCount >= howProduce))
-            throw new RuntimeException(String.format("Недостаточно сырья для продажи %d електродов", howProduce)); // TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
+            throw new RuntimeException(String.format("Недостаточно сырья для продажи %d электродов", howProduce)); // TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
 
         ElectrodeService.updateRawElectrodeCount(rawElectrodeCount - howProduce);
     }

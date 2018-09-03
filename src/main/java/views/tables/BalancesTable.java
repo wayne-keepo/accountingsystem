@@ -173,4 +173,11 @@ public class BalancesTable {
     public TableView<Balance> getTable() {
         return table;
     }
+// TODO: сделать более быстрой
+    public void refresh(ObservableList<Balance> updBalance) {
+        table.getItems().clear();
+        table.getItems().addAll(updBalance);
+        balances.clear();
+        balances.addAll(updBalance);
+    }
 }

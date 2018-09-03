@@ -1,16 +1,12 @@
 package utils;
 
-import com.sun.istack.internal.NotNull;
 import domain.Balance;
 import domain.DetailElectrod;
 import entities.*;
-import projectConstants.CustomConstants;
 import services.AccoutingHistoryService;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Month;
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -127,7 +123,7 @@ public class ChainUtil {
             });
             // round to 3 symbols after dot
             begYear.set(new BigDecimal(begYear.get()).setScale(3, RoundingMode.UP).doubleValue());
-            endYear = new BigDecimal(incTotal.get() - outTotal.get()).setScale(3, RoundingMode.UP).doubleValue();
+            endYear = new BigDecimal(incTotal.get() - outTotal.get()).setScale(2, RoundingMode.UP).doubleValue();
 
             balance.setBalanceAtBeginningYear(begYear.get());
             balance.setBalanceAtEndOfYear(endYear);

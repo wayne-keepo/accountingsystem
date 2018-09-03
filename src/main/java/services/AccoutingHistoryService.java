@@ -34,6 +34,12 @@ public class AccoutingHistoryService {
         return new double[]{incSum, outSum};
     }
 
+    public static double calculateOneHistory(AccoutingHistory ac){
+        double sum = 0.0;
+        for (Day day: ac.getDays())
+            sum+=day.getCount();
+        return sum;
+    }
     public static Map<RussianMonths, List<AccoutingHistory>> historyToMapForAccoutingWindow(List<AccoutingHistory> histories) {
         Map<RussianMonths, List<AccoutingHistory>> map = new HashMap<>();
         Month[] months = Month.values();

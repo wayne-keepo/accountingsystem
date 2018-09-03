@@ -1,6 +1,7 @@
 package services;
 
 import databaselogic.controllers.DBBalanceController;
+import domain.RefreshBalanceData;
 import utils.ChainUtil;
 import domain.Balance;
 import entities.AccoutingHistory;
@@ -11,6 +12,8 @@ import javafx.collections.ObservableList;
 import utils.RussianMonths;
 import utils.Searcher;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Month;
 import java.time.Year;
 import java.util.*;
@@ -82,15 +85,18 @@ public class BalanceService {
         for (Map.Entry<Month, Double> i : balance.getOutcoming().entrySet()) {
             outSum += i.getValue();
         }
+        double endYear = new BigDecimal(incSum - outSum).setScale(2, RoundingMode.UP).doubleValue();
+
         balance.setInTotal(incSum);
         balance.setOutTotal(outSum);
+        balance.setBalanceAtEndOfYear(endYear);
 
     }
 
     // receipt;  приход
     // consumption; расход
     public static void updAccHistoryByDays(Balance balance, Map<RussianMonths, List<AccoutingHistory>> candidates) {
-        System.out.println("Run update history of months" + candidates.keySet().toString());
+//        System.out.println("Run update history of months" + candidates.keySet().toString());
         double[] sums;
         for (Map.Entry<RussianMonths, List<AccoutingHistory>> candidate : candidates.entrySet()) {
             Month key = Searcher.searchEngMonthByRus(candidate.getKey());
@@ -99,8 +105,31 @@ public class BalanceService {
             balance.updateOutcomingValue(key, sums[1]);
         }
         recalculateTotal(balance);
-        System.out.println("End update history of months");
+//        System.out.println("End update history of months");
         updateBalance(balance);
+
+    }
+// TODO: нужно оптимизировать, но похуй (
+    public static ObservableList<Balance> updBalanceWhenProduceRawElectrode(List<RefreshBalanceData> updData, ObservableList<Balance> balances){
+        List<Balance> updBalances = new ArrayList<>();
+        updData.forEach(data ->{
+            Balance balance = balances.stream().filter(b -> b.getDetail().getId()==data.idDetail).findFirst().get();
+            Month key = data.month;
+            double oldValue = balance.getOutcoming().get(key);
+            balance.getOutcoming().replace(key, oldValue, oldValue + data.value);
+            recalculateTotal(balance);
+            updateBalance(balance);
+            updBalances.add(balance);
+        });
+
+        balances.forEach(balance -> {
+            Balance upd = updBalances.stream().filter(b->b.getId()==balance.getId()).findFirst().get();
+            balance.setOutcoming(upd.getOutcoming());
+            balance.setBalanceAtEndOfYear(upd.getBalanceAtEndOfYear());
+
+        });
+
+        return balances;
 
     }
 }

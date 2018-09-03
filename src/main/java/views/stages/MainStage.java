@@ -5,6 +5,7 @@ import databaselogic.controllers.DBBalanceController;
 import databaselogic.controllers.DBDetailController;
 
 import entities.*;
+import javafx.collections.ObservableList;
 import utils.ChainUtil;
 import domain.Balance;
 
@@ -20,7 +21,6 @@ import javafx.util.StringConverter;
 import projectConstants.CustomConstants;
 import services.*;
 import views.buttons.AddButton;
-import views.buttons.CommitButton;
 import views.buttons.DeleteButton;
 import views.dropBoxes.DetailDropBox;
 import views.modalWindows.AccoutingHistoryWindow;
@@ -98,7 +98,7 @@ public class MainStage {
 
         componentsConsumptionForESMGM.setContent(esmgmTable.getTable());
 
-        addLogicOnSummaryTa(electrods);
+        addLogicOnSummaryTab(electrods);
         addLogicOnAccoutingESMGMTab(componentsConsumptionForESMGM);
         addLogicOnAccoutingESMGTab(componentsConsumptionForESMG);
         addLogicOnBalanceTab(accounting);
@@ -242,7 +242,7 @@ public class MainStage {
 
     }
 
-    private void addLogicOnAccoutingESMGTab(Tab tab){
+    private void addLogicOnAccoutingESMGTab(Tab tab) {
         tab.setContent(paneForAccoutingESMGTab);
         paneForAccoutingESMGTab.setCenter(esmgTable.getTable());
         HBox horizontal = new HBox(10);
@@ -256,7 +256,7 @@ public class MainStage {
         horizontal.setPadding(new Insets(10, 0, 10, 0));
         horizontal.setAlignment(Pos.BOTTOM_CENTER);
 
-        horizontal.getChildren().addAll(ddb.getDetailsBox(),count,cost,add,delete);
+        horizontal.getChildren().addAll(ddb.getDetailsBox(), count, cost, add, delete);
         paneForAccoutingESMGTab.setBottom(horizontal);
 
         List<Detail> initDet = esmgTable.getTable().getItems();
@@ -265,12 +265,12 @@ public class MainStage {
         add.setOnAction(event -> {
             Detail detail = ddb.getDetailsBox().getSelectionModel().getSelectedItem();
 
-            if (detail==null || count.getText().isEmpty() || cost.getText().isEmpty())
+            if (detail == null || count.getText().isEmpty() || cost.getText().isEmpty())
                 return;
 
-            Map<Double,BigDecimal> tmp = new HashMap<>();
-            tmp.put(Double.valueOf(count.getText()),new BigDecimal(cost.getText()));
-            esmgTable.getDetailElectrods().getDetails().put(detail,tmp);
+            Map<Double, BigDecimal> tmp = new HashMap<>();
+            tmp.put(Double.valueOf(count.getText()), new BigDecimal(cost.getText()));
+            esmgTable.getDetailElectrods().getDetails().put(detail, tmp);
             esmgTable.getTable().getItems().add(detail);
             ddb.deleteDetail(detail);
             // call upd on DB
@@ -279,7 +279,7 @@ public class MainStage {
 
         delete.setOnAction(event -> {
             Detail detail = esmgTable.getTable().getSelectionModel().getSelectedItem();
-            if (detail==null)
+            if (detail == null)
                 return;
             esmgTable.getTable().getItems().remove(detail);
             esmgTable.getDetailElectrods().getDetails().remove(detail);
@@ -289,7 +289,7 @@ public class MainStage {
         });
     }
 
-    private void addLogicOnAccoutingESMGMTab(Tab tab){
+    private void addLogicOnAccoutingESMGMTab(Tab tab) {
         tab.setContent(paneForAccoutingESMGMTab);
         paneForAccoutingESMGMTab.setCenter(esmgmTable.getTable());
         HBox horizontal = new HBox(10);
@@ -303,7 +303,7 @@ public class MainStage {
         horizontal.setPadding(new Insets(10, 0, 10, 0));
         horizontal.setAlignment(Pos.BOTTOM_CENTER);
 
-        horizontal.getChildren().addAll(ddbm.getDetailsBox(),count,cost,add,delete);
+        horizontal.getChildren().addAll(ddbm.getDetailsBox(), count, cost, add, delete);
         paneForAccoutingESMGMTab.setBottom(horizontal);
         List<Detail> initDet = esmgTable.getTable().getItems();
         initDet.forEach(ddbm::deleteDetail);
@@ -311,12 +311,12 @@ public class MainStage {
         add.setOnAction(event -> {
             Detail detail = ddbm.getDetailsBox().getSelectionModel().getSelectedItem();
 
-            if (detail==null || count.getText().isEmpty() || cost.getText().isEmpty())
+            if (detail == null || count.getText().isEmpty() || cost.getText().isEmpty())
                 return;
 
-            Map<Double,BigDecimal> tmp = new HashMap<>();
-            tmp.put(Double.valueOf(count.getText()),new BigDecimal(cost.getText()));
-            esmgmTable.getDetailElectrods().getDetails().put(detail,tmp);
+            Map<Double, BigDecimal> tmp = new HashMap<>();
+            tmp.put(Double.valueOf(count.getText()), new BigDecimal(cost.getText()));
+            esmgmTable.getDetailElectrods().getDetails().put(detail, tmp);
             esmgmTable.getTable().getItems().add(detail);
             ddbm.deleteDetail(detail);
             // call upd on DB
@@ -325,7 +325,7 @@ public class MainStage {
 
         delete.setOnAction(event -> {
             Detail detail = esmgmTable.getTable().getSelectionModel().getSelectedItem();
-            if (detail==null)
+            if (detail == null)
                 return;
             esmgmTable.getTable().getItems().remove(detail);
             esmgmTable.getDetailElectrods().getDetails().remove(detail);
@@ -335,7 +335,7 @@ public class MainStage {
         });
     }
 
-    private void addLogicOnSummaryTa(Tab tab){
+    private void addLogicOnSummaryTab(Tab tab) {
         BorderPane pane = new BorderPane();
         tab.setContent(pane);
 
@@ -385,10 +385,12 @@ public class MainStage {
             String count = rawProduction.getText().trim();
             String type = types.getSelectionModel().getSelectedItem();
 
-            if (rawProduction.getText().isEmpty()|| type.isEmpty())
+            if (rawProduction.getText().isEmpty() || type.isEmpty())
                 return;// TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
 
-            CountingService.countingForProduceRawElectrode(type,Integer.valueOf(count));
+            ObservableList<Balance> updBalance =  CountingService.countingForProduceRawElectrode(type, Integer.valueOf(count), balancesTable.getBalances());
+            if (updBalance!=null)
+                balancesTable.refresh(updBalance);
             rawProduction.clear();
         });
 
@@ -399,8 +401,8 @@ public class MainStage {
             if (from.isEmpty() || to.isEmpty() || type.isEmpty())
                 return; // TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
 
-            CountingService.countingForProduceSummaryFromRawElectrode(from,to,type);
-            SummaryService.bulkCreateSummaryFromRange(from,to,type,produceDate.getValue(), consumeDate.getValue(), customer.getText(), note.getText());
+            CountingService.countingForProduceSummaryFromRawElectrode(from, to, type);
+            SummaryService.bulkCreateSummaryFromRange(from, to, type, produceDate.getValue(), consumeDate.getValue(), customer.getText(), note.getText());
             summaryTable.refresh();
         });
 
@@ -409,7 +411,7 @@ public class MainStage {
             String type = types.getSelectionModel().getSelectedItem();
             if (elNumber.isEmpty() || type.isEmpty())
                 return; // TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
-            CountingService.countingForProduceSummaryFromRawElectrode("0","1",type);
+            CountingService.countingForProduceSummaryFromRawElectrode("0", "1", type);
             Summary summary = new Summary(
                     elNumber,
                     type,
@@ -427,7 +429,7 @@ public class MainStage {
 
         delete.setOnAction(event -> {
             Summary summary = summaryTable.getTable().getSelectionModel().getSelectedItem();
-            if (summary==null)
+            if (summary == null)
                 return; // TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
             SummaryService.delete(summary);
         });
@@ -437,24 +439,24 @@ public class MainStage {
         gridPane.setHgap(12);
         gridPane.setPadding(new Insets(10));
 
-        gridPane.add(numberL,           0, 0);
-        gridPane.add(number,            1, 0);
-        gridPane.add(nFrom,             0, 1);
-        gridPane.add(nTo,               1, 1);
-        gridPane.add(typeL,             0, 3);
-        gridPane.add(types,             1, 3);
-        gridPane.add(produceDateL,      0, 5);
-        gridPane.add(customerL,         0, 6);
-        gridPane.add(consumeDateL,      0, 7);
-        gridPane.add(noteL,             0, 8);
-        gridPane.add(produceDate,       1, 5);
-        gridPane.add(customer,          1, 6);
-        gridPane.add(consumeDate,       1, 7);
-        gridPane.add(note,              1, 8);
-        gridPane.add(rawProduction,     0, 2);
-        gridPane.add(rawProduce,        1, 2);
-        gridPane.add(produce,           0, 9);
-        gridPane.add(bulkProduce,       1, 9);
+        gridPane.add(numberL, 0, 0);
+        gridPane.add(number, 1, 0);
+        gridPane.add(nFrom, 0, 1);
+        gridPane.add(nTo, 1, 1);
+        gridPane.add(typeL, 0, 3);
+        gridPane.add(types, 1, 3);
+        gridPane.add(produceDateL, 0, 5);
+        gridPane.add(customerL, 0, 6);
+        gridPane.add(consumeDateL, 0, 7);
+        gridPane.add(noteL, 0, 8);
+        gridPane.add(produceDate, 1, 5);
+        gridPane.add(customer, 1, 6);
+        gridPane.add(consumeDate, 1, 7);
+        gridPane.add(note, 1, 8);
+        gridPane.add(rawProduction, 0, 2);
+        gridPane.add(rawProduce, 1, 2);
+        gridPane.add(produce, 0, 9);
+        gridPane.add(bulkProduce, 1, 9);
 
         pane.setRight(gridPane);
 
