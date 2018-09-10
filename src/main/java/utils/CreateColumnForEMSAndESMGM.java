@@ -8,7 +8,9 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 import projectConstants.CustomConstants;
 
 import java.math.BigDecimal;
@@ -23,39 +25,52 @@ public class CreateColumnForEMSAndESMGM {
 
     public List<TableColumn<Detail, ?>> createColumns(DetailElectrod de) {
 
-        TableColumn<Detail,Integer> id = new TableColumn<>("№ п/п");
-        id.setCellValueFactory(value-> new SimpleObjectProperty<Integer>(value.getValue().getId()));
+        TableColumn<Detail, Integer> id = new TableColumn<>("№ п/п");
+        id.setCellValueFactory(value -> new SimpleObjectProperty<Integer>(value.getValue().getId()));
 
-        TableColumn<Detail,String> title = new TableColumn<>("Название");
-        title.setCellValueFactory(value->new SimpleStringProperty(value.getValue().getTitle()));
+        TableColumn<Detail, String> title = new TableColumn<>("Название");
+        title.setCellValueFactory(value -> new SimpleStringProperty(value.getValue().getTitle()));
 
         TableColumn<Detail, Double> count = new TableColumn<>("Количество");
-        count.setCellFactory(cell-> new TableCell<Detail, Double>(){
+        count.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Double>() {
             @Override
-            protected void updateItem(Double item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty)
-                    setText(null);
-                else
-                    setText(String.valueOf(item));
+            public String toString(Double object) {
+                return String.valueOf(object);
             }
 
-        });
-        count.setCellValueFactory(value-> new SimpleObjectProperty<Double>(de.getDetails().get(value.getValue()).keySet().iterator().next()));
+            @Override
+            public Double fromString(String string) {
+                System.out.println("new count value: "+string);
+                return Double.valueOf(string);
+            }
+        }));
+        count.setCellValueFactory(param -> new SimpleObjectProperty<Double>(de.getDetails().get(param.getValue()).keySet().iterator().next()));
 
-        TableColumn<Detail,BigDecimal> cost = new TableColumn<>("Стоимость");
+//         вернуться к закоменченному когда придумаю апдейт значений в бд, сейчас не хочу, спать хочу.
+//        count.setOnEditCommit(event -> {
+//            System.out.println("Set detail count: old value: " + event.getOldValue() + " new value: " + event.getNewValue());
+//            event.getTableView().getItems()
+//                    .get(
+//                            event.getTablePosition().getRow()
+//                    ).setCount(Double.valueOf(event.getNewValue()));
+//        });
+
+
+        TableColumn<Detail, BigDecimal> cost = new TableColumn<>("Стоимость");
         cost.setEditable(true);
-        cost.setCellFactory(cell-> new TableCell<Detail,BigDecimal>(){
+        cost.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<BigDecimal>() {
             @Override
-            protected void updateItem(BigDecimal item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty)
-                    setText(null);
-                else
-                    setText(item.toString());
+            public String toString(BigDecimal object) {
+                return object.toString();
             }
-        });
-        cost.setCellValueFactory(value->new SimpleObjectProperty<BigDecimal>(de.getDetails().get(value.getValue()).values().iterator().next()));
+
+            @Override
+            public BigDecimal fromString(String string) {
+                System.out.println("new cost value: "+string);
+                return new BigDecimal(string);
+            }
+        }));
+        cost.setCellValueFactory(value -> new SimpleObjectProperty<BigDecimal>(de.getDetails().get(value.getValue()).values().iterator().next()));
 
         return Arrays.asList(id, title, count, cost);
     }

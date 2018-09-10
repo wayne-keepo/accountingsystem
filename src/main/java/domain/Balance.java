@@ -7,6 +7,8 @@ import java.time.Month;
 import java.time.Year;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
 //TODO: may be implements ObservableValue<Balance>, think about this!!! (main task)
 public class Balance {
     private int id;
@@ -121,6 +123,21 @@ public class Balance {
 
     public void setOutcoming(Map<Month, Double> outcoming) {
         this.outcoming = outcoming;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Balance balance = (Balance) o;
+        return id == balance.id &&
+                Objects.equals(year, balance.year);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, year);
     }
 
     @Override

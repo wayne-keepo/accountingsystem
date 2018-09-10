@@ -176,6 +176,7 @@ public class BalancesTable {
 // TODO: сделать более быстрой (+/-)
     public void refresh(ObservableList<Balance> updBalance) {
         updBalance.forEach(upd->{
+
             int index = balances.indexOf(upd);
             balances.set(index,upd);
         });
