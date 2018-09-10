@@ -50,11 +50,11 @@ public class CountingService {
         RawElectrode rw = ElectrodeService.getRawElectrodeByType(type);
 
         if (rw==null)
-            rw = ElectrodeService.initRawElectrode(type,0);
+            rw = initializeRawElectrode(type);
 
         int oldRawCount = rw.getCount();
         int newRawCount = oldRawCount + count;
-        ElectrodeService.updateRawElectrodeCount(rw,newRawCount); // change
+        ElectrodeService.updateRawElectrodeCount(rw,newRawCount);
 
         List<RefreshBalanceData> updBalanceData = new ArrayList<>();
 
@@ -83,7 +83,8 @@ public class CountingService {
 
     public static void countingForProduceSummaryFromRawElectrode(String from, String to, String type) {
         RawElectrode rw = ElectrodeService.getRawElectrodeByType(type);
-
+        if (rw==null)
+            rw = initializeRawElectrode(type);
 
         int numericFrom = Integer.valueOf(from);
         int numericTo = Integer.valueOf(to);
@@ -93,7 +94,11 @@ public class CountingService {
         if (!(rawElectrodeCount >= howProduce))
             throw new RuntimeException(String.format("Недостаточно сырья для продажи %d электродов", howProduce)); // TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
 
-        ElectrodeService.updateRawElectrodeCount(rw,rawElectrodeCount - howProduce); // change
+        ElectrodeService.updateRawElectrodeCount(rw,rawElectrodeCount - howProduce);
+    }
+
+    public static RawElectrode initializeRawElectrode(String type){
+        return ElectrodeService.initRawElectrode(type,0);
     }
 
 }

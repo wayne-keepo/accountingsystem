@@ -2,14 +2,13 @@ package views.tables;
 
 import entities.RawElectrode;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import services.ElectrodeService;
-
-import java.util.List;
-
+import utils.Types;
 
 public class RawElectrodeTable {
     private TableView<RawElectrode> table = null;
@@ -21,7 +20,6 @@ public class RawElectrodeTable {
 
     private void create(){
         table = new TableView<>();
-        // TODO: check on null
         electrodes = ElectrodeService.getAllAsObservableList();
         table.setItems(electrodes);
         createColumns();
@@ -29,13 +27,13 @@ public class RawElectrodeTable {
 
     private void createColumns(){
         TableColumn<RawElectrode,Integer> id = new TableColumn<>("№");
-        id.setCellValueFactory(new PropertyValueFactory<>("id"));
+        id.setCellValueFactory(param -> new SimpleObjectProperty<Integer>(param.getValue().getId()));
 
         TableColumn<RawElectrode,String> type = new TableColumn<>("Тип");
-        id.setCellValueFactory(new PropertyValueFactory<>("type"));
+        type.setCellValueFactory(param -> new SimpleStringProperty(Types.valueOf(param.getValue().getType()).value()));
 
         TableColumn<RawElectrode,Integer> count = new TableColumn<>("Количество");
-        id.setCellValueFactory(param -> new SimpleObjectProperty<Integer>(param.getValue().getCount()));
+        count.setCellValueFactory(param -> new SimpleObjectProperty<Integer>(param.getValue().getCount()));
 
         table.getColumns().addAll(id,type,count);
     }
@@ -44,7 +42,8 @@ public class RawElectrodeTable {
         return table;
     }
     // TODO: review?
-    public void refresh(ObservableList<RawElectrode> rws){
+    public void refresh(){
+        ObservableList<RawElectrode> rws = ElectrodeService.getAllAsObservableList();
         rws.forEach(raw->{if (!electrodes.contains(raw)) electrodes.add(raw);});
     }
 }

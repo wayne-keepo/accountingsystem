@@ -394,6 +394,7 @@ public class MainStage {
             ObservableList<Balance> updBalance = FXCollections.observableList(
                     CountingService.countingForProduceRawElectrode(type, Integer.valueOf(count), balancesTable.getBalances())
             );
+            rawTable.refresh();
             if (!updBalance.isEmpty())
                 balancesTable.refresh(updBalance);
             rawProduction.clear();
