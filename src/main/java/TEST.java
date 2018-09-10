@@ -3,16 +3,16 @@ import databaselogic.controllers.DBRawElectrodeController;
 import entities.RawElectrode;
 import projectConstants.DBConstants;
 import services.AccoutingHistoryService;
+import utils.Types;
 
 import java.time.MonthDay;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class TEST {
     public static void main(String[] args) {
 
         //Detail tests
-        DBDetailController dbDetailController = new DBDetailController();
+//        DBDetailController dbDetailController = new DBDetailController();
 //        Detail detail = dbDetailController.initRawElectrodeValue(1);
 
         //Accounting History tests
@@ -101,7 +101,10 @@ public class TEST {
 //        String tmp = ids.toString().replaceAll("[\\[\\]]","");
 //        System.out.println(tmp);
 //        System.out.println(MonthDay.now().getDayOfMonth());
+//        System.out.println(controller.getByType("ESMG"));
 
+        //enums
+//        System.out.println(Types.ESMG.toString()+" "+Types.ESMG+" "+Types.ESMG.getClass()+" "+Types.ESMG.value()+" "+Types.ESMG.ordinal());
     }
 
     static class Simple {

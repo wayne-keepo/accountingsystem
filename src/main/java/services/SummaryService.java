@@ -1,9 +1,6 @@
 package services;
 
-import com.sun.istack.internal.NotNull;
 import databaselogic.controllers.DBSummaryController;
-import domain.Electrod;
-import domain.ElectrodeSummary;
 import entities.Summary;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -38,7 +35,7 @@ public class SummaryService {
         return controller.getAll();
     }
 
-    public static void bulkCreateSummaryFromRange(@NotNull String from, @NotNull String to, @NotNull String type, LocalDate produce, LocalDate consume, String customer, String note) {
+    public static void bulkCreateSummaryFromRange(String from, String to, String type, LocalDate produce, LocalDate consume, String customer, String note) {
         List<Summary> summaries = new ArrayList<>();
         int numericFrom = Integer.valueOf(from);
         int numericTo = Integer.valueOf(to);

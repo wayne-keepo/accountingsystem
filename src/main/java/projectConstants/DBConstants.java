@@ -65,7 +65,10 @@ public class DBConstants {
 //    public static final String SELECT_DAY_FROM_ACC_HIST = "SELECT d? FROM AccountingHistory WHERE year = ? and month = ? and acc = ? and idDetail = ?";
     public static final String DELETE_ACCOUNTING_HISTORY = "DELETE TABLE AccountingHistory WHERE id = ?";
 
-    //RawElectrode( id = 0 , count)
-    public static final String GET_RAW_ELECTRODE = "SELECT * FROM RawElectrode where id = 0";
-    public static final String UPDATE_RAW_ELECTRODE_COUNT = "UPDATE RawElectrode SET count = ? WHERE id = 0";
+    //RawElectrode( id ,type , count)
+    public static final String CREATE_RAW_ELECTRODE = "INSERT INTO RawElectrode(type,count) VALUES(?,?)";
+    public static final String GET_RAW_ELECTRODE_BY_ID = "SELECT * FROM RawElectrode where id = ?"; // changed
+    public static final String UPDATE_RAW_ELECTRODE_COUNT = "UPDATE RawElectrode SET count = ? WHERE id = ?";
+    public static final String GET_RAW_ELECTRODE_BY_TYPE = "SELECT * FROM RawElectrode WHERE type = ?";
+    public static final String GET_ALL_RAW_ELECTRODES = "SELECT * FROM RawElectrode";
 }

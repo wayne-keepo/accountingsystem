@@ -16,9 +16,7 @@ import java.util.*;
 // TODO: подумать над тем чтобы вынести инициализацию RawElectrode в main
 public class CountingService {
 
-    public static ObservableList<Balance> countingForProduceRawElectrode(String type, int count, ObservableList<Balance> balances) {
-        ElectrodeService.initRawElectrode();
-
+    public static List<Balance> countingForProduceRawElectrode(String type, int count, ObservableList<Balance> balances) {
         List<String> detailTitlesForErrorMsg = new ArrayList<>();
         List<DetailElectrodePrimitive> detailElectrods = DetailElectrodeService.getAllByType(type);
 //        System.out.println("--------------------- begins counting the number of parts for the production of the " + count + " electrodes ---------------------------------");
@@ -34,6 +32,7 @@ public class CountingService {
 
         details.forEach(detail -> {
             Double eqCount = detailElectrods.stream().filter(x -> x.getIdDetail().equals(detail.getId())).findFirst().get().getCount() * count;
+// возможно сразу выбрасывать оповещение о нехватке деталей, ибо нахуя создавать лишнюю коллекцию когда можно не создавать ?
             if (!(Double.compare(detail.getCount(), eqCount) == -1)) {
                 HashMap<Double, Double> tmp = new HashMap<>();
                 tmp.put(detail.getCount(), eqCount);
@@ -43,15 +42,19 @@ public class CountingService {
         });
 //        System.out.println("Error details: " + detailTitlesForErrorMsg.toString());
         if (!detailTitlesForErrorMsg.isEmpty())
-            throw new RuntimeException( // TODO ERROR: добавить обработку ошибки (всплывающее сообщение/ кастомный класс ошибко )
-                    String.format("Количество деталей %s на складе недостаточно для производства %d электрода %S типа.",
+            throw new RuntimeException( // TODO ERROR: добавить обработку ошибки (всплывающее сообщение / кастомный класс ошибок )
+                    String.format("Количество деталей %s на складе недостаточно для производства %d электрода %s типа.",
                             detailTitlesForErrorMsg.toString().replaceAll("[\\[\\]]", ""),
                             count,
                             type));
+        RawElectrode rw = ElectrodeService.getRawElectrodeByType(type);
 
-        int oldRawCount = RawElectrode.getInstance().getCount();
+        if (rw==null)
+            rw = ElectrodeService.initRawElectrode(type,0);
+
+        int oldRawCount = rw.getCount();
         int newRawCount = oldRawCount + count;
-        ElectrodeService.updateRawElectrodeCount(newRawCount);
+        ElectrodeService.updateRawElectrodeCount(rw,newRawCount); // change
 
         List<RefreshBalanceData> updBalanceData = new ArrayList<>();
 
@@ -79,17 +82,18 @@ public class CountingService {
     }
 
     public static void countingForProduceSummaryFromRawElectrode(String from, String to, String type) {
-        ElectrodeService.initRawElectrode();
+        RawElectrode rw = ElectrodeService.getRawElectrodeByType(type);
+
 
         int numericFrom = Integer.valueOf(from);
         int numericTo = Integer.valueOf(to);
         int howProduce = numericTo - numericFrom;
-        int rawElectrodeCount = RawElectrode.getInstance().getCount();
+        int rawElectrodeCount = rw.getCount();
 
         if (!(rawElectrodeCount >= howProduce))
             throw new RuntimeException(String.format("Недостаточно сырья для продажи %d электродов", howProduce)); // TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
 
-        ElectrodeService.updateRawElectrodeCount(rawElectrodeCount - howProduce);
+        ElectrodeService.updateRawElectrodeCount(rw,rawElectrodeCount - howProduce); // change
     }
 
 }

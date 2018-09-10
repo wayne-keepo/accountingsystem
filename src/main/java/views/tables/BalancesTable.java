@@ -43,7 +43,7 @@ public class BalancesTable {
         table.setEditable(false);
         table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         table.getColumns().addAll(createColumn());
-        table.getItems().addAll(balances);
+        table.setItems(balances);
     }
 
     private void initializingDataInTable() {
@@ -173,11 +173,15 @@ public class BalancesTable {
     public TableView<Balance> getTable() {
         return table;
     }
-// TODO: сделать более быстрой
+// TODO: сделать более быстрой (+/-)
     public void refresh(ObservableList<Balance> updBalance) {
-        table.getItems().clear();
-        table.getItems().addAll(updBalance);
-        balances.clear();
-        balances.addAll(updBalance);
+        updBalance.forEach(upd->{
+            int index = balances.indexOf(upd);
+            balances.set(index,upd);
+        });
+//        table.getItems().clear();
+//        table.getItems().addAll(updBalance);
+//        balances.clear();
+//        balances.addAll(updBalance);
     }
 }

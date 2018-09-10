@@ -110,7 +110,7 @@ public class BalanceService {
 
     }
 // TODO: нужно оптимизировать, но похуй (
-    public static ObservableList<Balance> updBalanceWhenProduceRawElectrode(List<RefreshBalanceData> updData, ObservableList<Balance> balances){
+    public static List<Balance> updBalanceWhenProduceRawElectrode(List<RefreshBalanceData> updData, ObservableList<Balance> balances){
         List<Balance> updBalances = new ArrayList<>();
         updData.forEach(data ->{
             Balance balance = balances.stream().filter(b -> b.getDetail().getId()==data.idDetail).findFirst().get();
@@ -122,14 +122,14 @@ public class BalanceService {
             updBalances.add(balance);
         });
 
-        balances.forEach(balance -> {
-            Balance upd = updBalances.stream().filter(b->b.getId()==balance.getId()).findFirst().get();
-            balance.setOutcoming(upd.getOutcoming());
-            balance.setBalanceAtEndOfYear(upd.getBalanceAtEndOfYear());
+//        balances.forEach(balance -> {
+//            Balance upd = updBalances.stream().filter(b->b.getId()==balance.getId()).findFirst().get();
+//            balance.setOutcoming(upd.getOutcoming());
+//            balance.setBalanceAtEndOfYear(upd.getBalanceAtEndOfYear());
+//
+//        });
 
-        });
-
-        return balances;
+        return updBalances;
 
     }
 }

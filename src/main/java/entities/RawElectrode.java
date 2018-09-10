@@ -1,20 +1,26 @@
 package entities;
 
 public class RawElectrode {
-    private int id = 1;
+    private int id ;
     private int count;
-    private static RawElectrode instance;
+    private String type;
 
-    private RawElectrode() {}
-
-    public static RawElectrode getInstance() {
-        if (instance==null)
-            instance = new RawElectrode();
-        return instance;
-    }
+    public RawElectrode() {}
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public int getCount() {
@@ -23,5 +29,10 @@ public class RawElectrode {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public void changeCountAndType(int count, String type){
+        this.count = count;
+        this.type = type;
     }
 }

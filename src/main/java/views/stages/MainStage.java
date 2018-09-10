@@ -5,6 +5,7 @@ import databaselogic.controllers.DBBalanceController;
 import databaselogic.controllers.DBDetailController;
 
 import entities.*;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import utils.ChainUtil;
 import domain.Balance;
@@ -47,6 +48,7 @@ public class MainStage {
     private final CostDetailTable costDetailTable = new CostDetailTable();
     private final ComponentsConsumptionESMGTable esmgTable = new ComponentsConsumptionESMGTable();
     private final ComponentsConsumptionESMGMTable esmgmTable = new ComponentsConsumptionESMGMTable();
+    private final RawElectrodeTable rawTable = new RawElectrodeTable();
 
     //custom classes
     private final DetailDropBox detailDropBox = new DetailDropBox();
@@ -337,6 +339,7 @@ public class MainStage {
 
     private void addLogicOnSummaryTab(Tab tab) {
         BorderPane pane = new BorderPane();
+        BorderPane paneForGridAndRawTable = new BorderPane();
         tab.setContent(pane);
 
         pane.setPadding(new Insets(10));
@@ -387,9 +390,11 @@ public class MainStage {
 
             if (rawProduction.getText().isEmpty() || type.isEmpty())
                 return;// TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
-
-            ObservableList<Balance> updBalance =  CountingService.countingForProduceRawElectrode(type, Integer.valueOf(count), balancesTable.getBalances());
-            if (updBalance!=null)
+            // хуевая идея передавать список балансов в метод, переделать блять (или нет)
+            ObservableList<Balance> updBalance = FXCollections.observableList(
+                    CountingService.countingForProduceRawElectrode(type, Integer.valueOf(count), balancesTable.getBalances())
+            );
+            if (!updBalance.isEmpty())
                 balancesTable.refresh(updBalance);
             rawProduction.clear();
         });
@@ -458,7 +463,9 @@ public class MainStage {
         gridPane.add(produce, 0, 9);
         gridPane.add(bulkProduce, 1, 9);
 
-        pane.setRight(gridPane);
+        pane.setRight(paneForGridAndRawTable);
+        paneForGridAndRawTable.setTop(gridPane);
+        paneForGridAndRawTable.setCenter(rawTable.getTable());
 
     }
 
