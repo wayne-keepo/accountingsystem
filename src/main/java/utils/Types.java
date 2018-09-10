@@ -2,7 +2,7 @@ package utils;
 
 public enum Types {
     ESMG("ЕСМГ"),
-    ESMGM("ЕСМГМ");
+    ESMG_M("ЕСМГ-М");
 
     private  String value;
     Types(String value){this.value = value;}

@@ -395,8 +395,10 @@ public class MainStage {
                     CountingService.countingForProduceRawElectrode(type, Integer.valueOf(count), balancesTable.getBalances())
             );
             rawTable.refresh();
-            if (!updBalance.isEmpty())
+            if (!updBalance.isEmpty()) {
+                costDetailTable.refresh();
                 balancesTable.refresh(updBalance);
+            }
             rawProduction.clear();
         });
 

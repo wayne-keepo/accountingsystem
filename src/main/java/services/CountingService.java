@@ -12,6 +12,7 @@ import java.time.Month;
 import java.time.MonthDay;
 import java.time.Year;
 import java.util.*;
+import java.util.stream.Collectors;
 
 // TODO: подумать над тем чтобы вынести инициализацию RawElectrode в main
 public class CountingService {
@@ -73,7 +74,9 @@ public class CountingService {
             updBalanceData.add(new RefreshBalanceData(Month.of(month),detailId, delta));
         });
 
-        details = Arrays.asList(ddd.keySet().toArray(new Detail[ddd.keySet().size()]));
+        details = new ArrayList<>(ddd.keySet());
+//                Arrays.asList(ddd.keySet().toArray(new Detail[ddd.keySet().size()]));
+
         DetailService.bulkUpdate(details);
 
         if (!updBalanceData.isEmpty())

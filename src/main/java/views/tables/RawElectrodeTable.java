@@ -30,7 +30,7 @@ public class RawElectrodeTable {
         id.setCellValueFactory(param -> new SimpleObjectProperty<Integer>(param.getValue().getId()));
 
         TableColumn<RawElectrode,String> type = new TableColumn<>("Тип");
-        type.setCellValueFactory(param -> new SimpleStringProperty(Types.valueOf(param.getValue().getType()).value()));
+        type.setCellValueFactory(param -> new SimpleStringProperty(Types.valueOf(param.getValue().getType().replace("-","_")).value()));
 
         TableColumn<RawElectrode,Integer> count = new TableColumn<>("Количество");
         count.setCellValueFactory(param -> new SimpleObjectProperty<Integer>(param.getValue().getCount()));
@@ -44,6 +44,7 @@ public class RawElectrodeTable {
     // TODO: review?
     public void refresh(){
         ObservableList<RawElectrode> rws = ElectrodeService.getAllAsObservableList();
-        rws.forEach(raw->{if (!electrodes.contains(raw)) electrodes.add(raw);});
+        electrodes.clear();
+        electrodes.addAll(rws);
     }
 }

@@ -14,14 +14,14 @@ public class DBRawElectrodeController {
 
     public RawElectrode getByType(String type) {
 
-        List<RawElectrode> ral = template.query(
+        List<RawElectrode> raw = template.query(
                 DBConstants.GET_RAW_ELECTRODE_BY_TYPE,
                 new RawElectrodeRowMapper(),
                 type
         );
-        if (ral.isEmpty())
+        if (raw.isEmpty())
             return null;
-        return ral.get(0);
+        return raw.get(0);
     }
 
     public void updateCount(int id, int count) {

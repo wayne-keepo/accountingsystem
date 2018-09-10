@@ -19,16 +19,20 @@ import java.util.List;
 
 public class CostDetailTable {
     private TableView<Detail> costDetailTable;
+    private ObservableList<Detail> details;
     private List<Integer> changes;
 
     private void createTable() {
         changes = new ArrayList<>();
+        details = FXCollections.observableArrayList();
         costDetailTable = new TableView<>();
+
         costDetailTable.setEditable(true);
         costDetailTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         costDetailTable.getColumns().addAll(createColumns());
 
-        costDetailTable.getItems().addAll(FXCollections.observableArrayList(DetailService.getAll()));
+        details.addAll(DetailService.getAll());
+        costDetailTable.setItems(details);
     }
 
     public CostDetailTable() {
@@ -118,5 +122,15 @@ public class CostDetailTable {
 
     public TableView<Detail> getCostDetailTable() {
         return costDetailTable;
+    }
+
+    public void refresh(){
+        List<Detail> tmp = DetailService.getAll();
+        details.clear();
+        details.addAll(tmp);
+        // пересмотреть
+//        costDetailTable.setItems(details);
+
+
     }
 }
