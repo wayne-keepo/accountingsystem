@@ -412,6 +412,7 @@ public class MainStage {
             CountingService.countingForProduceSummaryFromRawElectrode(from, to, type);
             SummaryService.bulkCreateSummaryFromRange(from, to, type, produceDate.getValue(), consumeDate.getValue(), customer.getText(), note.getText());
             summaryTable.refresh();
+            rawTable.refresh();
         });
 
         produce.setOnAction(event -> {
@@ -433,6 +434,7 @@ public class MainStage {
             note.clear();
             SummaryService.save(summary);
             summaryTable.refresh();
+            rawTable.refresh();
         });
 
         delete.setOnAction(event -> {
