@@ -48,7 +48,6 @@ public class BalancesTable {
 
     private void initializingDataInTable() {
         ObservableList<Balance> initialBalances = BalanceService.buildBalances();
-//        System.out.println("Balances from BalanceTable#initializingDataInTable()\n"+initialBalances.toString());
         if (initialBalances != null)
             balances.addAll(initialBalances); // продумать как быть при самом первом запуске, падает ошибка если в базе нет данных по балансу!! (+/-) протестировать изменения
     }
@@ -176,7 +175,6 @@ public class BalancesTable {
 // TODO: сделать более быстрой (+/-)
     public void refresh(ObservableList<Balance> updBalance) {
         updBalance.forEach(upd->{
-
             int index = balances.indexOf(upd);
             balances.set(index,upd);
         });

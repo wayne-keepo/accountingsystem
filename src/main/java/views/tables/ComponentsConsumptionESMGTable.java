@@ -9,18 +9,18 @@ import javafx.scene.control.TableView;
 import projectConstants.CustomConstants;
 import services.DetailElectrodeService;
 import services.DetailService;
-import utils.CreateColumnForEMSAndESMGM;
+import utils.CreateColumnForESMGAndESMGM;
 
 import java.util.ArrayList;
 
 public class ComponentsConsumptionESMGTable {
     private TableView<Detail> table;
-    private CreateColumnForEMSAndESMGM creator;
+    private CreateColumnForESMGAndESMGM creator;
     private ObservableList<Detail> details;
     private DetailElectrod detailElectrods;
 
     public ComponentsConsumptionESMGTable() {
-        creator = new CreateColumnForEMSAndESMGM();
+        creator = new CreateColumnForESMGAndESMGM();
         createTable();
     }
 

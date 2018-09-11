@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class CreateColumnForEMSAndESMGM {
+public class CreateColumnForESMGAndESMGM {
 
     public List<TableColumn<Detail, ?>> createColumns(DetailElectrod de) {
 
@@ -37,10 +37,8 @@ public class CreateColumnForEMSAndESMGM {
             public String toString(Double object) {
                 return String.valueOf(object);
             }
-
             @Override
             public Double fromString(String string) {
-                System.out.println("new count value: "+string);
                 return Double.valueOf(string);
             }
         }));
@@ -63,10 +61,8 @@ public class CreateColumnForEMSAndESMGM {
             public String toString(BigDecimal object) {
                 return object.toString();
             }
-
             @Override
             public BigDecimal fromString(String string) {
-                System.out.println("new cost value: "+string);
                 return new BigDecimal(string);
             }
         }));

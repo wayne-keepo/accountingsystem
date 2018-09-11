@@ -74,15 +74,12 @@ public class Detail {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Detail detail = (Detail) o;
-        return Objects.equals(title, detail.title) &&
-                Objects.equals(count, detail.count) &&
-                Objects.equals(descriptions, detail.descriptions);
+        return id == detail.id;
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(title, count, descriptions);
+        return Objects.hash(id);
     }
 
     @Override
