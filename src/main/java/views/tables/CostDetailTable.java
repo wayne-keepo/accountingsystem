@@ -57,18 +57,26 @@ public class CostDetailTable {
                 changes.add(chId);
         });
 
-        TableColumn<Detail, Double> count = new TableColumn<>("Количество");
-        count.setCellValueFactory(cellData-> new SimpleObjectProperty<Double>(cellData.getValue().getCount()));
-        count.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Double>() {
-            @Override
-            public String toString(Double object) {
-                return String.valueOf(object);
-            }
-            @Override
-            public Double fromString(String string) {
-                return Double.valueOf(string);
-            }
-        }));
+        TableColumn<Detail, String> count = new TableColumn<>("Количество");
+        count.setCellValueFactory(cellData-> new SimpleObjectProperty<String>(String.valueOf(cellData.getValue().getCount())));
+        count.setCellFactory(TextFieldTableCell.forTableColumn());
+//        count.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Double>() {
+//            @Override
+//            public String toString(Double object) {
+//                return String.valueOf(object);
+//            }
+//            @Override
+//            public Double fromString(String string) {
+//                return Double.valueOf(string);
+//            }
+//        }));
+//test; null
+        count.setOnEditCommit(event -> {
+            System.out.println(details.get(details.indexOf(event.getRowValue())).getDescriptions());
+            event.getRowValue().setCount(Double.valueOf(event.getNewValue()));
+            System.out.println(details.get(details.indexOf(event.getRowValue())).getDescriptions());
+
+        });
 
         TableColumn<Detail, BigDecimal> cost = new TableColumn<>("Стоимость");
         cost.setCellValueFactory(param -> new SimpleObjectProperty<BigDecimal>(param.getValue().getCost()));
@@ -84,6 +92,7 @@ public class CostDetailTable {
         }));
 
         TableColumn<Detail, String> descriptions = new TableColumn<>("Примечание");
+        descriptions.setCellFactory(TextFieldTableCell.forTableColumn());
         descriptions.setCellValueFactory(new PropertyValueFactory<>("descriptions"));
      //test
         descriptions.setOnEditCommit(t ->{
