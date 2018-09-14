@@ -2,72 +2,91 @@ package utils;
 
 import domain.DetailElectrod;
 import entities.Detail;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.util.Callback;
-import javafx.util.StringConverter;
-import projectConstants.CustomConstants;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class CreateColumnForESMGAndESMGM {
 
-    public List<TableColumn<Detail, ?>> createColumns(DetailElectrod de) {
+    public List<TableColumn<Detail, ?>> createColumns(DetailElectrod de,List<Integer> changes) {
 
         TableColumn<Detail, Integer> id = new TableColumn<>("№ п/п");
+        id.setEditable(false);
         id.setCellValueFactory(value -> new SimpleObjectProperty<Integer>(value.getValue().getId()));
 
         TableColumn<Detail, String> title = new TableColumn<>("Название");
         title.setCellValueFactory(value -> new SimpleStringProperty(value.getValue().getTitle()));
+        title.setEditable(false);
 
-        TableColumn<Detail, Double> count = new TableColumn<>("Количество");
-        count.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Double>() {
-            @Override
-            public String toString(Double object) {
-                return String.valueOf(object);
-            }
-            @Override
-            public Double fromString(String string) {
-                return Double.valueOf(string);
-            }
-        }));
-        count.setCellValueFactory(param -> new SimpleObjectProperty<Double>(de.getDetails().get(param.getValue()).keySet().iterator().next()));
+        TableColumn<Detail, String> count = new TableColumn<>("Количество");
+        count.setCellFactory(TextFieldTableCell.forTableColumn());
+        count.setCellValueFactory(param -> new SimpleStringProperty(
+                String.valueOf(
+                        de.getDetails().get(param.getValue()).keySet().iterator().next()
+                )));
+        count.setOnEditCommit(event -> {
+            System.out.println("Init update count for produce");
 
-//         вернуться к закоменченному когда придумаю апдейт значений в бд, сейчас не хочу, спать хочу.
-//        count.setOnEditCommit(event -> {
-//            System.out.println("Set detail count: old value: " + event.getOldValue() + " new value: " + event.getNewValue());
-//            event.getTableView().getItems()
-//                    .get(
-//                            event.getTablePosition().getRow()
-//                    ).setCount(Double.valueOf(event.getNewValue()));
-//        });
+            Double newKey = Double.valueOf(event.getNewValue());
+            System.out.println("New key count: "+newKey);
 
+            Detail tmp = event.getRowValue();
+            System.out.println("Upd detail: "+tmp.getTitle());
 
-        TableColumn<Detail, BigDecimal> cost = new TableColumn<>("Стоимость");
+            Map<Double,BigDecimal> map = de.getDetails().get(tmp);
+            System.out.println("Map for update: "+map.toString());
+
+            Double oldKey = map.keySet().iterator().next();
+            System.out.println("Old key count: "+oldKey);
+
+            System.out.println("Replace old key "+oldKey+" on new key "+newKey);
+            map.put(newKey,map.remove(oldKey));
+            System.out.println("New map result: "+map.toString());
+
+            System.out.println("Check map into DE obj: "+de.getDetails().get(tmp).toString());
+            catchUpdate(changes,tmp.getId());
+            System.out.println("Check changes list: "+changes.toString());
+        });
+
+        TableColumn<Detail, String> cost = new TableColumn<>("Стоимость");
         cost.setEditable(true);
-        cost.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<BigDecimal>() {
-            @Override
-            public String toString(BigDecimal object) {
-                return object.toString();
-            }
-            @Override
-            public BigDecimal fromString(String string) {
-                return new BigDecimal(string);
-            }
-        }));
-        cost.setCellValueFactory(value -> new SimpleObjectProperty<BigDecimal>(de.getDetails().get(value.getValue()).values().iterator().next()));
+        cost.setCellFactory(TextFieldTableCell.forTableColumn());
+        cost.setCellValueFactory(value -> new SimpleStringProperty(de.getDetails().get(value.getValue()).values().iterator().next().toString()));
+        cost.setOnEditCommit(event -> {
+            System.out.println("Init update cost for produce");
+
+            BigDecimal newCost = new BigDecimal(event.getNewValue());
+            System.out.println("New cost value : "+newCost);
+
+            Detail tmp = event.getRowValue();
+            System.out.println("Upd detail: "+tmp.getTitle());
+
+            Map<Double,BigDecimal> map = de.getDetails().get(tmp);
+            System.out.println("Map for update: "+map.toString());
+            Double key = map.keySet().iterator().next();
+            BigDecimal oldCost = map.values().iterator().next();
+            System.out.println("Old cost value: "+oldCost);
+            System.out.println("Replace old cost "+oldCost+" on new cost "+newCost);
+
+            map.replace(key,oldCost,newCost);
+            System.out.println("New map result: "+map.toString());
+
+            System.out.println("Check map into DE obj: "+de.getDetails().get(tmp).toString());
+            catchUpdate(changes,tmp.getId());
+            System.out.println("Check changes list: "+changes.toString());
+        });
 
         return Arrays.asList(id, title, count, cost);
+    }
+    private void catchUpdate(List<Integer> changes,Integer id){
+        if (!changes.contains(id))
+            changes.add(id);
+        else System.out.println("This id = "+id+" already contains in list for update.");
     }
 }

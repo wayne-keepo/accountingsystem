@@ -205,14 +205,15 @@ public class MainStage {
 
         Button add = new AddButton().getAdd();
         Button delete = new DeleteButton().getDelete();
+        Button commit = new Button("Обновить данные");
 
         HBox horizontal = new HBox(15);
         horizontal.setPadding(new Insets(10, 0, 10, 0));
         horizontal.setAlignment(Pos.BOTTOM_CENTER);
-        horizontal.getChildren().addAll(title, count, cost, descriptions, add, delete);
+        horizontal.getChildren().addAll(title, count, cost, descriptions, add, delete,commit);
 
         paneForCostDetail.setBottom(horizontal);
-
+        commit.setOnAction(event -> costDetailTable.dataUpdate());
         add.setOnAction(event -> {
             if (title.getText().isEmpty() || count.getText().isEmpty() || cost.getText().isEmpty()) {
                 return;
@@ -233,7 +234,6 @@ public class MainStage {
             descriptions.clear();
 
         });
-
         delete.setOnAction(event -> {
             if (costDetailTable.getCostDetailTable().getSelectionModel().getSelectedItem() == null)
                 return;
@@ -248,6 +248,7 @@ public class MainStage {
         tab.setContent(paneForAccoutingESMGTab);
         paneForAccoutingESMGTab.setCenter(esmgTable.getTable());
         HBox horizontal = new HBox(10);
+
         DetailDropBox ddb = new DetailDropBox();
         TextField count = new TextField();
         count.setPromptText("количество деталей");
@@ -255,21 +256,22 @@ public class MainStage {
         cost.setPromptText("стоимость детали");
         Button add = new Button("Добавить");
         Button delete = new Button("Удалить");
+        Button commit = new Button("Обновить данные");
+
         horizontal.setPadding(new Insets(10, 0, 10, 0));
         horizontal.setAlignment(Pos.BOTTOM_CENTER);
 
-        horizontal.getChildren().addAll(ddb.getDetailsBox(), count, cost, add, delete);
+        horizontal.getChildren().addAll(ddb.getDetailsBox(), count, cost, add, delete,commit);
         paneForAccoutingESMGTab.setBottom(horizontal);
 
         List<Detail> initDet = esmgTable.getTable().getItems();
         initDet.forEach(ddb::deleteDetail);
 
+        commit.setOnAction(event -> esmgTable.dataUpdate());
         add.setOnAction(event -> {
             Detail detail = ddb.getDetailsBox().getSelectionModel().getSelectedItem();
-
             if (detail == null || count.getText().isEmpty() || cost.getText().isEmpty())
                 return;
-
             Map<Double, BigDecimal> tmp = new HashMap<>();
             tmp.put(Double.valueOf(count.getText()), new BigDecimal(cost.getText()));
             esmgTable.getDetailElectrods().getDetails().put(detail, tmp);
@@ -295,21 +297,26 @@ public class MainStage {
         tab.setContent(paneForAccoutingESMGMTab);
         paneForAccoutingESMGMTab.setCenter(esmgmTable.getTable());
         HBox horizontal = new HBox(10);
+
         DetailDropBox ddbm = new DetailDropBox();
         TextField count = new TextField();
         count.setPromptText("количество деталей");
         TextField cost = new TextField();
         cost.setPromptText("стоимость детали");
+
         Button add = new Button("Добавить");
         Button delete = new Button("Удалить");
+        Button commit = new Button("Обновить данные");
+
         horizontal.setPadding(new Insets(10, 0, 10, 0));
         horizontal.setAlignment(Pos.BOTTOM_CENTER);
 
-        horizontal.getChildren().addAll(ddbm.getDetailsBox(), count, cost, add, delete);
+        horizontal.getChildren().addAll(ddbm.getDetailsBox(), count, cost, add, delete,commit);
         paneForAccoutingESMGMTab.setBottom(horizontal);
         List<Detail> initDet = esmgTable.getTable().getItems();
         initDet.forEach(ddbm::deleteDetail);
 
+        commit.setOnAction(event -> esmgmTable.dataUpdate());
         add.setOnAction(event -> {
             Detail detail = ddbm.getDetailsBox().getSelectionModel().getSelectedItem();
 

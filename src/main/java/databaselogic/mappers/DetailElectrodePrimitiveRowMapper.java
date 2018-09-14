@@ -4,7 +4,6 @@ import entities.DetailElectrodePrimitive;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 

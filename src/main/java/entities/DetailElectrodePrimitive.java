@@ -1,7 +1,6 @@
 package entities;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 public class DetailElectrodePrimitive {
     private Integer id;

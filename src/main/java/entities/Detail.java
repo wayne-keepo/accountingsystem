@@ -87,10 +87,6 @@ public class Detail {
         return title;
     }
 
-    public String getInfoForTree(){
-        return id+" "+title;
-    }
-
     public String getDescriptionDetail(){
         return "Detail{" +
                 "id=" + id +

@@ -26,8 +26,10 @@ public class DBConstants {
 
     // ElectrodeDetail(idDetail,electrodeType,count)
     public static final String INSERT_ELECTRODE_DETAIL = "INSERT INTO ElectrodeDetail(idDetail,electrodeType,count) VALUES(?,?,?)";
-    public static final String UPDATE_ELECTRODE_DETAIL = "UPDATE ElectrodeDetail SET count = ? WHERE idProduct = ? AND idDetail = ?";
+    public static final String UPDATE_ELECTRODE_DETAIL_BY_DETAIL_AND_ELECTRODE_TYPE = "UPDATE ElectrodeDetail SET count = ?, cost = ? WHERE idDetail = ? AND electrodeType = ?";
     public static final String DELETE_ELECTRODE_DETAIL_BY_ID = "DELETE FROM ElectrodeDetail WHERE id = ?";
+
+
 
     public static final String SELECT_ALL_ELECTRODE_DETAIL = "SELECT * FROM ElectrodeDetail";
     public static final String SELECT_DETAIL_ELECTRODE_BY_DETAIL_ID_AND_TYPE = "SELECT * FROM ElectrodeDetail WHERE idDetail = ? AND electrodeType = ?";

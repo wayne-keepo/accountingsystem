@@ -2,6 +2,7 @@ package views.tables;
 
 import entities.Detail;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableCell;
@@ -23,21 +24,21 @@ public class CostDetailTable {
     private ObservableList<Detail> details;
     private List<Integer> changes;
 
+    public CostDetailTable() {
+        createTable();
+    }
+
     private void createTable() {
-        changes = new ArrayList<>(40);
+        changes = new ArrayList<>();
         details = FXCollections.observableArrayList();
+        details.addAll(DetailService.getAll());
         costDetailTable = new TableView<>();
 
         costDetailTable.setEditable(true);
         costDetailTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         costDetailTable.getColumns().addAll(createColumns());
 
-        details.addAll(DetailService.getAll());
         costDetailTable.setItems(details);
-    }
-
-    public CostDetailTable() {
-        createTable();
     }
 
     private ObservableList<TableColumn<Detail, ?>> createColumns() {
@@ -50,77 +51,68 @@ public class CostDetailTable {
         name.setCellValueFactory(new PropertyValueFactory<>("title"));
         name.setCellFactory(TextFieldTableCell.forTableColumn());
         name.setOnEditCommit(event -> {
-            String value = event.getNewValue();
-            int chId = event.getRowValue().getId();
-            event.getRowValue().setTitle(value);
-            if (!changes.contains(chId))
-                changes.add(chId);
+            Detail tmp = event.getRowValue();
+            tmp.setTitle(event.getNewValue());
+            catchChanges(tmp.getId());
         });
 
         TableColumn<Detail, String> count = new TableColumn<>("Количество");
-        count.setCellValueFactory(cellData-> new SimpleObjectProperty<String>(String.valueOf(cellData.getValue().getCount())));
+        count.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getCount())));
         count.setCellFactory(TextFieldTableCell.forTableColumn());
-//        count.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Double>() {
-//            @Override
-//            public String toString(Double object) {
-//                return String.valueOf(object);
-//            }
-//            @Override
-//            public Double fromString(String string) {
-//                return Double.valueOf(string);
-//            }
-//        }));
-//test; null
         count.setOnEditCommit(event -> {
-            System.out.println(details.get(details.indexOf(event.getRowValue())).getDescriptions());
-            event.getRowValue().setCount(Double.valueOf(event.getNewValue()));
-            System.out.println(details.get(details.indexOf(event.getRowValue())).getDescriptions());
-
+            Detail tmp = event.getRowValue();
+            tmp.setCount(Double.valueOf(event.getNewValue()));
+            catchChanges(tmp.getId());
         });
 
-        TableColumn<Detail, BigDecimal> cost = new TableColumn<>("Стоимость");
-        cost.setCellValueFactory(param -> new SimpleObjectProperty<BigDecimal>(param.getValue().getCost()));
-        cost.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<BigDecimal>() {
-            @Override
-            public String toString(BigDecimal object) {
-                return object.toString();
-            }
-            @Override
-            public BigDecimal fromString(String string) {
-                return new BigDecimal(string);
-            }
-        }));
+        TableColumn<Detail, String> cost = new TableColumn<>("Стоимость");
+        cost.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCost().toString()));
+        cost.setCellFactory(TextFieldTableCell.forTableColumn());
+        cost.setOnEditCommit(event -> {
+            Detail tmp = event.getRowValue();
+            tmp.setCost(new BigDecimal(event.getNewValue()));
+            catchChanges(tmp.getId());
+        });
 
         TableColumn<Detail, String> descriptions = new TableColumn<>("Примечание");
         descriptions.setCellFactory(TextFieldTableCell.forTableColumn());
         descriptions.setCellValueFactory(new PropertyValueFactory<>("descriptions"));
-     //test
-        descriptions.setOnEditCommit(t ->{
-            System.out.println(t.getRowValue().getDescriptions()+" "+t.getNewValue());
-        } );
+        descriptions.setOnEditCommit(event -> {
+            Detail tmp = event.getRowValue();
+            tmp.setDescriptions(event.getNewValue());
+            catchChanges(tmp.getId());
+        });
 
         return FXCollections.observableArrayList(id, name, count, cost, descriptions);
     }
 
-    public List<Integer> getChanges() {
-        return changes;
+    public void refresh() {
+        List<Detail> tmp = DetailService.getAll();
+        details.clear();
+        details.addAll(tmp);
+    }
+
+    private void catchChanges(Integer id) {
+        if (!changes.contains(id))
+            changes.add(id);
+    }
+
+    public void dataUpdate() {
+        if (!changes.isEmpty()) {
+            DetailService.sendOnUpdate(details, changes);
+            clearChanges();
+        }
     }
 
     public void clearChanges() {
         changes.clear();
     }
 
-    public TableView<Detail> getCostDetailTable() {
-        return costDetailTable;
+    public List<Integer> getChanges() {
+        return changes;
     }
 
-    public void refresh(){
-        List<Detail> tmp = DetailService.getAll();
-        details.clear();
-        details.addAll(tmp);
-        // пересмотреть
-//        costDetailTable.setItems(details);
-
-
+    public TableView<Detail> getCostDetailTable() {
+        return costDetailTable;
     }
 }

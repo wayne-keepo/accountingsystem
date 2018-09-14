@@ -3,13 +3,12 @@ package domain;
 import entities.Detail;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class DetailElectrod {
     private List<Integer> ids;
+    // деталь: [количество,стоимость]
     private Map<Detail,Map<Double,BigDecimal>> details;
 //    private List<Detail> details;
     private String electrodeType;

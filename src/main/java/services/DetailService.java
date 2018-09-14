@@ -33,6 +33,14 @@ public class DetailService {
         controller.bulkUpdate(details);
     }
 
+    public static void sendOnUpdate(List<Detail> details, List<Integer> ids) {
+        if (!ids.isEmpty()) {
+            List<Detail> candidates = new ArrayList<>(ids.size());
+            ids.forEach(id -> details.stream().filter(d -> d.getId() == id).findFirst().ifPresent(candidates::add));
+            bulkUpdate(candidates);
+        }
+    }
+
     public static List<Detail> getDetailsByIDs(List<Integer> ids) {
         return controller.getDetailsByIDs(ids);
     }

@@ -17,6 +17,7 @@ public class ComponentsConsumptionESMGMTable {
     private TableView<Detail> table;
     private CreateColumnForESMGAndESMGM creator;
     private ObservableList<Detail> details;
+    private ArrayList<Integer> changes;
     private DetailElectrod detailElectrods;
 
     public ComponentsConsumptionESMGMTable() {
@@ -27,22 +28,24 @@ public class ComponentsConsumptionESMGMTable {
     private void createTable() {
         table = new TableView<>();
         table.setEditable(true);
+
         detailElectrods = DetailElectrodeService.getDEByType(
                 DetailService.getAll(),
                 CustomConstants.ESMG_M
         ).get(0);
+
         details = FXCollections.observableArrayList(new ArrayList<>(detailElectrods.getDetails().keySet()));
+        if (details.size() > 10) changes = new ArrayList<>(changes.size());
+        else changes = new ArrayList<>();
+
         table.getColumns().addAll(createColumns());
         table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         table.getItems().addAll(details);
-
     }
 
     private ObservableList<TableColumn<Detail, ?>> createColumns() {
-        return FXCollections.observableArrayList(creator.createColumns(detailElectrods));
+        return FXCollections.observableArrayList(creator.createColumns(detailElectrods, changes));
     }
-
-
 
     public TableView<Detail> getTable() {
         return table;
@@ -51,5 +54,9 @@ public class ComponentsConsumptionESMGMTable {
     public DetailElectrod getDetailElectrods() {
         return detailElectrods;
     }
+
+    public void dataUpdate() {
+        if (!changes.isEmpty())
+            DetailElectrodeService.dataUpdate(detailElectrods, changes);
+    }
 }
-//            System.out.println(String.format("%s : \n Keys: %s \n %s \n Inc = %d Id = %d Inc>Size : %b--------------","ESMG-M", Arrays.toString(keys),value.getValue().toString(),i.initRawElectrodeValue(),tmp,i.initRawElectrodeValue()>size));

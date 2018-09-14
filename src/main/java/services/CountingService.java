@@ -22,9 +22,9 @@ public class CountingService {
         List<Integer> detailIds = new ArrayList<>();
         Map<Detail, Map<Double, Double>> ddd = new HashMap<>();
         List<DetailElectrodePrimitive> detailElectrods = DetailElectrodeService.getAllByType(type);
-        List<Detail> details = DetailService.getDetailsByIDs(detailIds);
 
         detailElectrods.forEach(deid -> detailIds.add(deid.getIdDetail()));
+        List<Detail> details = DetailService.getDetailsByIDs(detailIds);
         // TODO: review for optimization
         details.forEach(detail -> {
             Double eqCount = detailElectrods.stream().filter(x -> x.getIdDetail().equals(detail.getId())).findFirst().get().getCount() * count;
