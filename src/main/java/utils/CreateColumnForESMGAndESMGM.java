@@ -62,7 +62,7 @@ public class CreateColumnForESMGAndESMGM {
             System.out.println("Init update cost for produce");
 
             BigDecimal newCost = new BigDecimal(event.getNewValue());
-            System.out.println("New cost value : "+newCost);
+            System.out.println("New cost ru : "+newCost);
 
             Detail tmp = event.getRowValue();
             System.out.println("Upd detail: "+tmp.getTitle());
@@ -71,7 +71,7 @@ public class CreateColumnForESMGAndESMGM {
             System.out.println("Map for update: "+map.toString());
             Double key = map.keySet().iterator().next();
             BigDecimal oldCost = map.values().iterator().next();
-            System.out.println("Old cost value: "+oldCost);
+            System.out.println("Old cost ru: "+oldCost);
             System.out.println("Replace old cost "+oldCost+" on new cost "+newCost);
 
             map.replace(key,oldCost,newCost);

@@ -9,7 +9,7 @@ public enum RussianMonths   {
 
     public static RussianMonths of(int month) {
         if (month < 1 || month > 12) {
-            throw new DateTimeException("Invalid value for MonthOfYear: " + month);
+            throw new DateTimeException("Invalid ru for MonthOfYear: " + month);
         }
         return ruMonths[month - 1];
     }

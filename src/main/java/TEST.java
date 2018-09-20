@@ -52,10 +52,10 @@ public class TEST {
 //        System.out.println(c.getSimpleName());
 //        System.out.println(tm.toString());
 //        dbDetailController.test().forEach(m->{
-//            m.forEach((key, value) -> {
+//            m.forEach((key, ru) -> {
 //                System.out.println(
 //                        " Key: "+key+" Key Class: "+key.getClass().getSimpleName()+
-//                        " Value: "+value+" Value Class: "+value.getClass().getName()+"\n");
+//                        " Value: "+ru+" Value Class: "+ru.getClass().getName()+"\n");
 //            });
 //            System.out.println(m.keySet()+"\n"+m.values().toString());
 //        });
@@ -104,7 +104,7 @@ public class TEST {
 //        System.out.println(controller.getByType("ESMG"));
 
         //enums
-//        System.out.println(Types.ESMG.toString()+" "+Types.ESMG+" "+Types.ESMG.getClass()+" "+Types.ESMG.value()+" "+Types.ESMG.ordinal());
+//        System.out.println(Types.ESMG.toString()+" "+Types.ESMG+" "+Types.ESMG.getClass()+" "+Types.ESMG.ru()+" "+Types.ESMG.ordinal());
     }
 
     static class Simple {

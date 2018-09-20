@@ -33,7 +33,7 @@ public class DBDetaileElectrodeController implements DBOperations<DetailElectrod
     @Override
     public boolean save(DetailElectrodePrimitive o) {
         template.update(DBConstants.INSERT_ELECTRODE_DETAIL,
-                o.getIdDetail(),o.getElectrodeType(),o.getCount());
+                o.getIdDetail(),o.getElectrodeType(),o.getCount(),o.getCost());
         return true;
     }
 
@@ -77,5 +77,20 @@ public class DBDetaileElectrodeController implements DBOperations<DetailElectrod
                     }
                 }
         );
+    }
+
+    public void deleteByDetailAndElType(int detailID, String type) {
+        template.update(
+                DBConstants.DELETE_DETAIL_ELECTRODE_BY_DETAIL_ID_AND_ELECTRODE_TYPE,
+                detailID,type
+        );
+    }
+
+    public DetailElectrodePrimitive getByDetailAndType(int id, String type) {
+        return template.query(
+                DBConstants.SELECT_DETAIL_ELECTRODE_BY_DETAIL_ID_AND_TYPE,
+                new DetailElectrodePrimitiveRowMapper(),
+                id,type
+        ).get(0);
     }
 }

@@ -12,6 +12,13 @@ public class DetailElectrodePrimitive {
     public DetailElectrodePrimitive() {
     }
 
+    public DetailElectrodePrimitive(Integer idDetail, String electrodeType, Double count, BigDecimal cost) {
+        this.idDetail = idDetail;
+        this.electrodeType = electrodeType;
+        this.count = count;
+        this.cost = cost;
+    }
+
     public DetailElectrodePrimitive(Integer id, Integer idDetail, String electrodeType, Double count, BigDecimal cost) {
         this.id = id;
         this.idDetail = idDetail;

@@ -6,7 +6,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import services.ElectrodeService;
 import utils.Types;
 
@@ -30,7 +29,7 @@ public class RawElectrodeTable {
         id.setCellValueFactory(param -> new SimpleObjectProperty<Integer>(param.getValue().getId()));
 
         TableColumn<RawElectrode,String> type = new TableColumn<>("Тип");
-        type.setCellValueFactory(param -> new SimpleStringProperty(Types.valueOf(param.getValue().getType().replace("-","_")).value()));
+        type.setCellValueFactory(param -> new SimpleStringProperty(Types.valueOf(param.getValue().getType().replace("-","_")).ru()));
 
         TableColumn<RawElectrode,Integer> count = new TableColumn<>("Количество");
         count.setCellValueFactory(param -> new SimpleObjectProperty<Integer>(param.getValue().getCount()));

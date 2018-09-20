@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import projectConstants.CustomConstants;
 import services.*;
+import utils.Types;
 import views.buttons.AddButton;
 import views.buttons.DeleteButton;
 import views.dropBoxes.DetailDropBox;
@@ -101,7 +102,7 @@ public class MainStage {
         componentsConsumptionForESMGM.setContent(esmgmTable.getTable());
 
         addLogicOnSummaryTab(electrods);
-        addLogicOnAccoutingESMGMTab(componentsConsumptionForESMGM);
+        addLogicOnAccoutingESMG_MTab(componentsConsumptionForESMGM);
         addLogicOnAccoutingESMGTab(componentsConsumptionForESMG);
         addLogicOnBalanceTab(accounting);
         addLogicOnCostDetailTab(costDetailTab);
@@ -270,14 +271,17 @@ public class MainStage {
         commit.setOnAction(event -> esmgTable.dataUpdate());
         add.setOnAction(event -> {
             Detail detail = ddb.getDetailsBox().getSelectionModel().getSelectedItem();
-            if (detail == null || count.getText().isEmpty() || cost.getText().isEmpty())
+            Double newCount = Double.valueOf(count.getText().trim()) ;
+            BigDecimal newCost = new BigDecimal(cost.getText().trim());
+            if (detail == null)
                 return;
+            DetailElectrodePrimitive primitive = DetailElectrodeService.add(detail,newCount,newCost,Types.ESMG.eng());
             Map<Double, BigDecimal> tmp = new HashMap<>();
-            tmp.put(Double.valueOf(count.getText()), new BigDecimal(cost.getText()));
+            tmp.put(newCount,newCost);
             esmgTable.getDetailElectrods().getDetails().put(detail, tmp);
+            esmgTable.getDetailElectrods().getIds().add(primitive.getId());
             esmgTable.getTable().getItems().add(detail);
             ddb.deleteDetail(detail);
-            // call upd on DB
 
         });
 
@@ -288,12 +292,12 @@ public class MainStage {
             esmgTable.getTable().getItems().remove(detail);
             esmgTable.getDetailElectrods().getDetails().remove(detail);
             ddb.addDetail(detail);
-            // call upd on DB
+            DetailElectrodeService.deleteByDetailAndElType(detail.getId(), Types.ESMG.eng());
 
         });
     }
 
-    private void addLogicOnAccoutingESMGMTab(Tab tab) {
+    private void addLogicOnAccoutingESMG_MTab(Tab tab) {
         tab.setContent(paneForAccoutingESMGMTab);
         paneForAccoutingESMGMTab.setCenter(esmgmTable.getTable());
         HBox horizontal = new HBox(10);
@@ -319,16 +323,17 @@ public class MainStage {
         commit.setOnAction(event -> esmgmTable.dataUpdate());
         add.setOnAction(event -> {
             Detail detail = ddbm.getDetailsBox().getSelectionModel().getSelectedItem();
-
-            if (detail == null || count.getText().isEmpty() || cost.getText().isEmpty())
+            Double newCount = Double.valueOf(count.getText().trim()) ;
+            BigDecimal newCost = new BigDecimal(cost.getText().trim());
+            if (detail == null)
                 return;
-
+            DetailElectrodePrimitive primitive = DetailElectrodeService.add(detail,newCount,newCost,Types.ESMG_M.eng());
             Map<Double, BigDecimal> tmp = new HashMap<>();
-            tmp.put(Double.valueOf(count.getText()), new BigDecimal(cost.getText()));
-            esmgmTable.getDetailElectrods().getDetails().put(detail, tmp);
-            esmgmTable.getTable().getItems().add(detail);
+            tmp.put(newCount,newCost);
+            esmgTable.getDetailElectrods().getDetails().put(detail, tmp);
+            esmgTable.getDetailElectrods().getIds().add(primitive.getId());
+            esmgTable.getTable().getItems().add(detail);
             ddbm.deleteDetail(detail);
-            // call upd on DB
 
         });
 
@@ -339,7 +344,7 @@ public class MainStage {
             esmgmTable.getTable().getItems().remove(detail);
             esmgmTable.getDetailElectrods().getDetails().remove(detail);
             ddbm.addDetail(detail);
-            // call upd on DB
+            DetailElectrodeService.deleteByDetailAndElType(detail.getId(), Types.ESMG_M.eng());
 
         });
     }

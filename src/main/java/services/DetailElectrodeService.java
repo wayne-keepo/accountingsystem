@@ -53,4 +53,15 @@ public class DetailElectrodeService {
         if (!dataUpdate.isEmpty())
             controller.batchDataUpdate(dataUpdate);
     }
+
+    public static void deleteByDetailAndElType(int detailID, String type) {
+        controller.deleteByDetailAndElType(detailID,type);
+    }
+
+    public static DetailElectrodePrimitive add(Detail detail, Double count, BigDecimal cost, String type) {
+        DetailElectrodePrimitive primitive = new DetailElectrodePrimitive(detail.getId(),type,count,cost);
+        controller.save(primitive);
+        primitive = controller.getByDetailAndType(detail.getId(),type);
+        return primitive;
+    }
 }
