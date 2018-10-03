@@ -1,12 +1,5 @@
-import databaselogic.controllers.DBDetailController;
-import databaselogic.controllers.DBRawElectrodeController;
-import entities.RawElectrode;
 import projectConstants.DBConstants;
-import services.AccoutingHistoryService;
-import utils.Types;
-
-import java.time.MonthDay;
-import java.util.*;
+import utils.enums.Paths;
 
 public class TEST {
     public static void main(String[] args) {
@@ -105,6 +98,8 @@ public class TEST {
 
         //enums
 //        System.out.println(Types.ESMG.toString()+" "+Types.ESMG+" "+Types.ESMG.getClass()+" "+Types.ESMG.ru()+" "+Types.ESMG.ordinal());
+//        String pathdb = Paths.C.get()+Paths.ACCOUNTING_SYSTEM.get()+Paths.DB_DONT_TOUCH_IT.get()+Paths.ACCOUNTING_SYSTEM_DB.get();
+//        System.out.println(DBConstants.DB_URL);
     }
 
     static class Simple {

@@ -4,9 +4,8 @@ import databaselogic.controllers.DBAccountingHistoryController;
 import domain.Day;
 import entities.AccoutingHistory;
 import entities.Detail;
-import utils.RussianMonths;
+import utils.enums.RussianMonths;
 import utils.Searcher;
-import views.modalWindows.AccoutingHistoryWindow;
 
 import java.time.Month;
 import java.util.*;

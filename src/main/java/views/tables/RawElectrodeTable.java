@@ -7,7 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import services.ElectrodeService;
-import utils.Types;
+import utils.enums.Types;
 
 public class RawElectrodeTable {
     private TableView<RawElectrode> table = null;

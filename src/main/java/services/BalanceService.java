@@ -9,7 +9,7 @@ import entities.Detail;
 import entities.PrimitivityBalance;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import utils.RussianMonths;
+import utils.enums.RussianMonths;
 import utils.Searcher;
 
 import java.math.BigDecimal;

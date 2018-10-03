@@ -21,14 +21,17 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import projectConstants.CustomConstants;
 import services.*;
-import utils.Types;
+import utils.documentGeneration.MyQR;
+import utils.documentGeneration.TheBlank;
+import utils.enums.Types;
 import views.buttons.AddButton;
 import views.buttons.DeleteButton;
 import views.dropBoxes.DetailDropBox;
 import views.modalWindows.AccoutingHistoryWindow;
 import views.tables.*;
-import utils.RussianMonths;
+import utils.enums.RussianMonths;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
@@ -392,15 +395,15 @@ public class MainStage {
         setDateFormat(Arrays.asList(produceDate, consumeDate));
 
         Button delete = new Button("Удалить");
-        Button produce = new Button("Произвести электрод");
-        Button bulkProduce = new Button("Массовое производство");
+//        Button produce = new Button("Произвести электрод");
+        Button bulkProduce = new Button("Произвести электрод");
         Button rawProduce = new Button("Сырьевой электрод");
 
         rawProduce.setOnAction(event -> {
             String count = rawProduction.getText().trim();
             String type = types.getSelectionModel().getSelectedItem();
 
-            if (rawProduction.getText().isEmpty() || type.isEmpty())
+            if (count.isEmpty() || type.isEmpty())
                 return;// TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
             // хуевая идея передавать список балансов в метод, переделать блять (или нет)
             ObservableList<Balance> updBalance = FXCollections.observableList(
@@ -415,39 +418,42 @@ public class MainStage {
         });
 
         bulkProduce.setOnAction(event -> {
+            String elNumber = number.getText().trim();
             String from = nFrom.getText().trim();
             String to = nTo.getText().trim();
             String type = types.getSelectionModel().getSelectedItem();
-            if (from.isEmpty() || to.isEmpty() || type.isEmpty())
-                return; // TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
 
-            CountingService.countingForProduceSummaryFromRawElectrode(from, to, type);
-            SummaryService.bulkCreateSummaryFromRange(from, to, type, produceDate.getValue(), consumeDate.getValue(), customer.getText(), note.getText());
+            if (elNumber.isEmpty()){
+                if (from.isEmpty() || to.isEmpty() || type.isEmpty())
+                    return; // TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
+                CountingService.countingForProduceSummaryFromRawElectrode(from, to, type);
+                SummaryService.bulkCreateSummaryFromRange(from, to, type, produceDate.getValue(), consumeDate.getValue(), customer.getText(), note.getText());
+                new TheBlank().theDoc(from,to,"25","Test position","Test Full Name",LocalDate.now().toString());
+                new MyQR().theQR("Test QR");
+                customer.clear();
+                note.clear();
+            } else if (!type.isEmpty()) {
+                CountingService.countingForProduceSummaryFromRawElectrode("0", "1", type);
+                Summary summary = new Summary(elNumber, type, produceDate.getValue(), customer.getText(), consumeDate.getValue(), note.getText());
+                SummaryService.save(summary);
+                new TheBlank().theDoc(elNumber,"","25","Test position","Test Full Name",LocalDate.now().toString());
+                new MyQR().theQR("Test QR");
+                number.clear();
+                customer.clear();
+                note.clear();
+            }
+
             summaryTable.refresh();
             rawTable.refresh();
         });
 
-        produce.setOnAction(event -> {
-            String elNumber = number.getText().trim();
-            String type = types.getSelectionModel().getSelectedItem();
-            if (elNumber.isEmpty() || type.isEmpty())
-                return; // TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
-            CountingService.countingForProduceSummaryFromRawElectrode("0", "1", type);
-            Summary summary = new Summary(
-                    elNumber,
-                    type,
-                    produceDate.getValue(),
-                    customer.getText(),
-                    consumeDate.getValue(),
-                    note.getText()
-            );
-            number.clear();
-            customer.clear();
-            note.clear();
-            SummaryService.save(summary);
-            summaryTable.refresh();
-            rawTable.refresh();
-        });
+//        produce.setOnAction(event -> {
+//            String elNumber = number.getText().trim();
+//            String type = types.getSelectionModel().getSelectedItem();
+//            if (elNumber.isEmpty() || type.isEmpty())
+//                return; // TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
+//
+//        });
 
         delete.setOnAction(event -> {
             Summary summary = summaryTable.getTable().getSelectionModel().getSelectedItem();
@@ -477,7 +483,7 @@ public class MainStage {
         gridPane.add(note, 1, 8);
         gridPane.add(rawProduction, 0, 2);
         gridPane.add(rawProduce, 1, 2);
-        gridPane.add(produce, 0, 9);
+//        gridPane.add(produce, 0, 9);
         gridPane.add(bulkProduce, 1, 9);
 
         pane.setRight(paneForGridAndRawTable);

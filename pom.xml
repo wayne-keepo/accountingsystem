@@ -7,8 +7,12 @@
     <groupId>accountingsystem</groupId>
     <artifactId>accountingsystem</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <build>
+        <finalName>Accounting System</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -18,23 +22,36 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-jar-plugin</artifactId>-->
+                <!--<version>3.0.0</version>-->
+                <!--<configuration>-->
+                    <!--<archive>-->
+                        <!--<manifest>-->
+                            <!--<addClasspath>true</addClasspath>-->
+                            <!--<mainClass>Go</mainClass>-->
+                        <!--</manifest>-->
+                    <!--</archive>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.0.0</version>
+                <groupId>com.zenjava</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>8.8.3</version>
                 <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <mainClass>Go</mainClass>
-                        </manifest>
-                    </archive>
+                    <mainClass>Go</mainClass>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
     <dependencies>
+
+        <dependency>
+            <groupId>com.zenjava</groupId>
+            <artifactId>javafx-maven-plugin</artifactId>
+            <version>8.8.3</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -48,12 +65,37 @@
             <version>3.21.0.1</version>
         </dependency>
         <!--Work with .doc-->
-        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>3.17</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml-schemas</artifactId>
+            <version>3.17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-scratchpad</artifactId>
+            <version>3.17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlbeans</groupId>
+            <artifactId>xmlbeans</artifactId>
+            <version>2.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>1.7</version>
+        </dependency>
+
         <!--Work with QR Code-->
         <!-- https://mvnrepository.com/artifact/net.glxn/qrgen -->
         <dependency>
@@ -62,5 +104,27 @@
             <version>1.2</version>
         </dependency>
     </dependencies>
-
+    <developers>
+        <developer>
+            <id>dmpi</id>
+            <name>Dmitry Pimushkin</name>
+            <email>dimapimushkin@mail.ru</email>
+            <url>http://vk.com/iddipi</url>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <properties>
+                <picUrl>https://github.com/DmitryPimuhskin</picUrl>
+            </properties>
+        </developer>
+        <developer>
+            <id>ilsh</id>
+            <name>Ilyas Sharapov</name>
+            <email>naschid22@rambler.ru</email>
+            <roles>
+                <role>developer | Document Generator logic</role>
+            </roles>
+        </developer>
+    </developers>
 </project>

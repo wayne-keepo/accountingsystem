@@ -16,7 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import views.dropBoxes.MonthBox;
-import utils.RussianMonths;
+import utils.enums.RussianMonths;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;

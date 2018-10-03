@@ -4,7 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
-import utils.RussianMonths;
+import utils.enums.RussianMonths;
 
 import java.util.Arrays;
 import java.util.LinkedList;
