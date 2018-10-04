@@ -3,13 +3,10 @@ package views.stages;
 import databaselogic.controllers.DBAccountingHistoryController;
 import databaselogic.controllers.DBBalanceController;
 import databaselogic.controllers.DBDetailController;
-
+import domain.Balance;
 import entities.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import utils.ChainUtil;
-import domain.Balance;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -21,17 +18,18 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import projectConstants.CustomConstants;
 import services.*;
+import utils.ChainUtil;
 import utils.documentGeneration.MyQR;
 import utils.documentGeneration.TheBlank;
+import utils.enums.RussianMonths;
 import utils.enums.Types;
+import views.alerts.Alerts;
 import views.buttons.AddButton;
 import views.buttons.DeleteButton;
 import views.dropBoxes.DetailDropBox;
 import views.modalWindows.AccoutingHistoryWindow;
 import views.tables.*;
-import utils.enums.RussianMonths;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
@@ -137,8 +135,9 @@ public class MainStage {
             //initRawElectrodeValue detail from drop box
             //TODO: in future delete selected Detail from dropbox
             Detail detail = balanceDetailDropBox.getDetailsBox().getSelectionModel().getSelectedItem();
-            if (detail == null)
-                return; // TODO: добавить обработку ошибки
+            if (detail == null){
+                Alerts.WARNING_ALERT("Выберите деталь для добавления баланса.");
+                return;} // TODO: добавить обработку ошибки
             balanceDetailDropBox.deleteDetail(detail);
             // build accounting history for detail
             AccoutingHistoryService.buildSqlForBatchInsertAccHist(detail);
@@ -149,15 +148,14 @@ public class MainStage {
             balanceController.saveAll(pBalances);
             // initRawElectrodeValue primitive balance from table (with id)
             pBalances = balanceController.getAllByDetailId(detail.getId());
-
+            // hz, research, think can speed up?????
             List<Balance> balances = ChainUtil.createBalanceChain(
                     Collections.singletonList(detail),
                     pBalances,
                     histories
             );
-            if (balances != null) {
-                balancesTable.getTable().getItems().addAll(balances);
-                detailDropBox.deleteDetail(detail);
+            if (balances != null && !balances.isEmpty()) {
+                balancesTable.addBalances(balances);
             }
 
         });
@@ -165,8 +163,9 @@ public class MainStage {
         history.setOnAction(event -> {
             //initRawElectrodeValue detail by selected balance
             Balance balance = balancesTable.getTable().getSelectionModel().getSelectedItem();
-            if (balance == null)
-                return;
+            if (balance == null){
+                Alerts.WARNING_ALERT("Выберите баланс для просмотра его истории.");
+                return;}
             int position = balancesTable.getTable().getItems().indexOf(balance);
             Detail detail = balance.getDetail();
             //initRawElectrodeValue gistory for current detail
@@ -177,7 +176,6 @@ public class MainStage {
             Map<RussianMonths, List<AccoutingHistory>> tmp = AccoutingHistoryService.historyToMapForAccoutingWindow(ahList);
             //send history map in accounting window and wait return result for update (candidates on update)
             tmp = new AccoutingHistoryWindow(tmp).show();
-            System.out.println(tmp != null);
             // send candidates for update into updating logic
             if (tmp != null) {
                 // upd history by month
@@ -219,19 +217,24 @@ public class MainStage {
         paneForCostDetail.setBottom(horizontal);
         commit.setOnAction(event -> costDetailTable.dataUpdate());
         add.setOnAction(event -> {
-            if (title.getText().isEmpty() || count.getText().isEmpty() || cost.getText().isEmpty()) {
+            String dTitle = title.getText().trim();
+            String dCount = count.getText().trim();
+            String dCost = cost.getText().trim();
+            if (dTitle.isEmpty() || dCount.isEmpty() || dCost.isEmpty()) {
+                Alerts.WARNING_ALERT("Вы не заполнили одно из обязательных полей.");
                 return;
             }
             Detail d = new Detail(
-                    title.getText(),
-                    Double.valueOf(count.getText()),
-                    new BigDecimal(cost.getText()),
+                    dTitle,
+                    Double.valueOf(dCount),
+                    new BigDecimal(dCost),
                     descriptions.getText()
             );
             detailController.save(d);
             d = detailController.get(d.getTitle());
-            costDetailTable.getCostDetailTable().getItems().add(d);
+            costDetailTable.addDetail(d);
             detailDropBox.addDetail(d);
+
             title.clear();
             count.clear();
             cost.clear();
@@ -239,15 +242,16 @@ public class MainStage {
 
         });
         delete.setOnAction(event -> {
-            if (costDetailTable.getCostDetailTable().getSelectionModel().getSelectedItem() == null)
+            if (costDetailTable.getCostDetailTable().getSelectionModel().getSelectedItem() == null) {
+                Alerts.WARNING_ALERT("Выберите деталь для удаления.");
                 return;
+            }
             Detail d = costDetailTable.getCostDetailTable().getSelectionModel().getSelectedItem();
-            costDetailTable.getCostDetailTable().getItems().remove(d);
+            costDetailTable.removeDetail(d);
             detailController.delete(d.getId());
         });
-
     }
-
+    // надо переделать но не хочу возиться сейчас
     private void addLogicOnAccoutingESMGTab(Tab tab) {
         tab.setContent(paneForAccoutingESMGTab);
         paneForAccoutingESMGTab.setCenter(esmgTable.getTable());
@@ -299,7 +303,7 @@ public class MainStage {
 
         });
     }
-
+    // надо переделать но не хочу возиться сейчас
     private void addLogicOnAccoutingESMG_MTab(Tab tab) {
         tab.setContent(paneForAccoutingESMGMTab);
         paneForAccoutingESMGMTab.setCenter(esmgmTable.getTable());
@@ -395,7 +399,6 @@ public class MainStage {
         setDateFormat(Arrays.asList(produceDate, consumeDate));
 
         Button delete = new Button("Удалить");
-//        Button produce = new Button("Произвести электрод");
         Button bulkProduce = new Button("Произвести электрод");
         Button rawProduce = new Button("Сырьевой электрод");
 
@@ -403,8 +406,9 @@ public class MainStage {
             String count = rawProduction.getText().trim();
             String type = types.getSelectionModel().getSelectedItem();
 
-            if (count.isEmpty() || type.isEmpty())
-                return;// TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
+            if (count.isEmpty() || type.isEmpty()){
+                Alerts.WARNING_ALERT("Не заполнено обязательное поле или не выбран тип электрода.");
+                return;}
             // хуевая идея передавать список балансов в метод, переделать блять (или нет)
             ObservableList<Balance> updBalance = FXCollections.observableList(
                     CountingService.countingForProduceRawElectrode(type, Integer.valueOf(count), balancesTable.getBalances())
@@ -446,14 +450,6 @@ public class MainStage {
             summaryTable.refresh();
             rawTable.refresh();
         });
-
-//        produce.setOnAction(event -> {
-//            String elNumber = number.getText().trim();
-//            String type = types.getSelectionModel().getSelectedItem();
-//            if (elNumber.isEmpty() || type.isEmpty())
-//                return; // TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
-//
-//        });
 
         delete.setOnAction(event -> {
             Summary summary = summaryTable.getTable().getSelectionModel().getSelectedItem();

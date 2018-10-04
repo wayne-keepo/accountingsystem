@@ -11,7 +11,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.paint.Color;
 import javafx.util.Callback;
 import projectConstants.CustomConstants;
 import services.BalanceService;
@@ -168,7 +167,15 @@ public class BalancesTable {
             return null;
         return details;
     }
-
+    public void addBalances(List<Balance> balance){
+        balances.addAll(balance);
+    }
+    public void addBalance(Balance balance){
+        balances.add(balance);
+    }
+    public void removeBalance(Balance balance){
+        balances.remove(balance);
+    }
     public TableView<Balance> getTable() {
         return table;
     }

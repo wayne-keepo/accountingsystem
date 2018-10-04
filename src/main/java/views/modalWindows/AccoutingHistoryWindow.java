@@ -2,7 +2,6 @@ package views.modalWindows;
 
 import domain.Day;
 import entities.AccoutingHistory;
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,13 +14,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import views.dropBoxes.MonthBox;
 import utils.enums.RussianMonths;
+import views.dropBoxes.MonthBox;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class AccoutingHistoryWindow extends Application{
+public class AccoutingHistoryWindow {
     private Stage window;
     private BorderPane mainPane;
     private HBox hBoxCalendar;
@@ -218,13 +217,5 @@ public class AccoutingHistoryWindow extends Application{
                 initLablesAndFields(historyMap.get(newValue));
             }
         });
-    }
-
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        show();
-    }
-    public static void main(String[] args) {
-        launch(args);
     }
 }

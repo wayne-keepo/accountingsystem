@@ -1,21 +1,16 @@
 package views.tables;
 
 import entities.Detail;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.util.Callback;
-import javafx.util.StringConverter;
 import services.DetailService;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,6 +101,14 @@ public class CostDetailTable {
 
     public void clearChanges() {
         changes.clear();
+    }
+
+    public void addDetail(Detail detail){
+        details.add(detail);
+    }
+
+    public void removeDetail(Detail detail){
+        details.remove(detail);
     }
 
     public List<Integer> getChanges() {
