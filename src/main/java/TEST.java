@@ -1,6 +1,3 @@
-import projectConstants.DBConstants;
-import utils.enums.Paths;
-
 public class TEST {
     public static void main(String[] args) {
 

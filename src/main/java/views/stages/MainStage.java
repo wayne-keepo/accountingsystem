@@ -428,12 +428,15 @@ public class MainStage {
             String type = types.getSelectionModel().getSelectedItem();
 
             if (elNumber.isEmpty()){
-                if (from.isEmpty() || to.isEmpty() || type.isEmpty())
-                    return; // TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
+                if (from.isEmpty() || to.isEmpty() || type.isEmpty()){
+                    Alerts.WARNING_ALERT("Поля С и По пустые или не выбран тип эклектрода.");
+                    return; }
                 CountingService.countingForProduceSummaryFromRawElectrode(from, to, type);
                 SummaryService.bulkCreateSummaryFromRange(from, to, type, produceDate.getValue(), consumeDate.getValue(), customer.getText(), note.getText());
+                // уточнить как заполнять бланк и что передвать в QR
                 new TheBlank().theDoc(from,to,"25","Test position","Test Full Name",LocalDate.now().toString());
                 new MyQR().theQR("Test QR");
+
                 customer.clear();
                 note.clear();
             } else if (!type.isEmpty()) {
