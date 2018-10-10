@@ -9,12 +9,8 @@ public class Alerts extends Alert {
         super(alertType, contentText, buttons);
     }
 
-    public static Boolean WARNING_ALERT(String message){
-        boolean flag = false;
-        ButtonType ok = new Alerts(AlertType.WARNING,message,ButtonType.OK).showAndWait().get();
-        if (ok==ButtonType.OK)
-            flag = true;
-        return flag;
+    public static void WARNING_ALERT(String message){
+        new Alerts(AlertType.WARNING,message,ButtonType.OK).showAndWait();
     }
 
 }

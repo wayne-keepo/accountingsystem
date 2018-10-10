@@ -13,7 +13,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
 import projectConstants.CustomConstants;
-import services.BalanceService;
 import utils.Searcher;
 
 import java.math.BigDecimal;
@@ -26,15 +25,16 @@ import java.util.List;
 
 public class BalancesTable {
     private TableView<Balance> table;
-    private ObservableList<Balance> balances = FXCollections.observableArrayList();
+    private ObservableList<Balance> balances;
 
     public BalancesTable() {
+        this.balances = FXCollections.observableArrayList();
         createTable();
     }
 
     private void createTable() {
         table = new TableView<>();
-        initializingDataInTable();
+//        initializingDataInTable();
         settings();
     }
 
@@ -45,11 +45,11 @@ public class BalancesTable {
         table.setItems(balances);
     }
 
-    private void initializingDataInTable() {
-        ObservableList<Balance> initialBalances = BalanceService.buildBalances();
-        if (initialBalances != null)
-            balances.addAll(initialBalances); // продумать как быть при самом первом запуске, падает ошибка если в базе нет данных по балансу!! (+/-) протестировать изменения
-    }
+//    private void initializingDataInTable() {
+//        ObservableList<Balance> initialBalances = BalanceService.buildBalances();
+//        if (initialBalances != null)
+//            balances.addAll(initialBalances); // продумать как быть при самом первом запуске, падает ошибка если в базе нет данных по балансу!! (+/-) протестировать изменения
+//    }
 
     private List<TableColumn<Balance, ?>> createColumn() {
 
@@ -161,17 +161,17 @@ public class BalancesTable {
     }
 
     public List<Detail> getDetails(){
+        if (balances.isEmpty())
+            return null;
         List<Detail> details = new ArrayList<>();
         balances.forEach(balance -> details.add(balance.getDetail()));
         if (details.isEmpty())
             return null;
         return details;
     }
-    public void addBalances(List<Balance> balance){
-        balances.addAll(balance);
-    }
-    public void addBalance(Balance balance){
+    public void addBalance(Balance balance) {
         balances.add(balance);
+        System.out.println(balances.toString());
     }
     public void removeBalance(Balance balance){
         balances.remove(balance);
@@ -183,7 +183,7 @@ public class BalancesTable {
     public void addNewBalance(List<Balance> tmp){
         balances.addAll(tmp);
     }
-    public void refresh(ObservableList<Balance> updBalance) {
+    public void ref(ObservableList<Balance> updBalance) {
         updBalance.forEach(upd->{
             int index = balances.indexOf(upd);
             balances.set(index,upd);
@@ -192,5 +192,9 @@ public class BalancesTable {
 //        table.getItems().addAll(updBalance);
 //        balances.clear();
 //        balances.addAll(updBalance);
+    }
+
+    public void initBalances(List<Balance> initializingDataInTable) {
+        balances.addAll(initializingDataInTable);
     }
 }

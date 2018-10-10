@@ -21,7 +21,7 @@ public class SummaryService {
     }
 
     public static ObservableList<Summary> getAllAsObservableList() {
-        List<Summary> summaries =controller.getAll();
+        List<Summary> summaries = controller.getAll();
         summaries.forEach(summary -> {
             String number = summary.getElectrodeNumber();
             number = ElectrodeService.formatElectrodeNumber(number);
@@ -50,6 +50,18 @@ public class SummaryService {
 
     public static void delete(Summary summary) {
         controller.delete(summary.getIdSummary());
+    }
+
+    public static void update(Summary summary) {
+        controller.update(summary);
+    }
+
+    public static boolean checkOnDuplicateNumbers(String from, List<Summary> summaries) {
+        String _from = ElectrodeService.formatElectrodeNumber(from);
+        for (Summary summary : summaries)
+            if (summary.getElectrodeNumber().equals(_from))
+                return true;
+        return false;
     }
 // TODO: ?? просмотреть со свежей головой
 //    private static List<ElectrodeSummary> buildElectrodeSummaryFromSource(List<Electrod> electrods, List<Summary> summaries) {

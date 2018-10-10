@@ -12,6 +12,7 @@ import services.DetailService;
 import utils.CreateColumnForESMGAndESMGM;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ComponentsConsumptionESMGMTable {
     private TableView<Detail> table;
@@ -29,12 +30,16 @@ public class ComponentsConsumptionESMGMTable {
         table = new TableView<>();
         table.setEditable(true);
 
-        detailElectrods = DetailElectrodeService.getDEByType(
+        List<DetailElectrod> tmp = DetailElectrodeService.getDEByType(
                 DetailService.getAll(),
                 CustomConstants.ESMG_M
-        ).get(0);
+        );
+        if (!tmp.isEmpty())
+            detailElectrods = tmp.get(0);
+        if (detailElectrods!=null)
+            details = FXCollections.observableArrayList(new ArrayList<>(detailElectrods.getDetails().keySet()));
+        else details = FXCollections.observableArrayList();
 
-        details = FXCollections.observableArrayList(new ArrayList<>(detailElectrods.getDetails().keySet()));
         if (details.size() > 10) changes = new ArrayList<>(changes.size());
         else changes = new ArrayList<>();
 

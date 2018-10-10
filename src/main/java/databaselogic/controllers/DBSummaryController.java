@@ -81,4 +81,10 @@ public class DBSummaryController implements DBOperations<Summary> {
         );
     }
 
+    public void update(Summary summary) {
+//        UPDATE Summary SET produceDate = ?, Customer = ?, consumeDate= ?, Note = ? WHERE id = ?
+        template.update(
+                DBConstants.UPDATE_SUMMARY,
+                summary.getProduceDate(),summary.getCustomer(),summary.getConsumeDate(),summary.getNote(),summary.getIdSummary());
+    }
 }

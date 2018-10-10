@@ -8,9 +8,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.TextFieldTableCell;
+import projectConstants.CustomConstants;
 import services.SummaryService;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class SummaryTable {
 
@@ -29,7 +32,7 @@ public class SummaryTable {
         table.setEditable(true);
         table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         table.getColumns().addAll(createColumns());
-        table.getItems().addAll(es);
+        table.setItems(es);
     }
 
     private ObservableList<TableColumn<Summary, ?>> createColumns() {
@@ -45,8 +48,16 @@ public class SummaryTable {
         TableColumn<Summary, String> customer = new TableColumn<>("Заказчик");
         customer.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getCustomer()));
 
-        TableColumn<Summary, LocalDate> consumeDate = new TableColumn<>("Дата отгрузки");
-        consumeDate.setCellValueFactory(param -> new SimpleObjectProperty<LocalDate>(param.getValue().getConsumeDate()));
+        TableColumn<Summary, String> consumeDate = new TableColumn<>("Дата отгрузки");
+        consumeDate.setCellFactory(TextFieldTableCell.forTableColumn());
+        consumeDate.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getConsumeDate().toString()));
+        consumeDate.setOnEditCommit(event -> {
+            Summary summary = event.getRowValue();
+            LocalDate newDate = LocalDate.parse(event.getNewValue(),CustomConstants.DATE_TIME_FORMATTER);
+            summary.setConsumeDate(newDate);
+            SummaryService.update(summary);
+        });
+
 
         TableColumn<Summary, String> note = new TableColumn<>("Примечание");
         note.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getNote()));
@@ -59,7 +70,21 @@ public class SummaryTable {
     }
 // TODO: переделать обновление, добавлять только новые а не пересоздавать!!!
     public void refresh() {
-        table.getItems().clear();
-        table.getItems().addAll(SummaryService.getAllAsObservableList());
+        es.clear();
+        es.addAll(SummaryService.getAllAsObservableList());
+//        for (Summary summary: SummaryService.getAllAsObservableList()){
+//            if (!es.contains(summary))
+//                es.add(summary);
+//        }
+//        table.getItems().clear();
+//        table.getItems().addAll(SummaryService.getAllAsObservableList());
+    }
+
+    public void deleteSummary(Summary summary) {
+        es.remove(summary);
+    }
+
+    public List<Summary> getSummaries() {
+        return es;
     }
 }

@@ -1,25 +1,35 @@
 package services;
 
 import databaselogic.controllers.DBBalanceController;
-import domain.RefreshBalanceData;
-import utils.ChainUtil;
 import domain.Balance;
+import domain.RefreshBalanceData;
 import entities.AccoutingHistory;
 import entities.Detail;
 import entities.PrimitivityBalance;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import utils.enums.RussianMonths;
+import utils.ChainUtil;
 import utils.Searcher;
+import utils.enums.RussianMonths;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Month;
 import java.time.Year;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class BalanceService {
     private static final DBBalanceController controller = new DBBalanceController();
+
+    public static List<Balance> initializingDataInTable() {
+        List<Balance> initialBalances = BalanceService.buildBalances();
+        if (initialBalances != null)
+            return initialBalances;
+        return FXCollections.observableArrayList();
+    }
 
     public static List<PrimitivityBalance> buildPrimitivs(Detail detail) {
         List<PrimitivityBalance> pBalances;
@@ -41,7 +51,7 @@ public class BalanceService {
         return pBalances;
     }
 
-    public static ObservableList<Balance> buildBalances() {
+    public static List<Balance> buildBalances() {
         List<PrimitivityBalance> pBalances = controller.getAll();
         if (pBalances == null)
             return null;
@@ -49,7 +59,7 @@ public class BalanceService {
         List<Detail> details = DetailService.getAll();
         List<Balance> balances = ChainUtil.createBalanceChain(details, pBalances, histories);
 //        System.out.println("Balances from BalanceService#buildBalances()\n" + balances.toString());
-        return FXCollections.observableArrayList(balances);
+        return balances;
 
     }
 
@@ -109,7 +119,7 @@ public class BalanceService {
         updateBalance(balance);
 
     }
-// TODO: нужно оптимизировать, но похуй (
+// TODO: some optimization?
     public static List<Balance> updBalanceWhenProduceRawElectrode(List<RefreshBalanceData> updData, ObservableList<Balance> balances){
         List<Balance> updBalances = new ArrayList<>();
         updData.forEach(data ->{

@@ -1,19 +1,23 @@
 package views.dropBoxes;
 
-import databaselogic.controllers.DBDetailController;
 import entities.Detail;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import services.DetailService;
 
-public class DetailDropBox {
+import java.util.List;
+import java.util.Observable;
+
+public class DetailDropBox extends Observable {
     private ComboBox<Detail> detailsBox;
     private ObservableList<Detail> details;
 
     public DetailDropBox(){
         details = FXCollections.observableArrayList();
-        details.addAll(DetailService.getAll());
+        List<Detail> tmp = DetailService.getAll();
+        if (tmp!=null)
+            details.addAll(tmp);
         create();
     }
 

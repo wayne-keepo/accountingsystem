@@ -26,7 +26,9 @@ public class CostDetailTable {
     private void createTable() {
         changes = new ArrayList<>();
         details = FXCollections.observableArrayList();
-        details.addAll(DetailService.getAll());
+        List<Detail> tmp = DetailService.getAll();
+        if (tmp!=null)
+            details.addAll(tmp);
         costDetailTable = new TableView<>();
 
         costDetailTable.setEditable(true);

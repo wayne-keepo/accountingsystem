@@ -41,7 +41,7 @@ public class DBConstants {
     // Summary id electrodeNumber, type produceDate Customer consumeDate Note
     public static final String SELECT_SUMMARY_BY_ID = "SELECT * FROM Summary WHERE id = ?";
     public static final String INSERT_SUMMARY = "INSERT INTO Summary(electrodeNumber,type,produceDate,Customer,consumeDate,Note) VALUES(?,?,date(?),?,date(?),?)";
-    public static final String UPDATE_SUMMARY = "UPDATE Summary SET produceDate = ?, Customer = ?, consumeDate= ?, Note = ? WHERE id = ?";
+    public static final String UPDATE_SUMMARY = "UPDATE Summary SET produceDate = ?, customer = ?, consumeDate= ?, note = ? WHERE id = ?";
     public static final String DELETE_SUMMARY_BY_ID = "DELETE FROM Summary WHERE id = ? ";
     public static final String SELECT_ALL_SUMMARY = "SELECT * FROM Summary";
 

@@ -53,7 +53,9 @@ public class MainStage {
     private final RawElectrodeTable rawTable = new RawElectrodeTable();
 
     //custom classes
-    private final DetailDropBox detailDropBox = new DetailDropBox();
+    private DetailDropBox balanceDetailDropBox;
+    private DetailDropBox ddb;
+    private DetailDropBox ddbm;
 
     private DBAccountingHistoryController ahController = new DBAccountingHistoryController();
     private DBDetailController detailController = new DBDetailController();
@@ -118,6 +120,7 @@ public class MainStage {
     }
 
     private void addLogicOnBalanceTab(Tab tab) {
+        balancesTable.initBalances(BalanceService.initializingDataInTable());
         tab.setContent(paneForBalanceTab);
         paneForBalanceTab.setCenter(balancesTable.getTable());
 
@@ -125,24 +128,24 @@ public class MainStage {
         horizontal.setPadding(new Insets(10, 0, 10, 0));
         horizontal.setAlignment(Pos.BOTTOM_CENTER);
 
-        DetailDropBox balanceDetailDropBox = new DetailDropBox();
-        balancesTable.getDetails().forEach(balanceDetailDropBox::deleteDetail);
+        balanceDetailDropBox = new DetailDropBox();
+        if (balancesTable.getDetails()!=null)
+            balancesTable.getDetails().forEach(balanceDetailDropBox::deleteDetail);
 
         Button history = new Button("История");
-        Button add = new AddButton().getAdd();
+        Button add = new Button("Добавить");
 
         add.setOnAction(event -> {
             //initRawElectrodeValue detail from drop box
-            //TODO: in future delete selected Detail from dropbox
             Detail detail = balanceDetailDropBox.getDetailsBox().getSelectionModel().getSelectedItem();
             if (detail == null){
                 Alerts.WARNING_ALERT("Выберите деталь для добавления баланса.");
-                return;} // TODO: добавить обработку ошибки
+                return;}
             balanceDetailDropBox.deleteDetail(detail);
             // build accounting history for detail
             AccoutingHistoryService.buildSqlForBatchInsertAccHist(detail);
             List<AccoutingHistory> histories = AccoutingHistoryService.getHistoryByDetail(detail);
-            // build primitiv for balance
+            // build primitives for balance
             List<PrimitivityBalance> pBalances = BalanceService.buildPrimitivs(detail);
             // save it on db Balance
             balanceController.saveAll(pBalances);
@@ -155,7 +158,7 @@ public class MainStage {
                     histories
             );
             if (balances != null && !balances.isEmpty()) {
-                balancesTable.addBalances(balances);
+                balancesTable.addBalance(balances.get(0));
             }
 
         });
@@ -195,6 +198,7 @@ public class MainStage {
     private void addLogicOnCostDetailTab(Tab tab) {
         tab.setContent(paneForCostDetail);
         paneForCostDetail.setCenter(costDetailTable.getCostDetailTable());
+        List<DetailDropBox> boxes = Arrays.asList(balanceDetailDropBox,ddb,ddbm);
 
         TextField title = new TextField();
         title.setPromptText("Введите название детали");
@@ -220,7 +224,9 @@ public class MainStage {
             String dTitle = title.getText().trim();
             String dCount = count.getText().trim();
             String dCost = cost.getText().trim();
-            if (dTitle.isEmpty() || dCount.isEmpty() || dCost.isEmpty()) {
+            if (dCost.isEmpty() || dCost==null)
+                dCost="0";
+            if (dTitle.isEmpty() || dCount.isEmpty()) {
                 Alerts.WARNING_ALERT("Вы не заполнили одно из обязательных полей.");
                 return;
             }
@@ -233,8 +239,8 @@ public class MainStage {
             detailController.save(d);
             d = detailController.get(d.getTitle());
             costDetailTable.addDetail(d);
-            detailDropBox.addDetail(d);
-
+            for (DetailDropBox box: boxes)
+                box.addDetail(d);
             title.clear();
             count.clear();
             cost.clear();
@@ -249,6 +255,8 @@ public class MainStage {
             Detail d = costDetailTable.getCostDetailTable().getSelectionModel().getSelectedItem();
             costDetailTable.removeDetail(d);
             detailController.delete(d.getId());
+            for (DetailDropBox box: boxes)
+                box.deleteDetail(d);
         });
     }
     // надо переделать но не хочу возиться сейчас
@@ -257,7 +265,7 @@ public class MainStage {
         paneForAccoutingESMGTab.setCenter(esmgTable.getTable());
         HBox horizontal = new HBox(10);
 
-        DetailDropBox ddb = new DetailDropBox();
+        ddb = new DetailDropBox();
         TextField count = new TextField();
         count.setPromptText("количество деталей");
         TextField cost = new TextField();
@@ -309,7 +317,7 @@ public class MainStage {
         paneForAccoutingESMGMTab.setCenter(esmgmTable.getTable());
         HBox horizontal = new HBox(10);
 
-        DetailDropBox ddbm = new DetailDropBox();
+        ddbm = new DetailDropBox();
         TextField count = new TextField();
         count.setPromptText("количество деталей");
         TextField cost = new TextField();
@@ -429,7 +437,7 @@ public class MainStage {
             rawTable.refresh();
             if (!updBalance.isEmpty()) {
                 costDetailTable.refresh();
-                balancesTable.refresh(updBalance);
+                balancesTable.ref(updBalance);
             }
             rawProduction.clear();
         });
@@ -443,11 +451,18 @@ public class MainStage {
             String empFio = fio.getText().trim();
             String doc = docDate.getValue().toString();
 
-            if (type.isEmpty()||(from.isEmpty() && to.isEmpty())){
+            if ((type.isEmpty() && type!=null)||(from.isEmpty() && to.isEmpty())){
                 Alerts.WARNING_ALERT("Выберите тип электрода и введите количество");
                 return;
             }
-            if (!from.isEmpty() && to.isEmpty()){
+
+            boolean isDuplicate = SummaryService.checkOnDuplicateNumbers(from,summaryTable.getSummaries());
+            if (isDuplicate){
+                Alerts.WARNING_ALERT("Электрод с таким номером уже существует");
+                return;
+            }
+            System.out.println(from+" "+to+" "+type);
+            if (!from.isEmpty() && (to.isEmpty() || to==null)){
                 CountingService.countingForProduceSummaryFromRawElectrode("0", "1", type);
                 Summary summary = new Summary(from, type, produceDate.getValue(), customer.getText().trim(), consumeDate.getValue(), note.getText().trim());
                 SummaryService.save(summary);
@@ -464,6 +479,9 @@ public class MainStage {
                 }
 
             }
+
+            nFrom.clear();
+            nTo.clear();
             customer.clear();
             note.clear();
 
@@ -476,7 +494,9 @@ public class MainStage {
             if (summary == null){
                 Alerts.WARNING_ALERT("Выберите элемент для удаления.");
                 return; } // TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
+            summaryTable.deleteSummary(summary);
             SummaryService.delete(summary);
+
         });
 
         GridPane gridPane = new GridPane();
@@ -484,13 +504,13 @@ public class MainStage {
         gridPane.setHgap(12);
         gridPane.setPadding(new Insets(10));
         //raw el
-        gridPane.add(rawTitle, 0, 0,2,1);
+        gridPane.add(rawTitle, 0, 0);
         gridPane.add(typeL, 0, 2);
         gridPane.add(types, 1, 2);
         gridPane.add(rawProduction,0,3);
         gridPane.add(rawProduce, 1, 3);
         //el
-        gridPane.add(elecTitle, 0, 4,2,1);
+        gridPane.add(elecTitle, 0, 4);
         gridPane.add(nFrom, 0, 5);
         gridPane.add(nTo, 1, 5);
         gridPane.add(produceDateL, 0, 6);
@@ -502,7 +522,7 @@ public class MainStage {
         gridPane.add(noteL, 0, 9);
         gridPane.add(note, 1, 9);
         //doc
-        gridPane.add(docTitle,0,11,2,1);
+        gridPane.add(docTitle,0,11);
         gridPane.add(cableLengthL,0,12);
         gridPane.add(cableLength,1,12);
         gridPane.add(positionL,0,13);
@@ -511,8 +531,8 @@ public class MainStage {
         gridPane.add(fio,1,14);
         gridPane.add(docDateL,0,15);
         gridPane.add(docDate,1,15);
-        gridPane.add(bulkProduce, 1, 16,2,1);
-
+        gridPane.add(bulkProduce, 1, 16);
+        gridPane.add(delete,0,16);
         pane.setRight(paneForGridAndRawTable);
         paneForGridAndRawTable.setTop(gridPane);
         paneForGridAndRawTable.setCenter(rawTable.getTable());
