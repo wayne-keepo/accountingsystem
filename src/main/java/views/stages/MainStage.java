@@ -364,9 +364,9 @@ public class MainStage {
         pane.setPadding(new Insets(10));
         pane.setCenter(summaryTable.getTable());
 
-        Label numberL = new Label("Номер электрода");
-        TextField number = new TextField();
-        number.setPromptText("№ электрода");
+        Label rawTitle = new Label("Производство сырых электродов");
+        Label elecTitle = new Label("Продажа электродов");
+        Label docTitle = new Label("Формирование документа");
 
         Label typeL = new Label("Тип электрода");
         ComboBox<String> types = new ComboBox<>();
@@ -396,7 +396,20 @@ public class MainStage {
         TextField rawProduction = new TextField();
         rawProduction.setPromptText("кол-во сырьевых электродов");
 
-        setDateFormat(Arrays.asList(produceDate, consumeDate));
+        Label positionL = new Label("Должность");
+        TextField position = new TextField();
+        position.setPromptText("должность");
+        Label fioL = new Label("ФИО");
+        TextField fio = new TextField("");
+        fio.setPromptText("ФИО через пробел");
+        Label cableLengthL = new Label("Длина кабеля");
+        TextField cableLength = new TextField("");
+        cableLength.setPromptText("длина кабеля");
+        Label docDateL = new Label("Дата");
+        DatePicker docDate = new DatePicker();
+        docDate.setValue(LocalDate.now());
+        docDate.setShowWeekNumbers(true);
+        setDateFormat(Arrays.asList(produceDate, consumeDate,docDate));
 
         Button delete = new Button("Удалить");
         Button bulkProduce = new Button("Произвести электрод");
@@ -422,33 +435,37 @@ public class MainStage {
         });
 
         bulkProduce.setOnAction(event -> {
-            String elNumber = number.getText().trim();
             String from = nFrom.getText().trim();
             String to = nTo.getText().trim();
             String type = types.getSelectionModel().getSelectedItem();
+            String empPosition = position.getText().trim();
+            String cabLen = cableLength.getText().trim();
+            String empFio = fio.getText().trim();
+            String doc = docDate.getValue().toString();
 
-            if (elNumber.isEmpty()){
-                if (from.isEmpty() || to.isEmpty() || type.isEmpty()){
-                    Alerts.WARNING_ALERT("Поля С и По пустые или не выбран тип эклектрода.");
-                    return; }
+            if (type.isEmpty()||(from.isEmpty() && to.isEmpty())){
+                Alerts.WARNING_ALERT("Выберите тип электрода и введите количество");
+                return;
+            }
+            if (!from.isEmpty() && to.isEmpty()){
+                CountingService.countingForProduceSummaryFromRawElectrode("0", "1", type);
+                Summary summary = new Summary(from, type, produceDate.getValue(), customer.getText().trim(), consumeDate.getValue(), note.getText().trim());
+                SummaryService.save(summary);
+                if (!empPosition.isEmpty() && !cabLen.isEmpty() && !empFio.isEmpty() && !doc.isEmpty()) {
+                    new TheBlank().theDoc(from, "", cabLen, empPosition, empFio, doc);
+                    new MyQR().theQR(from);
+                }
+            } else {
                 CountingService.countingForProduceSummaryFromRawElectrode(from, to, type);
                 SummaryService.bulkCreateSummaryFromRange(from, to, type, produceDate.getValue(), consumeDate.getValue(), customer.getText(), note.getText());
-                // уточнить как заполнять бланк и что передвать в QR
-                new TheBlank().theDoc(from,to,"25","Test position","Test Full Name",LocalDate.now().toString());
-                new MyQR().theQR("Test QR");
+                if (!empPosition.isEmpty() && !cabLen.isEmpty() && !empFio.isEmpty() && !doc.isEmpty()) {
+                    new TheBlank().theDoc(from, to, cabLen, empPosition, empFio, doc);
+                    new MyQR().theQR(from+to);
+                }
 
-                customer.clear();
-                note.clear();
-            } else if (!type.isEmpty()) {
-                CountingService.countingForProduceSummaryFromRawElectrode("0", "1", type);
-                Summary summary = new Summary(elNumber, type, produceDate.getValue(), customer.getText(), consumeDate.getValue(), note.getText());
-                SummaryService.save(summary);
-                new TheBlank().theDoc(elNumber,"","25","Test position","Test Full Name",LocalDate.now().toString());
-                new MyQR().theQR("Test QR");
-                number.clear();
-                customer.clear();
-                note.clear();
             }
+            customer.clear();
+            note.clear();
 
             summaryTable.refresh();
             rawTable.refresh();
@@ -456,8 +473,9 @@ public class MainStage {
 
         delete.setOnAction(event -> {
             Summary summary = summaryTable.getTable().getSelectionModel().getSelectedItem();
-            if (summary == null)
-                return; // TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
+            if (summary == null){
+                Alerts.WARNING_ALERT("Выберите элемент для удаления.");
+                return; } // TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
             SummaryService.delete(summary);
         });
 
@@ -465,25 +483,35 @@ public class MainStage {
         gridPane.setVgap(10);
         gridPane.setHgap(12);
         gridPane.setPadding(new Insets(10));
-
-        gridPane.add(numberL, 0, 0);
-        gridPane.add(number, 1, 0);
-        gridPane.add(nFrom, 0, 1);
-        gridPane.add(nTo, 1, 1);
-        gridPane.add(typeL, 0, 3);
-        gridPane.add(types, 1, 3);
-        gridPane.add(produceDateL, 0, 5);
-        gridPane.add(customerL, 0, 6);
-        gridPane.add(consumeDateL, 0, 7);
-        gridPane.add(noteL, 0, 8);
-        gridPane.add(produceDate, 1, 5);
-        gridPane.add(customer, 1, 6);
-        gridPane.add(consumeDate, 1, 7);
-        gridPane.add(note, 1, 8);
-        gridPane.add(rawProduction, 0, 2);
-        gridPane.add(rawProduce, 1, 2);
-//        gridPane.add(produce, 0, 9);
-        gridPane.add(bulkProduce, 1, 9);
+        //raw el
+        gridPane.add(rawTitle, 0, 0,2,1);
+        gridPane.add(typeL, 0, 2);
+        gridPane.add(types, 1, 2);
+        gridPane.add(rawProduction,0,3);
+        gridPane.add(rawProduce, 1, 3);
+        //el
+        gridPane.add(elecTitle, 0, 4,2,1);
+        gridPane.add(nFrom, 0, 5);
+        gridPane.add(nTo, 1, 5);
+        gridPane.add(produceDateL, 0, 6);
+        gridPane.add(produceDate, 1, 6);
+        gridPane.add(customerL, 0, 7);
+        gridPane.add(customer, 1, 7);
+        gridPane.add(consumeDateL, 0, 8);
+        gridPane.add(consumeDate, 1, 8);
+        gridPane.add(noteL, 0, 9);
+        gridPane.add(note, 1, 9);
+        //doc
+        gridPane.add(docTitle,0,11,2,1);
+        gridPane.add(cableLengthL,0,12);
+        gridPane.add(cableLength,1,12);
+        gridPane.add(positionL,0,13);
+        gridPane.add(position,1,13);
+        gridPane.add(fioL,0,14);
+        gridPane.add(fio,1,14);
+        gridPane.add(docDateL,0,15);
+        gridPane.add(docDate,1,15);
+        gridPane.add(bulkProduce, 1, 16,2,1);
 
         pane.setRight(paneForGridAndRawTable);
         paneForGridAndRawTable.setTop(gridPane);
