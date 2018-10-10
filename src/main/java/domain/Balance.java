@@ -1,7 +1,6 @@
 package domain;
 
 import entities.Detail;
-import javafx.beans.value.ObservableValue;
 
 import java.time.Month;
 import java.time.Year;
@@ -22,15 +21,7 @@ public class Balance {
     private Map<Month,Double> outcoming; // расход
 
     public Balance() {
-//        this.id = 0;
-//        this.detail = null;
         this.year = Year.now();
-//        this.balanceAtBeginningYear = 0.0;
-//        this.balanceAtEndOfYear = 0.0;
-//        this.inTotal = 0.0;
-//        this.outTotal = 0.0;
-//        this.incoming = new HashMap<Month,Double>();
-//        this.outcoming = new HashMap<Month,Double>();
     }
 
     public Balance(int id, Detail detail, Year year, Double balanceAtBeginningYear, Double balanceAtEndOfYear, Double inTotal, Double outTotal, HashMap<Month, Double> incoming, HashMap<Month, Double> outcoming) {
