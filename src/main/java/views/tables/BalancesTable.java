@@ -180,6 +180,9 @@ public class BalancesTable {
         return table;
     }
 // TODO: сделать более быстрой (+/-)
+    public void addNewBalance(List<Balance> tmp){
+        balances.addAll(tmp);
+    }
     public void refresh(ObservableList<Balance> updBalance) {
         updBalance.forEach(upd->{
             int index = balances.indexOf(upd);
