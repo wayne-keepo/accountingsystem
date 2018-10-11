@@ -10,7 +10,10 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -30,9 +33,11 @@ import views.dropBoxes.DetailDropBox;
 import views.modalWindows.AccoutingHistoryWindow;
 import views.tables.*;
 
+import java.awt.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.List;
 
 public class MainStage {
     private static final Stage stage = new Stage();
@@ -62,6 +67,7 @@ public class MainStage {
     private DBBalanceController balanceController = new DBBalanceController();
 
     public MainStage() {
+
         init();
     }
 
@@ -74,9 +80,17 @@ public class MainStage {
     }
 
     private void initStage() {
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        int maxWidth = dim.width;
+        int maxHeight = dim.height;
+        stage.setResizable(true);
+        stage.setMaxHeight(maxHeight-50);
+        stage.setMaxWidth(maxWidth-5);
+        stage.setMinHeight(maxHeight%2);
+        stage.setMinWidth(maxWidth%2);
+        stage.setTitle("Система учета электродов");
         stage.setScene(scene);
-        stage.setMinHeight(800);
-        stage.setMinWidth(1000);
+        stage.showAndWait();
     }
 
     private void initScene() {
@@ -311,7 +325,7 @@ public class MainStage {
 
         });
     }
-    // надо переделать но не хочу возиться сейчас
+
     private void addLogicOnAccoutingESMG_MTab(Tab tab) {
         tab.setContent(paneForAccoutingESMGMTab);
         paneForAccoutingESMGMTab.setCenter(esmgmTable.getTable());
@@ -461,14 +475,16 @@ public class MainStage {
                 Alerts.WARNING_ALERT("Электрод с таким номером уже существует");
                 return;
             }
-            System.out.println(from+" "+to+" "+type);
+            String url = "http://elhz.ru/";
+
+//            System.out.println(from+" "+to+" "+type);
             if (!from.isEmpty() && (to.isEmpty() || to==null)){
                 CountingService.countingForProduceSummaryFromRawElectrode("0", "1", type);
                 Summary summary = new Summary(from, type, produceDate.getValue(), customer.getText().trim(), consumeDate.getValue(), note.getText().trim());
                 SummaryService.save(summary);
                 if (!empPosition.isEmpty() && !cabLen.isEmpty() && !empFio.isEmpty() && !doc.isEmpty()) {
                     new TheBlank().theDoc(from, "", cabLen, empPosition, empFio, doc);
-                    new MyQR().theQR(from);
+                    new MyQR().theQR(url);
                 }
             } else {
                 CountingService.countingForProduceSummaryFromRawElectrode(from, to, type);
