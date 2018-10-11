@@ -60,6 +60,7 @@ public class CostDetailTable {
             Detail tmp = event.getRowValue();
             tmp.setCount(Double.valueOf(event.getNewValue()));
             catchChanges(tmp.getId());
+            DetailService.notifyUpdCountInAccHis(tmp);
         });
 
         TableColumn<Detail, String> cost = new TableColumn<>("Стоимость");

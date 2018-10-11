@@ -6,13 +6,16 @@ import entities.Detail;
 import entities.DetailElectrodePrimitive;
 import entities.RawElectrode;
 import javafx.collections.ObservableList;
+import views.alerts.Alerts;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.MonthDay;
 import java.time.Year;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 // TODO: подумать над тем чтобы вынести инициализацию RawElectrode в main
 public class CountingService {
@@ -37,13 +40,14 @@ public class CountingService {
                 detailTitlesForErrorMsg.add(detail.getTitle());
         });
 
-        if (!detailTitlesForErrorMsg.isEmpty())
-            throw new RuntimeException( // TODO ERROR: добавить обработку ошибки (всплывающее сообщение / кастомный класс ошибок )
-                    String.format("Количество деталей %s на складе недостаточно для производства %d электрода %s типа.",
-                            detailTitlesForErrorMsg.toString().replaceAll("[\\[\\]]", ""),
-                            count,
-                            type));
-
+        if (!detailTitlesForErrorMsg.isEmpty()) {
+            String msg = String.format("Количество деталей %s на складе недостаточно для производства %d электрода %s типа.",
+                    detailTitlesForErrorMsg.toString().replaceAll("[\\[\\]]", ""),
+                    count,
+                    type);
+            Alerts.WARNING_ALERT(msg);
+            throw new RuntimeException(msg);
+        }
         RawElectrode rw = ElectrodeService.getRawElectrodeByType(type);
         if (rw == null)
             rw = initializeRawElectrode(type);
@@ -65,7 +69,7 @@ public class CountingService {
             int day = MonthDay.now().getDayOfMonth();
             int detailId = detail.getId();
 
-            AccoutingHistoryService.updateHistoryForDay(year, month, day, 0, detailId, delta);
+            AccoutingHistoryService.updateHistoryForDay(year, month, day, 0, detailId, delta, true);
             updBalanceData.add(new RefreshBalanceData(Month.of(month), detailId, delta));
         });
 

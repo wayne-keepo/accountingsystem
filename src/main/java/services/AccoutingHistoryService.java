@@ -4,11 +4,16 @@ import databaselogic.controllers.DBAccountingHistoryController;
 import domain.Day;
 import entities.AccoutingHistory;
 import entities.Detail;
-import utils.enums.RussianMonths;
 import utils.Searcher;
+import utils.enums.RussianMonths;
 
+import java.time.LocalDate;
 import java.time.Month;
-import java.util.*;
+import java.time.Year;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class AccoutingHistoryService {
@@ -64,7 +69,7 @@ public class AccoutingHistoryService {
         for (Map.Entry<RussianMonths, List<AccoutingHistory>> maps : histories.entrySet()) {
 
             for (AccoutingHistory history : maps.getValue()) {
-//TODO: change to StringBuilder (faster and less memory-intensive)
+//TODO: change to StringBuilder (faster and less memory-intensive) (+)
                 for (Day day : history.getDays()) {
                     if (!(day.getDayNumber() == 31))
                         days.append(String.format(" d%d = %s,", day.getDayNumber(), String.valueOf(day.getCount())));
@@ -91,8 +96,19 @@ public class AccoutingHistoryService {
         }
         String[] tmp = sql.toArray(new String[sql.size()]);
         controller.batchInsert(tmp);
+        insertInitialValueInAccHisByDetailCount(detail);
     }
-
+    private static void insertInitialValueInAccHisByDetailCount(Detail detail){
+        updateHistoryForDay(
+                Year.now().getValue(),
+                LocalDate.now().getMonthValue(),
+                LocalDate.now().getDayOfMonth(),
+                1,
+                detail.getId(),
+                detail.getCount(),
+                false
+        );
+    }
     private static void batchUpdate(List<String> upd) {
         String[] tmp = upd.toArray(new String[upd.size()]);
 //        System.out.println(Arrays.toString(tmp));
@@ -107,9 +123,13 @@ public class AccoutingHistoryService {
         return controller.getByDetail(detail.getId());
     }
 
-    public static void updateHistoryForDay(int year, int month, int day, int acc, int detailId, double num) {
-        Double oldValue = controller.getDayValue(year, month, day, acc, detailId);
-        double newValue = oldValue + num;
+    public static void updateHistoryForDay(int year, int month, int day, int acc, int detailId, double num, boolean isSum) {
+        double newValue;
+        if (isSum) {
+            Double oldValue = controller.getDayValue(year, month, day, acc, detailId);
+            newValue = oldValue + num;
+        }
+        else newValue = num;
         controller.updateHistoryForDay(year, month, day, acc, detailId, newValue);
     }
 }
