@@ -6,11 +6,13 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.TextFieldTableCell;
 import services.ElectrodeService;
+import utils.converter.IntegerConverter;
 import utils.enums.Types;
 
 public class RawElectrodeTable {
-    private TableView<RawElectrode> table = null;
+    private TableView<RawElectrode> table;
     private ObservableList<RawElectrode> electrodes;
 
     public RawElectrodeTable(){
@@ -19,6 +21,7 @@ public class RawElectrodeTable {
 
     private void create(){
         table = new TableView<>();
+        table.setEditable(true);
         electrodes = ElectrodeService.getAllAsObservableList();
         table.setItems(electrodes);
         createColumns();
@@ -32,7 +35,13 @@ public class RawElectrodeTable {
         type.setCellValueFactory(param -> new SimpleStringProperty(Types.valueOf(param.getValue().getType().replace("-","_")).ru()));
 
         TableColumn<RawElectrode,Integer> count = new TableColumn<>("Количество");
+        count.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerConverter()));
         count.setCellValueFactory(param -> new SimpleObjectProperty<Integer>(param.getValue().getCount()));
+        count.setOnEditCommit(event -> {
+            RawElectrode tmp = event.getRowValue();
+            tmp.setCount(event.getNewValue());
+            ElectrodeService.updateRawElectrodeCount(tmp,tmp.getCount());
+        });
 
         table.getColumns().addAll(id,type,count);
     }
