@@ -20,7 +20,6 @@ public class AccoutingHistoryService {
     private static final DBAccountingHistoryController controller = new DBAccountingHistoryController();
 
     public static double[] calculate(List<AccoutingHistory> histories) {
-//        System.out.println("Run calculate sum of month ");
         double incSum = 0.0;
         double outSum = 0.0;
         for (AccoutingHistory history : histories) {
@@ -34,7 +33,6 @@ public class AccoutingHistoryService {
                 }
             }
         }
-//        System.out.println(String.format("End calculate sum of month. Sum: Inc - %f | Out - %f ", incSum, outSum));
         return new double[]{incSum, outSum};
     }
 
@@ -69,7 +67,6 @@ public class AccoutingHistoryService {
         for (Map.Entry<RussianMonths, List<AccoutingHistory>> maps : histories.entrySet()) {
 
             for (AccoutingHistory history : maps.getValue()) {
-//TODO: change to StringBuilder (faster and less memory-intensive) (+)
                 for (Day day : history.getDays()) {
                     if (!(day.getDayNumber() == 31))
                         days.append(String.format(" d%d = %s,", day.getDayNumber(), String.valueOf(day.getCount())));
@@ -111,7 +108,6 @@ public class AccoutingHistoryService {
     }
     private static void batchUpdate(List<String> upd) {
         String[] tmp = upd.toArray(new String[upd.size()]);
-//        System.out.println(Arrays.toString(tmp));
         controller.batchUpdate(tmp);
     }
 

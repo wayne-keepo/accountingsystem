@@ -27,8 +27,6 @@ import utils.documentGeneration.TheBlank;
 import utils.enums.RussianMonths;
 import utils.enums.Types;
 import views.alerts.Alerts;
-import views.buttons.AddButton;
-import views.buttons.DeleteButton;
 import views.dropBoxes.DetailDropBox;
 import views.modalWindows.AccoutingHistoryWindow;
 import views.tables.*;
@@ -223,8 +221,8 @@ public class MainStage {
         TextField descriptions = new TextField();
         descriptions.setPromptText("Примечание");
 
-        Button add = new AddButton().getAdd();
-        Button delete = new DeleteButton().getDelete();
+        Button add = new Button("Добавить");
+        Button delete = new Button("Удалить");
         Button commit = new Button("Обновить данные");
 
         HBox horizontal = new HBox(15);

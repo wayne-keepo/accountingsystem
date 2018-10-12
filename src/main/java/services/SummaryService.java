@@ -63,19 +63,4 @@ public class SummaryService {
                 return true;
         return false;
     }
-// TODO: ?? просмотреть со свежей головой
-//    private static List<ElectrodeSummary> buildElectrodeSummaryFromSource(List<Electrod> electrods, List<Summary> summaries) {
-//        List<ElectrodeSummary> es = new ArrayList<>();
-//        electrods.forEach(electrod -> {
-//            String num = ElectrodeService.formatElectrodeNumber(electrod.getElectrodNumber());
-//            electrod.setElectrodNumber(num);
-//            summaries.stream()
-//                    .filter(s -> s.getIdElectrode().equals(electrod.getId()))
-//                    .findFirst()
-//                    .ifPresent(summary -> es.add(new ElectrodeSummary(electrod, summary)));
-//        });
-//
-//        return es;
-//    }
-
 }

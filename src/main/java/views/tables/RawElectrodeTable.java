@@ -49,7 +49,7 @@ public class RawElectrodeTable {
     public TableView<RawElectrode> getTable() {
         return table;
     }
-    // TODO: review?
+// we can use as this because small RW data in DB
     public void refresh(){
         ObservableList<RawElectrode> rws = ElectrodeService.getAllAsObservableList();
         electrodes.clear();

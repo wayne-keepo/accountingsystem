@@ -92,8 +92,11 @@ public class CountingService {
         int howProduce = numericTo - numericFrom;
         int rawElectrodeCount = rw.getCount();
 
-        if (!(rawElectrodeCount >= howProduce))
-            throw new RuntimeException(String.format("Недостаточно сырья для продажи %d электродов", howProduce)); // TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
+        if (!(rawElectrodeCount >= howProduce)){
+            String msg = String.format("Недостаточно сырья для продажи %d электродов", howProduce);
+            Alerts.WARNING_ALERT(msg);
+            throw new RuntimeException(msg);
+        }
 
         ElectrodeService.updateRawElectrodeCount(rw, rawElectrodeCount - howProduce);
     }

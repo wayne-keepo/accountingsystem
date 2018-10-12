@@ -17,7 +17,7 @@ public class DetailElectrod {
 //    private int countDetailForElectrode;
 
     public DetailElectrod() {}
-    // нужен для первичной (когда в таблице нет связи деталь-электрод) инициализации и добавления в таблицу
+    // нужен для первичной (когда в таблице нет связи деталь-электрод) инициализации и добавления в tableview
     public DetailElectrod(boolean initDE){
         if (initDE){
             ids = new ArrayList<>();

@@ -16,17 +16,12 @@ public class DetailService {
     }
 
     // TODO; Дописать
-    public static boolean findCandidatesOnUpdating(List<Detail> details, List<Integer> ids) {
+    public static List<Detail> findCandidatesOnUpdating(List<Detail> details, List<Integer> ids) {
         List<Detail> candidates = new ArrayList<>(ids.size());
         ids.forEach(id -> details.stream().filter(detail -> detail.getId() == id).findFirst().ifPresent(candidates::add));
-//        Map<Integer, Detail> conv = details.stream().collect(Collectors.toMap(Detail::getId, detail -> detail));
         System.out.println(candidates.toString());
-//        ids.forEach(id -> candidates.add(conv.get(id)));
 
-        if (candidates.isEmpty())
-            return false;
-//        bulkUpdate(candidates);
-        return true;
+        return candidates.isEmpty()? null:candidates;
     }
 
     public static void bulkUpdate(List<Detail> details) {
