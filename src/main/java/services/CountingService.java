@@ -6,13 +6,16 @@ import entities.Detail;
 import entities.DetailElectrodePrimitive;
 import entities.RawElectrode;
 import javafx.collections.ObservableList;
+import views.alerts.Alerts;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.MonthDay;
 import java.time.Year;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 // TODO: подумать над тем чтобы вынести инициализацию RawElectrode в main
 public class CountingService {
@@ -27,7 +30,7 @@ public class CountingService {
         List<Detail> details = DetailService.getDetailsByIDs(detailIds);
         // TODO: review for optimization
         details.forEach(detail -> {
-            Double eqCount = detailElectrods.stream().filter(x -> x.getIdDetail().equals(detail.getId())).findFirst().get().getCount() * count;
+            double eqCount = detailElectrods.stream().filter(x -> x.getIdDetail().equals(detail.getId())).findFirst().get().getCount() * count;
 // возможно сразу выбрасывать оповещение о нехватке деталей, ибо нахуя создавать лишнюю коллекцию когда можно не создавать ?
             if (!(Double.compare(detail.getCount(), eqCount) == -1)) {
                 HashMap<Double, Double> tmp = new HashMap<>();
@@ -37,12 +40,14 @@ public class CountingService {
                 detailTitlesForErrorMsg.add(detail.getTitle());
         });
 
-        if (!detailTitlesForErrorMsg.isEmpty())
-            throw new RuntimeException( // TODO ERROR: добавить обработку ошибки (всплывающее сообщение / кастомный класс ошибок )
-                    String.format("Количество деталей %s на складе недостаточно для производства %d электрода %s типа.",
-                            detailTitlesForErrorMsg.toString().replaceAll("[\\[\\]]", ""),
-                            count,
-                            type));
+        if (!detailTitlesForErrorMsg.isEmpty()) {
+            String alert=String.format("Количество деталей %s на складе недостаточно для производства %d электрода %s типа.",
+                    detailTitlesForErrorMsg.toString().replaceAll("[\\[\\]]", ""),
+                    count,
+                    type);
+            Alerts.WARNING_ALERT(alert);
+            throw new RuntimeException( alert);// TODO ERROR: добавить обработку ошибки (всплывающее сообщение / кастомный класс ошибок )
+        }
 
         RawElectrode rw = ElectrodeService.getRawElectrodeByType(type);
         if (rw == null)

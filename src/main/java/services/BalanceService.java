@@ -8,6 +8,8 @@ import entities.Detail;
 import entities.PrimitivityBalance;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.ChainUtil;
 import utils.Searcher;
 import utils.enums.RussianMonths;
@@ -22,9 +24,11 @@ import java.util.List;
 import java.util.Map;
 
 public class BalanceService {
+    private static final Logger logger = LogManager.getLogger(BalanceService.class);
     private static final DBBalanceController controller = new DBBalanceController();
 
     public static List<Balance> initializingDataInTable() {
+
         List<Balance> initialBalances = BalanceService.buildBalances();
         if (initialBalances != null)
             return initialBalances;
