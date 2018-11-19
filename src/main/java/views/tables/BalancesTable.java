@@ -171,7 +171,6 @@ public class BalancesTable {
     }
     public void addBalance(Balance balance) {
         balances.add(balance);
-        System.out.println(balances.toString());
     }
     public void removeBalance(Balance balance){
         balances.remove(balance);
@@ -188,10 +187,6 @@ public class BalancesTable {
             int index = balances.indexOf(upd);
             balances.set(index,upd);
         });
-//        table.getItems().clear();
-//        table.getItems().addAll(updBalance);
-//        balances.clear();
-//        balances.addAll(updBalance);
     }
 
     public void initBalances(List<Balance> initializingDataInTable) {

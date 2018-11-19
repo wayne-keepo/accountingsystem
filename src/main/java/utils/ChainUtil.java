@@ -2,8 +2,13 @@ package utils;
 
 import domain.Balance;
 import domain.DetailElectrod;
-import entities.*;
+import entities.AccoutingHistory;
+import entities.Detail;
+import entities.DetailElectrodePrimitive;
+import entities.PrimitivityBalance;
 import services.AccoutingHistoryService;
+import utils.enums.Types;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Month;
@@ -13,10 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-
-import static projectConstants.CustomConstants.ESMG;
-import static projectConstants.CustomConstants.ESMG_M;
-
+// это было так давно...я забыл что тут говнокодил кек
 public class ChainUtil {
 
     public static List<DetailElectrod> createChainDetailElectrode(List<Detail> details, List<DetailElectrodePrimitive> primitivs) {
@@ -25,18 +27,19 @@ public class ChainUtil {
         Map<String, List<DetailElectrodePrimitive>> depByType = new HashMap<>();
 
         depByType.put(
-                ESMG,
-                primitivs.stream().filter(p -> p.getElectrodeType().equals(ESMG)).collect(Collectors.toList())
+                Types.ESMG.eng(),
+                primitivs.stream().filter(p -> p.getElectrodeType().equals(Types.ESMG.eng())).collect(Collectors.toList())
         );
         depByType.put(
-                ESMG_M,
-                primitivs.stream().filter(p -> p.getElectrodeType().equals(ESMG_M)).collect(Collectors.toList())
+                Types.ESMG_M.eng(),
+                primitivs.stream().filter(p -> p.getElectrodeType().equals(Types.ESMG_M.eng())).collect(Collectors.toList())
         );
 
         depByType.forEach((k, v) -> {
             if (!v.isEmpty()) {
                 Map<Detail, Map<Double,BigDecimal>> dd = new HashMap<>();
                 List<Integer> ids = new ArrayList<>();
+                // review ids:List
                 v.forEach(p -> ids.add(p.getId()));
                 v.forEach(p -> {
                     details.forEach(d -> {

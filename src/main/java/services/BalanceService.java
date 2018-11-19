@@ -61,9 +61,7 @@ public class BalanceService {
             return null;
         List<AccoutingHistory> histories = AccoutingHistoryService.getAll();
         List<Detail> details = DetailService.getAll();
-        List<Balance> balances = ChainUtil.createBalanceChain(details, pBalances, histories);
-//        System.out.println("Balances from BalanceService#buildBalances()\n" + balances.toString());
-        return balances;
+        return ChainUtil.createBalanceChain(details, pBalances, histories);
 
     }
 
@@ -72,7 +70,6 @@ public class BalanceService {
         controller.updateAll(pBalances);
     }
 
-    //(int idDetail, Year year, Month month, double incoming, double outcoming, double balanceAtBeginningYear, double balanceAtEndOfYear)
     private static List<PrimitivityBalance> decompositionBalance(Balance balance) {
         List<PrimitivityBalance> pBalances = new ArrayList<>();
         for (Map.Entry<Month, Double> month : balance.getOutcoming().entrySet()) {
@@ -110,7 +107,6 @@ public class BalanceService {
     // receipt;  приход
     // consumption; расход
     public static void updAccHistoryByDays(Balance balance, Map<RussianMonths, List<AccoutingHistory>> candidates) {
-//        System.out.println("Run update history of months" + candidates.keySet().toString());
         double[] sums;
         for (Map.Entry<RussianMonths, List<AccoutingHistory>> candidate : candidates.entrySet()) {
             Month key = Searcher.searchEngMonthByRus(candidate.getKey());
@@ -119,7 +115,6 @@ public class BalanceService {
             balance.updateOutcomingValue(key, sums[1]);
         }
         recalculateTotal(balance);
-//        System.out.println("End update history of months");
         updateBalance(balance);
 
     }
@@ -136,14 +131,6 @@ public class BalanceService {
             updBalances.add(balance);
         });
 
-//        balances.forEach(balance -> {
-//            Balance upd = updBalances.stream().filter(b->b.getId()==balance.getId()).findFirst().get();
-//            balance.setOutcoming(upd.getOutcoming());
-//            balance.setBalanceAtEndOfYear(upd.getBalanceAtEndOfYear());
-//
-//        });
-
         return updBalances;
-
     }
 }

@@ -41,14 +41,13 @@ public class CountingService {
         });
 
         if (!detailTitlesForErrorMsg.isEmpty()) {
-            String alert=String.format("Количество деталей %s на складе недостаточно для производства %d электрода %s типа.",
+            String msg = String.format("Количество деталей %s на складе недостаточно для производства %d электрода %s типа.",
                     detailTitlesForErrorMsg.toString().replaceAll("[\\[\\]]", ""),
                     count,
                     type);
-            Alerts.WARNING_ALERT(alert);
-            throw new RuntimeException( alert);// TODO ERROR: добавить обработку ошибки (всплывающее сообщение / кастомный класс ошибок )
+            Alerts.WARNING_ALERT(msg);
+            throw new RuntimeException(msg);
         }
-
         RawElectrode rw = ElectrodeService.getRawElectrodeByType(type);
         if (rw == null)
             rw = initializeRawElectrode(type);
@@ -70,7 +69,7 @@ public class CountingService {
             int day = MonthDay.now().getDayOfMonth();
             int detailId = detail.getId();
 
-            AccoutingHistoryService.updateHistoryForDay(year, month, day, 0, detailId, delta);
+            AccoutingHistoryService.updateHistoryForDay(year, month, day, 0, detailId, delta, true);
             updBalanceData.add(new RefreshBalanceData(Month.of(month), detailId, delta));
         });
 
@@ -93,8 +92,11 @@ public class CountingService {
         int howProduce = numericTo - numericFrom;
         int rawElectrodeCount = rw.getCount();
 
-        if (!(rawElectrodeCount >= howProduce))
-            throw new RuntimeException(String.format("Недостаточно сырья для продажи %d электродов", howProduce)); // TODO ERROR: добавить обработку ошибки (всплывающее сообщение)
+        if (!(rawElectrodeCount >= howProduce)){
+            String msg = String.format("Недостаточно сырья для продажи %d электродов", howProduce);
+            Alerts.WARNING_ALERT(msg);
+            throw new RuntimeException(msg);
+        }
 
         ElectrodeService.updateRawElectrodeCount(rw, rawElectrodeCount - howProduce);
     }

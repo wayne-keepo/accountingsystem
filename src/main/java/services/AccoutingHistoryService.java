@@ -4,18 +4,22 @@ import databaselogic.controllers.DBAccountingHistoryController;
 import domain.Day;
 import entities.AccoutingHistory;
 import entities.Detail;
-import utils.enums.RussianMonths;
 import utils.Searcher;
+import utils.enums.RussianMonths;
 
+import java.time.LocalDate;
 import java.time.Month;
-import java.util.*;
+import java.time.Year;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class AccoutingHistoryService {
     private static final DBAccountingHistoryController controller = new DBAccountingHistoryController();
 
     public static double[] calculate(List<AccoutingHistory> histories) {
-//        System.out.println("Run calculate sum of month ");
         double incSum = 0.0;
         double outSum = 0.0;
         for (AccoutingHistory history : histories) {
@@ -29,7 +33,6 @@ public class AccoutingHistoryService {
                 }
             }
         }
-//        System.out.println(String.format("End calculate sum of month. Sum: Inc - %f | Out - %f ", incSum, outSum));
         return new double[]{incSum, outSum};
     }
 
@@ -64,7 +67,6 @@ public class AccoutingHistoryService {
         for (Map.Entry<RussianMonths, List<AccoutingHistory>> maps : histories.entrySet()) {
 
             for (AccoutingHistory history : maps.getValue()) {
-//TODO: change to StringBuilder (faster and less memory-intensive)
                 for (Day day : history.getDays()) {
                     if (!(day.getDayNumber() == 31))
                         days.append(String.format(" d%d = %s,", day.getDayNumber(), String.valueOf(day.getCount())));
@@ -91,11 +93,21 @@ public class AccoutingHistoryService {
         }
         String[] tmp = sql.toArray(new String[sql.size()]);
         controller.batchInsert(tmp);
+        insertInitialValueInAccHisByDetailCount(detail);
     }
-
+    private static void insertInitialValueInAccHisByDetailCount(Detail detail){
+        updateHistoryForDay(
+                Year.now().getValue(),
+                LocalDate.now().getMonthValue(),
+                LocalDate.now().getDayOfMonth(),
+                1,
+                detail.getId(),
+                detail.getCount(),
+                false
+        );
+    }
     private static void batchUpdate(List<String> upd) {
         String[] tmp = upd.toArray(new String[upd.size()]);
-//        System.out.println(Arrays.toString(tmp));
         controller.batchUpdate(tmp);
     }
 
@@ -107,9 +119,13 @@ public class AccoutingHistoryService {
         return controller.getByDetail(detail.getId());
     }
 
-    public static void updateHistoryForDay(int year, int month, int day, int acc, int detailId, double num) {
-        Double oldValue = controller.getDayValue(year, month, day, acc, detailId);
-        double newValue = oldValue + num;
+    public static void updateHistoryForDay(int year, int month, int day, int acc, int detailId, double num, boolean isSum) {
+        double newValue;
+        if (isSum) {
+            Double oldValue = controller.getDayValue(year, month, day, acc, detailId);
+            newValue = oldValue + num;
+        }
+        else newValue = num;
         controller.updateHistoryForDay(year, month, day, acc, detailId, newValue);
     }
 }

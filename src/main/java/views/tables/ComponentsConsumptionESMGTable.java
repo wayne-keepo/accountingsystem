@@ -36,7 +36,9 @@ public class ComponentsConsumptionESMGTable {
         );
         if (!tmp.isEmpty())
         detailElectrods = tmp.get(0);
-        if (detailElectrods!=null)
+        else detailElectrods = new DetailElectrod(true);
+
+        if (!detailElectrods.isEmpty())
         details = FXCollections.observableArrayList(new ArrayList<>(detailElectrods.getDetails().keySet()));
         else details = FXCollections.observableArrayList();
 

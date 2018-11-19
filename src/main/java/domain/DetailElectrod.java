@@ -3,6 +3,8 @@ package domain;
 import entities.Detail;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +17,15 @@ public class DetailElectrod {
 //    private int countDetailForElectrode;
 
     public DetailElectrod() {}
+    // нужен для первичной (когда в таблице нет связи деталь-электрод) инициализации и добавления в tableview
+    public DetailElectrod(boolean initDE){
+        if (initDE){
+            ids = new ArrayList<>();
+            details = new HashMap<>();
+            electrodeType = "";
+        }
 
+    }
     public List<Integer> getIds() {
         return ids;
     }
@@ -38,6 +48,10 @@ public class DetailElectrod {
 
     public void setElectrodeType(String electrodeType) {
         this.electrodeType = electrodeType;
+    }
+
+    public boolean isEmpty(){
+        return ids.isEmpty() && details.isEmpty() && electrodeType.isEmpty();
     }
 
     @Override

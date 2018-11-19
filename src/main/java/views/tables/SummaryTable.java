@@ -34,7 +34,7 @@ public class SummaryTable {
         table.getColumns().addAll(createColumns());
         table.setItems(es);
     }
-
+// мб ввести список изменений как в др табличках а не изменять при каждом коммите изменений ??
     private ObservableList<TableColumn<Summary, ?>> createColumns() {
         TableColumn<Summary, Integer> id = new TableColumn<>("ID");
         id.setCellValueFactory(param -> new SimpleIntegerProperty(param.getValue().getIdSummary()).asObject());
@@ -46,7 +46,13 @@ public class SummaryTable {
         produceDate.setCellValueFactory(param -> new SimpleObjectProperty<LocalDate>(param.getValue().getProduceDate()));
 
         TableColumn<Summary, String> customer = new TableColumn<>("Заказчик");
+        customer.setCellFactory(TextFieldTableCell.forTableColumn());
         customer.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getCustomer()));
+        customer.setOnEditCommit(event -> {
+            Summary tmp =  event.getRowValue();
+            tmp.setCustomer(event.getNewValue());
+            SummaryService.update(tmp);
+        });
 
         TableColumn<Summary, String> consumeDate = new TableColumn<>("Дата отгрузки");
         consumeDate.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -58,9 +64,15 @@ public class SummaryTable {
             SummaryService.update(summary);
         });
 
-
         TableColumn<Summary, String> note = new TableColumn<>("Примечание");
         note.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getNote()));
+        note.setCellFactory(TextFieldTableCell.forTableColumn());
+        note.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getCustomer()));
+        note.setOnEditCommit(event -> {
+            Summary tmp =  event.getRowValue();
+            tmp.setNote(event.getNewValue());
+            SummaryService.update(tmp);
+        });
 
         return FXCollections.observableArrayList(id, electrodNumber, produceDate, customer, consumeDate, note);
     }
