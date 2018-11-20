@@ -6,6 +6,8 @@ import entities.AccoutingHistory;
 import entities.Detail;
 import entities.DetailElectrodePrimitive;
 import entities.PrimitivityBalance;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import services.AccoutingHistoryService;
 import utils.enums.Types;
 
@@ -18,8 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-// это было так давно...я забыл что тут говнокодил кек
+// это было так давно...я забыл что тут говнокодил
 public class ChainUtil {
+    private static final Logger logger = LogManager.getLogger(ChainUtil.class);
+
 
     public static List<DetailElectrod> createChainDetailElectrode(List<Detail> details, List<DetailElectrodePrimitive> primitivs) {
         List<DetailElectrod> des = new ArrayList<>();
@@ -67,10 +71,12 @@ public class ChainUtil {
     }
 
     public static Map<Detail, Map<PrimitivityBalance, List<AccoutingHistory>>> associateDetailWithPrimitiveAndHistory(List<Detail> details, List<PrimitivityBalance> pBalances, List<AccoutingHistory> histories) {
+        logger.info("[ChainUtilLogic.Balance.Associating] START associating detail, primitive balance, accounting history...");
+        logger.info("   create associate between detail and accounting history");
         createAccHistoryChain(details, histories);
 
         Map<Detail, Map<PrimitivityBalance, List<AccoutingHistory>>> associations = new HashMap<>();
-
+        logger.info("   create association between primitive balance and accounting history and add under detail");
         details.forEach(detail -> {
             Map<PrimitivityBalance, List<AccoutingHistory>> pBalanceAccHist = new HashMap<>();
             // filter by detail
@@ -86,7 +92,7 @@ public class ChainUtil {
             if (!personalPrimBalance.isEmpty())
                 associations.put(detail, pBalanceAccHist);
         });
-
+        logger.info("   calculating incoming and outcoming for each primitive balance");
         associations.forEach((d, pa) -> {
             pa.forEach((p, h) -> {
                 double[] sums = AccoutingHistoryService.calculate(h);
@@ -94,15 +100,16 @@ public class ChainUtil {
                 p.setOutcoming(sums[1]);
             });
         });
-
+        logger.info("[ChainUtilLogic.Balance.Associating] END associating detail, primitive balance, accounting history...");
         return associations;
     }
 
     public static List<Balance> createBalanceChain(List<Detail> details, List<PrimitivityBalance> pBalances, List<AccoutingHistory> histories) {
+        logger.info("[ChainUtilLogic.Balance.Chaining] START creating balance...");
         List<Balance> balances = new ArrayList<>();
-
+        logger.info("   create associating between detail, primitive balances and accounting histories for each primitive [detail -> primitive -> history]");
         Map<Detail, Map<PrimitivityBalance, List<AccoutingHistory>>> associations = associateDetailWithPrimitiveAndHistory(details, pBalances, histories);
-
+        logger.info("   create balance from associated items");
         associations.forEach((d, pa) -> {
             Balance balance = new Balance();
             balance.setId(d.getId());
@@ -137,6 +144,7 @@ public class ChainUtil {
 
             balances.add(balance);
         });
+        logger.info("[ChainUtilLogic.Balance.Chaining] END creating balance...");
         return balances;
     }
 

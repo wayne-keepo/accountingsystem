@@ -4,6 +4,8 @@ import databaselogic.controllers.DBAccountingHistoryController;
 import domain.Day;
 import entities.AccoutingHistory;
 import entities.Detail;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.Searcher;
 import utils.enums.RussianMonths;
 
@@ -17,6 +19,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class AccoutingHistoryService {
+    private static final Logger logger = LogManager.getLogger(AccoutingHistoryService.class);
+
     private static final DBAccountingHistoryController controller = new DBAccountingHistoryController();
 
     public static double[] calculate(List<AccoutingHistory> histories) {
@@ -84,6 +88,8 @@ public class AccoutingHistoryService {
 
     // use when added new balance
     public static void buildSqlForBatchInsertAccHist(Detail detail) {
+        logger.info("[AccountingHistoryLogic.Service.InitAccHis] START build sql for batch insert accounting history by detail...");
+        logger.debug("  detail: {}",detail);
         List<String> sql = new ArrayList<>();
         for (Month current : Month.values()) {
             String inInsert = String.format("INSERT INTO AccountingHistory(idDetail,month,acc) VALUES(%d,%d,%d)", detail.getId(), current.getValue(), 1);
@@ -91,9 +97,14 @@ public class AccoutingHistoryService {
             sql.add(inInsert);
             sql.add(outInsert);
         }
+        logger.debug("  sql list size: {}",sql.size());
         String[] tmp = sql.toArray(new String[sql.size()]);
+        logger.info("   batch insert in database");
         controller.batchInsert(tmp);
+        logger.info("   initialize value in history by count detail: {}");
+        logger.debug("  count detail: {}",detail.getCount());
         insertInitialValueInAccHisByDetailCount(detail);
+        logger.info("[AccountingHistoryLogic.Service.InitAccHis] END build sql for batch insert accounting history by detail...");
     }
     private static void insertInitialValueInAccHisByDetailCount(Detail detail){
         updateHistoryForDay(

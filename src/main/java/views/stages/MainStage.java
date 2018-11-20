@@ -19,6 +19,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import projectConstants.CustomConstants;
 import services.*;
 import utils.ChainUtil;
@@ -38,6 +40,8 @@ import java.util.*;
 import java.util.List;
 
 public class MainStage {
+    private static final Logger logger = LogManager.getLogger(MainStage.class);
+
     private static final Stage stage = new Stage();
     private Scene scene;
     //layouts
@@ -65,7 +69,6 @@ public class MainStage {
     private DBBalanceController balanceController = new DBBalanceController();
 
     public MainStage() {
-
         init();
     }
 
@@ -130,7 +133,7 @@ public class MainStage {
                 electrods
         );
     }
-
+//[BalanceLogic]
     private void addLogicOnBalanceTab(Tab tab) {
         balancesTable.initBalances(BalanceService.initializingDataInTable());
         tab.setContent(paneForBalanceTab);
@@ -148,58 +151,74 @@ public class MainStage {
         Button add = new Button("Добавить");
 
         add.setOnAction(event -> {
+            logger.info("[BalanceLogic.ADD] START adding balance in table...");
             //initRawElectrodeValue detail from drop box
             Detail detail = balanceDetailDropBox.getDetailsBox().getSelectionModel().getSelectedItem();
+            balanceDetailDropBox.getDetailsBox().getSelectionModel().clearSelection(); //?
             if (detail == null){
+                logger.error("  detail is null");
                 Alerts.WARNING_ALERT("Выберите деталь для добавления баланса.");
-                return;}
+                return;
+            }
+            logger.info("   delete detail from dropbox");
             balanceDetailDropBox.deleteDetail(detail);
-            // build accounting history for detail
+            logger.info("   build accounting history for detail");
             AccoutingHistoryService.buildSqlForBatchInsertAccHist(detail);
             List<AccoutingHistory> histories = AccoutingHistoryService.getHistoryByDetail(detail);
-            // build primitives for balance
+            logger.info("   build primitives for balance");
             List<PrimitivityBalance> pBalances = BalanceService.buildPrimitivs(detail);
-            // save it on db Balance
+            logger.info("   save primitive balances on database");
+            logger.debug("  primitive balances: {} for detail: {}",pBalances,detail);
             balanceController.saveAll(pBalances);
             // initRawElectrodeValue primitive balance from table (with id)
+            logger.info("   get primitive balances from database for detail by id ");
             pBalances = balanceController.getAllByDetailId(detail.getId());
+            logger.info("   create chain between detail, primitive balances, accounting history");
+            logger.debug("  detail: {} ||| primitive balances: {} ||| accounting history: {}",detail,pBalances,histories);
             // hz, research, think can speed up?????
             List<Balance> balances = ChainUtil.createBalanceChain(
                     Collections.singletonList(detail),
                     pBalances,
                     histories
             );
+            logger.debug("  chain creation result balances size {}",balances.size());
             if (balances != null && !balances.isEmpty()) {
+                logger.info("   added balance in table");
                 balancesTable.addBalance(balances.get(0));
             }
+            logger.info("[BalanceLogic.ADD] END adding balance in table...");
 
         });
 
         history.setOnAction(event -> {
+            logger.info("[BalanceLogic.HISTORY] START viewing accounting history...");
             //initRawElectrodeValue detail by selected balance
             Balance balance = balancesTable.getTable().getSelectionModel().getSelectedItem();
             if (balance == null){
+                logger.error("  balance not found");
                 Alerts.WARNING_ALERT("Выберите баланс для просмотра его истории.");
-                return;}
+                return;
+            }
             int position = balancesTable.getTable().getItems().indexOf(balance);
             Detail detail = balance.getDetail();
             //initRawElectrodeValue gistory for current detail
             List<AccoutingHistory> ahList = ahController.getByDetail(detail.getId());
             //associated detail with her history
-            ChainUtil.associateDetailWithHistory(detail, ahList);
-            //convert history for map for AccountingWindow
+//            ChainUtil.associateDetailWithHistory(detail, ahList);   ?????????
+            logger.info("   converting history to map for AccountingWindow [month,history]");
             Map<RussianMonths, List<AccoutingHistory>> tmp = AccoutingHistoryService.historyToMapForAccoutingWindow(ahList);
-            //send history map in accounting window and wait return result for update (candidates on update)
+            logger.info("   sending history map in AccountingWindow and wait wile returning result for update");// (candidates on update)
             tmp = new AccoutingHistoryWindow(tmp).show();
             // send candidates for update into updating logic
             if (tmp != null) {
-                // upd history by month
+                logger.info("   updating history for balance");
                 BalanceService.updAccHistoryByDays(balance, tmp);
-                // rewrite balance on table
+                logger.info("   rewriting balance on table");
                 balancesTable.getTable().getItems().set(position, balance);
-                // upd hist on db
+                logger.info("   updating history in database");
                 AccoutingHistoryService.buildSqlForBatchUpdAccHist(tmp);
             }
+            logger.info("[BalanceLogic.HISTORY] END viewing accounting history...");
         });
 
         horizontal.getChildren().addAll(history, balanceDetailDropBox.getDetailsBox(), add);

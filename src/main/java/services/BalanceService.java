@@ -61,7 +61,7 @@ public class BalanceService {
             return null;
         List<AccoutingHistory> histories = AccoutingHistoryService.getAll();
         List<Detail> details = DetailService.getAll();
-        return ChainUtil.createBalanceChain(details, pBalances, histories);
+        return ChainUtil.createBalanceChain(details, pBalances, histories); // хзззззззззззззззззззхзззззхзхзхзхззззззззззз сложнаааа, ебаная структура бд поэтому каждый раз создавать баланс из такого объема данныъ
 
     }
 

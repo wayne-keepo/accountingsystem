@@ -10,7 +10,7 @@ public class Go extends Application{
     private Stage mainStage = new MainStage().getStage();
 
     public static void main(String[] args) {
-        logger.info("[Test Log] Run application...");
+        logger.info("Run application");
         launch(args);
 
     }
