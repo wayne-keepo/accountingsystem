@@ -1,5 +1,6 @@
 package utils.documentGeneration;
 
+
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xwpf.usermodel.*;
 import services.ElectrodeService;
@@ -12,16 +13,17 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 
-public class DocESMG {
+public class DocESMGM {
 
 
-    public void theDoc(
-            String elNumberFrom,String elNumberTo,
+    public void theDocM(
+            String elNumberFrom, String elNumberTo,
             String cableLength, String empoyerPosition,
-            String fullName, String createDate, File qr) throws IOException, InvalidFormatException {
-        XWPFDocument document = new XWPFDocument(); // делаем наш документ
+            String fullName, String createDate, File qr
+    ) throws IOException, InvalidFormatException {
+        XWPFDocument documentM = new XWPFDocument(); // делаем наш документ
 
-        XWPFParagraph paragraph = document.createParagraph(); // делаем первый параграф нашего дока
+        XWPFParagraph paragraph = documentM.createParagraph(); // делаем первый параграф нашего дока
         XWPFRun run = paragraph.createRun();
 
         run.setText("10. Свидетельство об упаковывании");
@@ -31,7 +33,7 @@ public class DocESMG {
         run.setBold(true);
         paragraph.setAlignment(ParagraphAlignment.CENTER);
 
-        XWPFParagraph paragraph2 = document.createParagraph();
+        XWPFParagraph paragraph2 = documentM.createParagraph();
         XWPFRun run2 = paragraph2.createRun();
         run2.setText("Электрод сравнения неполяризующийся медно-сульфатный гелевый");
         run2.setFontSize(13);
@@ -46,10 +48,10 @@ public class DocESMG {
         run3.setFontFamily("Times New Roman");
         run3.addBreak();
 
-        XWPFParagraph paragraph3 = document.createParagraph();
+        XWPFParagraph paragraph3 = documentM.createParagraph();
 
         XWPFRun run4 = paragraph3.createRun();
-        run4.setText("ЭСМГ-АКТИВ");
+        run4.setText("ЭСМГ-М-АКТИВ");
         run4.setFontSize(13);
         run4.setFontFamily("Times New Roman");
         run4.setBold(true);
@@ -72,7 +74,7 @@ public class DocESMG {
         run6.setUnderline(UnderlinePatterns.SINGLE);
         run6.addBreak();
 
-        XWPFParagraph paragraph4 = document.createParagraph();
+        XWPFParagraph paragraph4 = documentM.createParagraph();
 
         XWPFRun run7 = paragraph4.createRun();
 
@@ -96,7 +98,7 @@ public class DocESMG {
         run8.setFontFamily("Times New Roman");
 
 //       Количество электродов: _______ шт.
-        XWPFParagraph paragraph9 = document.createParagraph();
+        XWPFParagraph paragraph9 = documentM.createParagraph();
 
         XWPFRun run23 = paragraph9.createRun();
         run23.setText(String.format("    Количество электродов: %d шт.",elCount));
@@ -104,7 +106,7 @@ public class DocESMG {
         run23.setFontFamily("Times New Roman");
         run23.addBreak();
 //----
-        XWPFParagraph paragraph5 = document.createParagraph();
+        XWPFParagraph paragraph5 = documentM.createParagraph();
 
         XWPFRun run9 = paragraph5.createRun();
         run9.setText("    Длина кабеля:" + " " + cableLength + " " + "м.");
@@ -117,7 +119,7 @@ public class DocESMG {
         run10.setFontSize(13);
         run10.setFontFamily("Times New Roman");
 
-        XWPFParagraph paragraph6 = document.createParagraph();
+        XWPFParagraph paragraph6 = documentM.createParagraph();
 
         XWPFRun run11 = paragraph6.createRun();
         run11.setText("ООО НПО \"Активация\"");
@@ -139,7 +141,7 @@ public class DocESMG {
         run13.setFontFamily("Times New Roman");
         run13.addBreak();
 
-        XWPFParagraph paragraph7 = document.createParagraph();
+        XWPFParagraph paragraph7 = documentM.createParagraph();
 
         XWPFRun run14 = paragraph7.createRun();
         run14.setText(" " + empoyerPosition);
@@ -170,44 +172,45 @@ public class DocESMG {
         run17.setFontSize(11);
         run17.setFontFamily("Times New Roman");
         run17.addBreak();
-// QR
-//        String name = "gQR2.jpg";
-//        XWPFParagraph paragraph8 = document.createParagraph();
-//        XWPFRun run24 = paragraph8.createRun();
-//        try(FileInputStream is = new FileInputStream(qr)){
-//            run24.addBreak();
-//            run24.addPicture(is, XWPFDocument.PICTURE_TYPE_JPEG, name, Units.toEMU(100), Units.toEMU(100)); // 200x200 pixels
-//            run24.addBreak();
+
+//        XWPFParagraph paragraph8 = documentM.createParagraph();
+//        XWPFRun run18 = paragraph8.createRun();
+//        String imgFile = "gQR2.jpg";
+//        try(FileInputStream is = new FileInputStream(qr)) {
+//            run18.addBreak();
+//            run18.addPicture(is, XWPFDocument.PICTURE_TYPE_JPEG, imgFile, Units.toEMU(100), Units.toEMU(100)); // 200x200 pixels
+//            run18.addBreak();
 //        }
-        //--
-        XWPFRun run18 = paragraph7.createRun();
-        run18.setText(" " + fullName);
-        run18.setFontSize(13);
-        run18.setFontFamily("Times New Roman");
-        run18.setItalic(true);
-        run18.setUnderline(UnderlinePatterns.SINGLE);
-        run18.addBreak();
+//---
 
         XWPFRun run19 = paragraph7.createRun();
-        run19.setText(" " + "расшифровка подписи");
-        run19.addBreak();
-        run19.setText(" ");
-        run19.setFontSize(11);
+        run19.setText(" " + fullName);
+        run19.setFontSize(13);
         run19.setFontFamily("Times New Roman");
+        run19.setItalic(true);
+        run19.setUnderline(UnderlinePatterns.SINGLE);
         run19.addBreak();
 
         XWPFRun run20 = paragraph7.createRun();
-        run20.setText(" " + createDate);
-        run20.setFontSize(13);
+        run20.setText(" " + "расшифровка подписи");
+        run20.addBreak();
+        run20.setText(" ");
+        run20.setFontSize(11);
         run20.setFontFamily("Times New Roman");
-        run20.setItalic(true);
-        run20.setUnderline(UnderlinePatterns.SINGLE);
         run20.addBreak();
 
         XWPFRun run21 = paragraph7.createRun();
-        run21.setText(" " + "число, месяц, год");
-        run21.setFontSize(11);
+        run21.setText(" " + createDate);
+        run21.setFontSize(13);
         run21.setFontFamily("Times New Roman");
+        run21.setItalic(true);
+        run21.setUnderline(UnderlinePatterns.SINGLE);
+        run21.addBreak();
+
+        XWPFRun run22 = paragraph7.createRun();
+        run22.setText(" " + "число, месяц, год");
+        run22.setFontSize(11);
+        run22.setFontFamily("Times New Roman");
 
         paragraph2.setAlignment(ParagraphAlignment.CENTER);
         paragraph2.setBorderBottom(Borders.BASIC_THIN_LINES);
@@ -258,19 +261,21 @@ public class DocESMG {
 
         File file = generate();
         try(FileOutputStream output = new FileOutputStream(file)) {
-            document.write(output);
+            documentM.write(output);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     private File generate(){
-        String path = Paths.C.get()+Paths.ACCOUNTING_SYSTEM.get()+Paths.DOCUMENTS.get()+Paths.ESMG.get();
-        String prefix = "passport_esmg10_";
+        String path = Paths.C.get()+Paths.ACCOUNTING_SYSTEM.get()+Paths.DOCUMENTS.get()+Paths.ESMG_M.get();
+        String prefix = "passport_esmgm10_";
         String postfix = ".doc";
         String genericTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
         String fullname = prefix+genericTime+postfix;
 
         return new File(path,fullname);
     }
+
 }
+
 

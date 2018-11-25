@@ -21,12 +21,10 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import projectConstants.CustomConstants;
 import services.*;
 import utils.ChainUtil;
-import utils.documentGeneration.DocESMG;
-import utils.documentGeneration.MyQR;
+import utils.documentGeneration.DocumentService;
 import utils.enums.RussianMonths;
 import utils.enums.Types;
 import views.alerts.Alerts;
@@ -69,6 +67,8 @@ public class MainStage {
     private DBAccountingHistoryController ahController = new DBAccountingHistoryController();
     private DBDetailController detailController = new DBDetailController();
     private DBBalanceController balanceController = new DBBalanceController();
+
+    private DocumentService documentService;
 
     public MainStage() {
         init();
@@ -416,7 +416,7 @@ public class MainStage {
 
         Label typeL = new Label("Тип электрода");
         ComboBox<String> types = new ComboBox<>();
-        types.getItems().addAll(CustomConstants.ESMG, CustomConstants.ESMG_M);
+        types.getItems().addAll(Types.ESMG.eng(), Types.ESMG_M.eng());
 
         Label produceDateL = new Label("Дата производства");
         DatePicker produceDate = new DatePicker();
@@ -480,6 +480,12 @@ public class MainStage {
             rawProduction.clear();
         });
 
+        try {
+            documentService = new DocumentService();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         bulkProduce.setOnAction(event -> {
             String from = nFrom.getText().trim();
             String to = nTo.getText().trim();
@@ -499,31 +505,19 @@ public class MainStage {
                 Alerts.WARNING_ALERT("Электрод с таким номером уже существует");
                 return;
             }
-            String url = ;
 
-//            System.out.println(from+" "+to+" "+type);
-            if (!from.isEmpty() && (to.isEmpty() || to==null)){
+            if (to.isEmpty() || to==null){
                 CountingService.countingForProduceSummaryFromRawElectrode("0", "1", type);
                 Summary summary = new Summary(from, type, produceDate.getValue(), customer.getText().trim(), consumeDate.getValue(), note.getText().trim());
                 SummaryService.save(summary);
                 if (!empPosition.isEmpty() && !cabLen.isEmpty() && !empFio.isEmpty() && !doc.isEmpty()) {
-                    try {
-                        new MyQR().theQR(url);
-                        new DocESMG().theDoc(from, "", cabLen, empPosition, empFio, doc);
-                    } catch (IOException | InvalidFormatException e) {
-                        e.printStackTrace();
-                    }
+                    documentService.generateDocumentByType(type,from,"",cabLen,empPosition,empFio,doc);
                 }
             } else {
                 CountingService.countingForProduceSummaryFromRawElectrode(from, to, type);
                 SummaryService.bulkCreateSummaryFromRange(from, to, type, produceDate.getValue(), consumeDate.getValue(), customer.getText(), note.getText());
                 if (!empPosition.isEmpty() && !cabLen.isEmpty() && !empFio.isEmpty() && !doc.isEmpty()) {
-                    try {
-                        new MyQR().theQR(from+to);
-                        new DocESMG().theDoc(from, to, cabLen, empPosition, empFio, doc);
-                    } catch (IOException | InvalidFormatException e) {
-                        e.printStackTrace();
-                    }
+                    documentService.generateDocumentByType(type,from,to,cabLen,empPosition,empFio,doc);
                 }
 
             }

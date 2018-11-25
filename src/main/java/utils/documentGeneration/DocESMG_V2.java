@@ -1,6 +1,5 @@
 package utils.documentGeneration;
 
-
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
@@ -14,28 +13,25 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-
-public class TheBlankM {
-
-
-    public void theDocM(
+public class DocESMG_V2 {
+    public void theDocCont(
             String elNumberFrom, String elNumberTo,
             String cableLength, String empoyerPosition,
-            String fullName, String createDate, File qr
-    ) throws IOException, InvalidFormatException {
-        XWPFDocument documentM = new XWPFDocument(); // делаем наш документ
+            String fullName, String createDate, File qr) throws IOException, InvalidFormatException {
 
-        XWPFParagraph paragraph = documentM.createParagraph(); // делаем первый параграф нашего дока
+        XWPFDocument documentCont = new XWPFDocument(); // делаем наш документ
+
+        XWPFParagraph paragraph = documentCont.createParagraph(); // делаем первый параграф нашего дока
         XWPFRun run = paragraph.createRun();
 
-        run.setText("10. Свидетельство об упаковывании");
+        run.setText("11. Свидетельство о приемке");
 
         run.setFontSize(14);
         run.setFontFamily("Times New Roman");
         run.setBold(true);
         paragraph.setAlignment(ParagraphAlignment.CENTER);
 
-        XWPFParagraph paragraph2 = documentM.createParagraph();
+        XWPFParagraph paragraph2 = documentCont.createParagraph();
         XWPFRun run2 = paragraph2.createRun();
         run2.setText("Электрод сравнения неполяризующийся медно-сульфатный гелевый");
         run2.setFontSize(13);
@@ -50,10 +46,10 @@ public class TheBlankM {
         run3.setFontFamily("Times New Roman");
         run3.addBreak();
 
-        XWPFParagraph paragraph3 = documentM.createParagraph();
+        XWPFParagraph paragraph3 = documentCont.createParagraph();
 
         XWPFRun run4 = paragraph3.createRun();
-        run4.setText("ЭСМГ-М-АКТИВ");
+        run4.setText("ЭСМГ-АКТИВ");
         run4.setFontSize(13);
         run4.setFontFamily("Times New Roman");
         run4.setBold(true);
@@ -76,10 +72,9 @@ public class TheBlankM {
         run6.setUnderline(UnderlinePatterns.SINGLE);
         run6.addBreak();
 
-        XWPFParagraph paragraph4 = documentM.createParagraph();
+        XWPFParagraph paragraph4 = documentCont.createParagraph();
 
         XWPFRun run7 = paragraph4.createRun();
-
         int elCount = 1;
         elNumberFrom = ElectrodeService.formatElectrodeNumber(elNumberFrom);
         if (elNumberTo.isEmpty()) {
@@ -100,7 +95,7 @@ public class TheBlankM {
         run8.setFontFamily("Times New Roman");
 
 //       Количество электродов: _______ шт.
-        XWPFParagraph paragraph9 = documentM.createParagraph();
+        XWPFParagraph paragraph9 = documentCont.createParagraph();
 
         XWPFRun run23 = paragraph9.createRun();
         run23.setText(String.format("    Количество электродов: %d шт.",elCount));
@@ -108,7 +103,8 @@ public class TheBlankM {
         run23.setFontFamily("Times New Roman");
         run23.addBreak();
 //----
-        XWPFParagraph paragraph5 = documentM.createParagraph();
+
+        XWPFParagraph paragraph5 = documentCont.createParagraph();
 
         XWPFRun run9 = paragraph5.createRun();
         run9.setText("    Длина кабеля:" + " " + cableLength + " " + "м.");
@@ -121,29 +117,29 @@ public class TheBlankM {
         run10.setFontSize(13);
         run10.setFontFamily("Times New Roman");
 
-        XWPFParagraph paragraph6 = documentM.createParagraph();
+        XWPFParagraph paragraph6 = documentCont.createParagraph();
+//
+//        XWPFRun run11 = paragraph6.createRun();
+//        run11.setText("ООО НПО \"Активация\"");
+//        run11.setFontSize(14);
+//        run11.setFontFamily("Times New Roman");
+//        run11.setBold(true);
+//        run11.setUnderline(UnderlinePatterns.SINGLE);
+//        run11.addBreak();
 
-        XWPFRun run11 = paragraph6.createRun();
-        run11.setText("ООО НПО \"Активация\"");
-        run11.setFontSize(14);
-        run11.setFontFamily("Times New Roman");
-        run11.setBold(true);
-        run11.setUnderline(UnderlinePatterns.SINGLE);
-        run11.addBreak();
-
-        XWPFRun run12 = paragraph6.createRun();
-        run12.setText("наименование или код изготовителя");
-        run12.setFontSize(11);
-        run12.setFontFamily("Times New Roman");
-        run12.addBreak();
+//        XWPFRun run12 = paragraph6.createRun();
+//        run12.setText("наименование или код изготовителя");
+//        run12.setFontSize(11);
+//        run12.setFontFamily("Times New Roman");
+//        run12.addBreak();
 
         XWPFRun run13 = paragraph6.createRun();
-        run13.setText("согласно требованиям, предусмотренным в действующей технической документации");
+        run13.setText("изготовлен и принят в соответствии с обязательными требованиями государственных стандартов, действующей технической документацией и признан годным для эксплуатации");
         run13.setFontSize(12);
         run13.setFontFamily("Times New Roman");
         run13.addBreak();
 
-        XWPFParagraph paragraph7 = documentM.createParagraph();
+        XWPFParagraph paragraph7 = documentCont.createParagraph();
 
         XWPFRun run14 = paragraph7.createRun();
         run14.setText(" " + empoyerPosition);
@@ -175,7 +171,7 @@ public class TheBlankM {
         run17.setFontFamily("Times New Roman");
         run17.addBreak();
 
-        XWPFParagraph paragraph8 = documentM.createParagraph();
+        XWPFParagraph paragraph8 = documentCont.createParagraph();
         XWPFRun run18 = paragraph8.createRun();
         String imgFile = "gQR2.jpg";
         try(FileInputStream is = new FileInputStream(qr)) {
@@ -183,7 +179,6 @@ public class TheBlankM {
             run18.addPicture(is, XWPFDocument.PICTURE_TYPE_JPEG, imgFile, Units.toEMU(100), Units.toEMU(100)); // 200x200 pixels
             run18.addBreak();
         }
-//---
 
         XWPFRun run19 = paragraph7.createRun();
         run19.setText(" " + fullName);
@@ -263,21 +258,19 @@ public class TheBlankM {
 
         File file = generate();
         try(FileOutputStream output = new FileOutputStream(file)) {
-            documentM.write(output);
+            documentCont.write(output);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     private File generate(){
-        String path = Paths.C.get()+Paths.ACCOUNTING_SYSTEM.get()+Paths.DOCUMENTS.get()+Paths.ESMG_M.get();
-        String prefix = "passport_esmgm_";
+        String path = Paths.C.get()+Paths.ACCOUNTING_SYSTEM.get()+Paths.DOCUMENTS.get()+Paths.ESMG.get();
+        String prefix = "passport_esmg11_";
         String postfix = ".doc";
         String genericTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
         String fullname = prefix+genericTime+postfix;
 
         return new File(path,fullname);
     }
-
 }
-
 

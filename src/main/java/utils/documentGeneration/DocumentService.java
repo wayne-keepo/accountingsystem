@@ -9,26 +9,25 @@ import java.io.File;
 import java.io.IOException;
 
 public class DocumentService {
-    private MyQR qrGen;
     private File qr;
-    private DocESMG esgm;
-    private TheBlankM esgm_m;
-    private TheBlankCont esgmv2;
-//    private TheBlankM esgm_mv2;
-    private String path;
-    private String name;
-    private String url;
-
+    private DocESMG esmg; // part 10.
+    private DocESMGM esmg_m; // part 10.
+    private DocESMGM_V2 esmgm_v2; // part 11.
+    private DocESMG_V2 esmg_v2; // part 11.
 
     public DocumentService() throws IOException {
-        qrGen = new MyQR();
-        esgm = new DocESMG();
-        url = "http://elhz.ru/";
-        name = "gQR2.jpg";
-        path = Paths.C.get()+Paths.ACCOUNTING_SYSTEM.get()+Paths.DOCUMENTS.get();
-        qr = new File(path,name);
+        esmg = new DocESMG();
+        esmg_v2 = new DocESMG_V2();
+        esmg_m = new DocESMGM();
+        esmgm_v2 = new DocESMGM_V2();
+
+        String url = "http://elhz.ru/";
+        String name = "gQR2.jpg";
+        String path = Paths.C.get() + Paths.ACCOUNTING_SYSTEM.get() + Paths.DOCUMENTS.get();
+
+        qr = new File(path, name);
         if (!qr.exists())
-            qrGen.theQR(path,name,url);
+            new MyQR().theQR(path, name, url);
     }
 
     public void generateDocumentByType(String type,
@@ -39,22 +38,19 @@ public class DocumentService {
                                        String fullName,
                                        String createDate){
 
-        Types _type = Types.valueOf(type);
         try {
-            switch (_type){
-                case ESMG:
-                    esgm.theDoc(elNumberFrom,elNumberTo,cableLength,empoyerPosition,fullName,createDate,qr);
-                    break;
-                case ESMG_M:
-                    esgm_m.theDocM(elNumberFrom,elNumberTo,cableLength,empoyerPosition,fullName,createDate,qr);
-                    break;
+
+            if (Types.ESMG.eng().equalsIgnoreCase(type)){
+                esmg.theDoc(elNumberFrom,elNumberTo,cableLength,empoyerPosition,fullName,createDate,qr);
+                esmg_v2.theDocCont(elNumberFrom,elNumberTo,cableLength,empoyerPosition,fullName,createDate,qr);
             }
-
-        } catch (InvalidFormatException | IOException e) {
+            if (Types.ESMG_M.eng().equalsIgnoreCase(type)) {
+                esmg_m.theDocM(elNumberFrom, elNumberTo, cableLength, empoyerPosition, fullName, createDate, qr);
+                esmgm_v2.theDocCont(elNumberFrom, elNumberTo, cableLength, empoyerPosition, fullName, createDate, qr);
+            }
+        } catch (InvalidFormatException | IOException e1) {
             Alerts.WARNING_ALERT(String.format("Произошла ошибка при генерации %s дкоумента.",type));
-            e.printStackTrace();
+            e1.printStackTrace();
         }
-
     }
-
 }
