@@ -6,6 +6,8 @@ public enum Paths {
     C("C:\\"),
     ACCOUNTING_SYSTEM("ACCOUNTING_SYSTEM\\"),
     DOCUMENTS("DOCUMENTS\\"),
+    ESMG("ESMG\\"),
+    ESMG_M("ESMG_M\\"),
     DB_DONT_TOUCH_IT("DB_DONT_TOUCH_IT\\"),
     ACCOUNTING_SYSTEM_DB("ACCOUNTING_SYSTEM_DB.db");
 

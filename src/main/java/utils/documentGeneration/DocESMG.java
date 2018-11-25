@@ -1,25 +1,24 @@
 package utils.documentGeneration;
 
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
-import org.apache.poi.xwpf.usermodel.Borders;
-import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.xwpf.usermodel.*;
 import services.ElectrodeService;
 import utils.enums.Paths;
 
-
-import java.io.*;
-import java.time.LocalDate;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 
-public class TheBlank {
+public class DocESMG {
 
 
-    public void theDoc(String elNumberFrom,String elNumberTo, String cableLength, String empoyerPosition, String fullName, String createDate){
+    public void theDoc(
+            String elNumberFrom,String elNumberTo,
+            String cableLength, String empoyerPosition,
+            String fullName, String createDate, File qr) throws IOException, InvalidFormatException {
         XWPFDocument document = new XWPFDocument(); // делаем наш документ
 
         XWPFParagraph paragraph = document.createParagraph(); // делаем первый параграф нашего дока
@@ -77,10 +76,12 @@ public class TheBlank {
 
         XWPFRun run7 = paragraph4.createRun();
 
+        int elCount = 1;
         elNumberFrom = ElectrodeService.formatElectrodeNumber(elNumberFrom);
         if (elNumberTo.isEmpty()) {
             run7.setText("№" + " " + elNumberFrom);
         } else {
+            elCount =Integer.valueOf(elNumberTo) - Integer.valueOf(elNumberFrom);
             elNumberTo = ElectrodeService.formatElectrodeNumber(elNumberTo);
             run7.setText("№ " + elNumberFrom + " - " + elNumberTo);
         }
@@ -94,7 +95,15 @@ public class TheBlank {
         run8.setFontSize(11);
         run8.setFontFamily("Times New Roman");
 
+//       Количество электродов: _______ шт.
+        XWPFParagraph paragraph9 = document.createParagraph();
 
+        XWPFRun run23 = paragraph9.createRun();
+        run23.setText(String.format("    Количество электродов: %d шт.",elCount));
+        run23.setFontSize(12);
+        run23.setFontFamily("Times New Roman");
+        run23.addBreak();
+//----
         XWPFParagraph paragraph5 = document.createParagraph();
 
         XWPFRun run9 = paragraph5.createRun();
@@ -161,7 +170,16 @@ public class TheBlank {
         run17.setFontSize(11);
         run17.setFontFamily("Times New Roman");
         run17.addBreak();
-
+// QR
+//        String name = "gQR2.jpg";
+//        XWPFParagraph paragraph8 = document.createParagraph();
+//        XWPFRun run24 = paragraph8.createRun();
+//        try(FileInputStream is = new FileInputStream(qr)){
+//            run24.addBreak();
+//            run24.addPicture(is, XWPFDocument.PICTURE_TYPE_JPEG, name, Units.toEMU(100), Units.toEMU(100)); // 200x200 pixels
+//            run24.addBreak();
+//        }
+        //--
         XWPFRun run18 = paragraph7.createRun();
         run18.setText(" " + fullName);
         run18.setFontSize(13);
@@ -227,19 +245,31 @@ public class TheBlank {
         paragraph7.setBorderRight(Borders.BASIC_THIN_LINES);
         paragraph7.setBorderTop(Borders.BASIC_THIN_LINES);
 
-        File file = crateFile();
+//        paragraph8.setAlignment(ParagraphAlignment.RIGHT);
+//        paragraph8.setBorderBottom(Borders.BASIC_THIN_LINES);
+//        paragraph8.setBorderLeft(Borders.BASIC_THIN_LINES);
+//        paragraph8.setBorderRight(Borders.BASIC_THIN_LINES);
+//        paragraph8.setBorderTop(Borders.BASIC_THIN_LINES);
+
+        paragraph9.setBorderBottom(Borders.BASIC_THIN_LINES);
+        paragraph9.setBorderLeft(Borders.BASIC_THIN_LINES);
+        paragraph9.setBorderRight(Borders.BASIC_THIN_LINES);
+        paragraph9.setBorderTop(Borders.BASIC_THIN_LINES);
+
+        File file = generate();
         try(FileOutputStream output = new FileOutputStream(file)) {
             document.write(output);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    private File crateFile(){
-        String path = Paths.C.get()+Paths.ACCOUNTING_SYSTEM.get()+Paths.DOCUMENTS.get();
-        String prefix = "passport_";
+    private File generate(){
+        String path = Paths.C.get()+Paths.ACCOUNTING_SYSTEM.get()+Paths.DOCUMENTS.get()+Paths.ESMG.get();
+        String prefix = "passport_esmg_";
         String postfix = ".doc";
         String genericTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
         String fullname = prefix+genericTime+postfix;
+
         return new File(path,fullname);
     }
 }

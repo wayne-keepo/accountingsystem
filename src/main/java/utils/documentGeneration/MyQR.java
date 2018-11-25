@@ -1,23 +1,24 @@
 package utils.documentGeneration;
 
 import net.glxn.qrgen.image.ImageType;
-import utils.enums.Paths;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 
 public class MyQR {
 
-    public void theQR(String slovo)   {
-        String path = Paths.C.get()+Paths.ACCOUNTING_SYSTEM.get()+Paths.DOCUMENTS.get();
-        String name = "gQR2.jpg";
+    public void theQR(String path, String name, String slovo) throws IOException {
+
         File f = new File(path,name);
-        try(FileOutputStream fos = new FileOutputStream(f)) {
-            ByteArrayOutputStream out = net.glxn.qrgen.QRCode.from(slovo).to(ImageType.PNG).stream();
+        try(
+                ByteArrayOutputStream out = net.glxn.qrgen.QRCode.from(slovo).to(ImageType.PNG).stream();
+                FileOutputStream fos = new FileOutputStream(f)
+        ){
             fos.write(out.toByteArray());
             fos.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

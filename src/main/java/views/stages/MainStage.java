@@ -21,11 +21,12 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import projectConstants.CustomConstants;
 import services.*;
 import utils.ChainUtil;
+import utils.documentGeneration.DocESMG;
 import utils.documentGeneration.MyQR;
-import utils.documentGeneration.TheBlank;
 import utils.enums.RussianMonths;
 import utils.enums.Types;
 import views.alerts.Alerts;
@@ -34,6 +35,7 @@ import views.modalWindows.AccoutingHistoryWindow;
 import views.tables.*;
 
 import java.awt.*;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
@@ -497,7 +499,7 @@ public class MainStage {
                 Alerts.WARNING_ALERT("Электрод с таким номером уже существует");
                 return;
             }
-            String url = "http://elhz.ru/";
+            String url = ;
 
 //            System.out.println(from+" "+to+" "+type);
             if (!from.isEmpty() && (to.isEmpty() || to==null)){
@@ -505,15 +507,23 @@ public class MainStage {
                 Summary summary = new Summary(from, type, produceDate.getValue(), customer.getText().trim(), consumeDate.getValue(), note.getText().trim());
                 SummaryService.save(summary);
                 if (!empPosition.isEmpty() && !cabLen.isEmpty() && !empFio.isEmpty() && !doc.isEmpty()) {
-                    new TheBlank().theDoc(from, "", cabLen, empPosition, empFio, doc);
-                    new MyQR().theQR(url);
+                    try {
+                        new MyQR().theQR(url);
+                        new DocESMG().theDoc(from, "", cabLen, empPosition, empFio, doc);
+                    } catch (IOException | InvalidFormatException e) {
+                        e.printStackTrace();
+                    }
                 }
             } else {
                 CountingService.countingForProduceSummaryFromRawElectrode(from, to, type);
                 SummaryService.bulkCreateSummaryFromRange(from, to, type, produceDate.getValue(), consumeDate.getValue(), customer.getText(), note.getText());
                 if (!empPosition.isEmpty() && !cabLen.isEmpty() && !empFio.isEmpty() && !doc.isEmpty()) {
-                    new TheBlank().theDoc(from, to, cabLen, empPosition, empFio, doc);
-                    new MyQR().theQR(from+to);
+                    try {
+                        new MyQR().theQR(from+to);
+                        new DocESMG().theDoc(from, to, cabLen, empPosition, empFio, doc);
+                    } catch (IOException | InvalidFormatException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             }
