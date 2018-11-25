@@ -118,7 +118,6 @@ public class ChainUtil {
             AtomicReference<Double> incTotal = new AtomicReference<>(0.0);
             AtomicReference<Double> outTotal = new AtomicReference<>(0.0);
             AtomicReference<Double> begYear = new AtomicReference<>(0.0);
-            Double endYear = 0.0;
 
             Map<Month, Double> inc = new HashMap<>();
             Map<Month, Double> out = new HashMap<>();
@@ -128,11 +127,15 @@ public class ChainUtil {
                 out.put(p.getMonth(), p.getOutcoming());
                 incTotal.updateAndGet(v -> v + p.getIncoming());
                 outTotal.updateAndGet(v -> v + p.getOutcoming());
-                begYear.set(p.getBalanceAtBeginningYear());
+//                begYear.set(p.getBalanceAtBeginningYear());
 
             });
             // round to 3 symbols after dot
-            begYear.set(new BigDecimal(begYear.get()).setScale(3, RoundingMode.UP).doubleValue());
+            double endYear = 0.0;
+            if (begYear.get()!=0)
+                begYear.set(new BigDecimal(begYear.get()).setScale(3, RoundingMode.UP).doubleValue());
+            else
+                begYear.set(d.getCount());
             endYear = new BigDecimal(incTotal.get() - outTotal.get()).setScale(2, RoundingMode.UP).doubleValue();
 
             balance.setBalanceAtBeginningYear(begYear.get());

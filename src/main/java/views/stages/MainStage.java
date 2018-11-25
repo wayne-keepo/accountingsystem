@@ -293,7 +293,7 @@ public class MainStage {
         });
     }
 
-    // надо переделать но не хочу возиться сейчас
+    // neede optimization and changing logic
     private void addLogicOnAccoutingESMGTab(Tab tab) {
         tab.setContent(paneForAccoutingESMGTab);
         paneForAccoutingESMGTab.setCenter(esmgTable.getTable());
@@ -327,7 +327,6 @@ public class MainStage {
             DetailElectrodePrimitive primitive = DetailElectrodeService.add(detail,newCount,newCost,Types.ESMG.eng());
             Map<Double, BigDecimal> tmp = new HashMap<>();
             tmp.put(newCount,newCost);
-            // TODO: при добавлении первой детали вылетает NPE потому что DE в таблице нет (+)
             esmgTable.getDetailElectrods().getDetails().put(detail, tmp);
             esmgTable.getDetailElectrods().getIds().add(primitive.getId());
             esmgTable.getTable().getItems().add(detail);
@@ -526,6 +525,9 @@ public class MainStage {
             nTo.clear();
             customer.clear();
             note.clear();
+            position.clear();
+            cableLength.clear();
+            fio.clear();
 
             summaryTable.refresh();
             rawTable.refresh();
