@@ -266,7 +266,7 @@ public class DocESMGM_V2 {
     private File generate(){
         String path = Paths.C.get()+Paths.ACCOUNTING_SYSTEM.get()+Paths.DOCUMENTS.get()+Paths.ESMG_M.get();
         String prefix = "passport_esmgm11_";
-        String postfix = ".doc";
+        String postfix = ".docx";
         String genericTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
         String fullname = prefix+genericTime+postfix;
 

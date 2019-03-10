@@ -112,9 +112,9 @@ public class MainStage {
         accounting.setClosable(false);
         Tab costDetailTab = new Tab("Детали");
         costDetailTab.setClosable(false);
-        Tab componentsConsumptionForESMG = new Tab("Расход комплектующих для ЕСМГ");
+        Tab componentsConsumptionForESMG = new Tab("Расход комплектующих для ЭСМГ");
         componentsConsumptionForESMG.setClosable(false);
-        Tab componentsConsumptionForESMGM = new Tab("Расход комплектующих для ЕСМГ-М");
+        Tab componentsConsumptionForESMGM = new Tab("Расход комплектующих для ЭСМГ-М");
         componentsConsumptionForESMGM.setClosable(false);
         Tab electrods = new Tab("Электроды");
         electrods.setClosable(false);
