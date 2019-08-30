@@ -1,8 +1,7 @@
 package utils;
 
-import domain.Balance;
-import projectConstants.CustomConstants;
-import utils.enums.RussianMonths;
+import model.enums.RussianMonths;
+import model.projectConstants.CustomConstants;
 
 import java.time.Month;
 import java.util.LinkedHashMap;
@@ -47,7 +46,6 @@ public class Searcher {
     }
 
     //for balance
-    //TODO: переделать в вид Map<RuMonth,Month> и такой же для обратной конвертации (+)
     public static Month searchEngMonthByRus(String month) {
         RussianMonths ru = RussianMonths.valueOf(month);
         return enMonths.get(ru);

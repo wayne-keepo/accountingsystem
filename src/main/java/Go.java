@@ -11,6 +11,7 @@ public class Go extends Application{
 
     public static void main(String[] args) {
         logger.info("Run application");
+
         launch(args);
 
     }
