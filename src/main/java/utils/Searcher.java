@@ -1,7 +1,6 @@
 package utils;
 
 import model.enums.RussianMonths;
-import model.projectConstants.CustomConstants;
 
 import java.time.Month;
 import java.util.LinkedHashMap;
@@ -58,13 +57,13 @@ public class Searcher {
         return ruMonths.get(month);
     }
 
-    public static Double findValueByMonth(Balance balance, String month, String eventName) {
-        Month key = searchEngMonthByRus(month);
-        if (eventName.equals(CustomConstants.INCOMING))
-            return balance.getIncoming().get(key);
-        if (eventName.equals(CustomConstants.OUTCOMING))
-            return balance.getOutcoming().get(key);
-        return null;
-    }
+//    public static Double findValueByMonth(Balance balance, String month, String eventName) {
+//        Month key = searchEngMonthByRus(month);
+//        if (eventName.equals(CustomConstants.INCOMING))
+//            return balance.getIncoming().get(key);
+//        if (eventName.equals(CustomConstants.OUTCOMING))
+//            return balance.getOutcoming().get(key);
+//        return null;
+//    }
 
 }
