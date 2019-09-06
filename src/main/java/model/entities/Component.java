@@ -26,6 +26,10 @@ public class Component {
         this.totalAmount = calculateTotalAmount();
     }
 
+    public void addDatePoint(DatePoint datePoint){
+        this.points.add(datePoint);
+    }
+
     public void incAmount(double incAmount){
         this.totalAmount+=incAmount;
     }

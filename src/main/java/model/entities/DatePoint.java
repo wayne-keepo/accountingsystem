@@ -21,14 +21,18 @@ public class DatePoint {
     private double totalAmount;
     private List<Price> prices = new ArrayList<>();
 
-    public DatePoint(@NonNull Price price){
+    public DatePoint(@NonNull List<Price> prices){
         LocalDate now = LocalDate.now();
         this.id = UUID.randomUUID();
         this.year = now.getYear();
         this.day = now.getDayOfMonth();
         this.month = new cMonth(now);
-        this.prices.add(price);
+        this.prices.addAll(prices);
         this.totalAmount = calculateTotalAmount();
+    }
+
+    public void addPrice(Price price){
+        this.prices.add(price);
     }
 
     public void recalculateTotalAmount(){
